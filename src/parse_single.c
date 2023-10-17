@@ -89,7 +89,7 @@ void	parse_single(char *s, t_word *c)
 	i = 0;
 	j = 0;
 	quoted = 0;
-	bck->str = malloc(ft_strlen(s) * sizeof(char) + 1000);
+	bck->str = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
 	//TODO : Nettoyer cette merde
 	ft_printf("DEBUG : Parsing \x1b[32m %s\x1b[37m\n", s);
 	while (s[i] == ' ')
