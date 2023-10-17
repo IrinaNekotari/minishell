@@ -21,7 +21,8 @@ void	debug_show_command(t_word *t)
 	bck = t;
 	while (bck)
 	{
-		ft_printf("Token %d = %s\n", i, bck->str);
+		if (bck->str)
+			ft_printf("Token %d = %s\n", i, bck->str);
 		if (bck->next)
 			bck = bck->next;
 		else
@@ -47,6 +48,7 @@ void	parse(char *s, char **env)
 	else
 		parse_single(s, command);
 	execute(command, env);
+	//TODO ; Free la commande
 }
 
 void	iterate(char *s, char **env)

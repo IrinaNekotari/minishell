@@ -91,6 +91,7 @@ void	parse_single(char *s, t_word *c)
 	j = 0;
 	quoted = 0;
 	bck->str = malloc(ft_strlen(s) * sizeof(char));
+	//TODO : Nettoyer cette merde
 	ft_printf("DEBUG : Parsing \x1b[32m %s\x1b[37m\n", s);
 	while (s[i] == ' ')
 		i++;
@@ -107,11 +108,14 @@ void	parse_single(char *s, t_word *c)
 			bck->next = malloc(sizeof(t_word));
 			bck = bck->next;
 			bck->str = malloc(3 * sizeof(char));
+			j = 0;
 			bck->str[j++] = s[i++];
 			if (s[i] == s[i - 1])
 				bck->str[j++] = s[i++];
 			bck->str[j++] = 0;
+			bck->next = malloc(sizeof(t_word));
 			bck = bck->next;
+			j = 0;
 			bck->str = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
 		}
 		else if (s[i] == ' ' && !quoted)
@@ -150,6 +154,7 @@ void	parse_single(char *s, t_word *c)
 		else 
 			bck->str[j++] = s[i++];
 	}
+	bck->next = NULL;
 }
 
 
