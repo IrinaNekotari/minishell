@@ -41,6 +41,7 @@ void	interrupt_sig(int sig)
 {
 	if (sig == SIGINT)
 	{
+		//TODO : Doit afficher un nouveau prompt
 		ft_printf("\x1b[31m\nTerminating the minishell with ");
 		ft_printf("\x1b[37mCTRL + C \x1b[31m...");
 	}
@@ -48,8 +49,17 @@ void	interrupt_sig(int sig)
 	{
 		ft_printf("\x1b[31m\nTerminating the minishell with ");
 		ft_printf("\x1b[37mCTRL + Z \x1b[31m...");
+		/*TODO : Tous les free et compagnie**/
+		ft_printf("\x1b[31m\nGoodbye");
+		exit(0);
 	}
-	/*TODO : Tous les free et compagnie**/
+}
+
+void	ft_eof(void)
+{
+	ft_printf("\x1b[31m\nTerminating the minishell with ");
+	ft_printf("\x1b[37mCTRL + D (EoF) \x1b[31m...");
+	/*TODO : Tous les free et compagnie*/
 	ft_printf("\x1b[31m\nGoodbye");
 	exit(0);
 }
@@ -65,12 +75,16 @@ int	main(int args, char *argv[], char *env[])
 	signal(SIGTSTP, interrupt_sig);
 	signal(SIGQUIT, SIG_IGN);
 	to_parse = readline("\n~$ ");
+	if (!to_parse)
+		ft_eof();
 	while (to_parse)
 	{
 		to_parse = check_quote(to_parse);
 		add_history(to_parse);
 		iterate(to_parse, env);
 		free(to_parse);
-		to_parse = readline("\n~$ ");
+		to_parse = readline("~$ ");
+		if (!to_parse)
+			ft_eof();
 	}
 }
