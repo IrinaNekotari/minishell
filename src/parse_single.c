@@ -90,7 +90,7 @@ void	parse_single(char *s, t_word *c)
 	i = 0;
 	j = 0;
 	quoted = 0;
-	bck->str = malloc(ft_strlen(s) * sizeof(char));
+	bck->str = malloc(ft_strlen(s) * sizeof(char) + 1000);
 	//TODO : Nettoyer cette merde
 	ft_printf("DEBUG : Parsing \x1b[32m %s\x1b[37m\n", s);
 	while (s[i] == ' ')
@@ -99,6 +99,7 @@ void	parse_single(char *s, t_word *c)
 	{
 		if (s[i] == '\\')
 		{
+			//TODO : Ne marche qu'avec certains characteres
 			i++;
 			bck->str[j++] = s[i];
 		}
@@ -125,7 +126,6 @@ void	parse_single(char *s, t_word *c)
 			bck->next = malloc(sizeof(t_word));
 			bck = bck->next;
 			bck->str = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
-			bck->next = NULL;
 			j = 0;
 			while (s[i] == ' ')
 				i++;
@@ -154,10 +154,11 @@ void	parse_single(char *s, t_word *c)
 		else 
 			bck->str[j++] = s[i++];
 	}
+	bck->str[j++] = 0;
 	bck->next = NULL;
 }
 
-
+//TODO : Refaire tout ca avec les pipes
 void	parse_with_pipes(char **s, t_word *c)
 {
 	int	i;
