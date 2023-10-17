@@ -14,16 +14,15 @@
 
 char	*ft_concat(char *s1, char *s2)
 {
-	int i = 0;
-	int j = 0;
-	size_t len1 = 0;
-	size_t len2 = 0;
-	while (s1[len1] != '\0')
-		len1++;
-	while (s2[len2] != '\0')
-		len2++;
-	char *res = (char *)malloc(sizeof(char) * (len1+len2+2));
-	while(s1[i] != '\0')
+	int		i;
+	int		j;
+	char	*res;
+
+	i = 0;
+	j = 0;
+	res = (char *) malloc(sizeof(char)
+			* (ft_strlen(s1) + ft_strlen(s2) + 2));
+	while (s1[i] != '\0')
 	{
 		res[i] = s1[i];
 		i++;
