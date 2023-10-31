@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <stdint.h>
 # include <stdarg.h>
+# include <sys/wait.h>
 
 typedef struct s_list
 {
@@ -30,7 +31,6 @@ typedef struct s_list2
 	char			*content;
 	struct s_list2	*next;
 }	t_list2;
-
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);

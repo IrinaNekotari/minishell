@@ -12,56 +12,83 @@
 
 #include "minishell.h"
 
-void	debug_show_command(t_word *t)
+int	count_occur(char *str, char c)
 {
 	int	i;
-	t_word		*bck;
-
+	int	count;
+	
 	i = 0;
-	bck = t;
-	while (bck)
+	count = 0;
+	while (str[i])
 	{
-		if (bck->str)
-			ft_printf("Token %d = %s\n", i, bck->str);
-		if (bck->next)
-			bck = bck->next;
-		else
-			break ;
+		if (str[i] == c)
+		{
+			if ((i >= 1 && str[i - 1] != '\\') || i == 0)
+				count++;
+		}
 		i++;
 	}
-}
-
-void	execute(t_word *cmd, char **env)
-{
-	debug_show_command(cmd);
-	(void) env;
-	return ;
+	return (count);
 }
 
 void	parse(char *s, char **env)
 {
-	t_word	*command;
+	t_cmd	*cmd;
+	char	**t;
 
-	command = malloc(sizeof(t_word));
+	cmd = ft_calloc(2, sizeof(t_cmd));
+	cmd->tokens = ft_calloc(2, sizeof(t_word));
+	t = (char **) ft_calloc(count_occur(s, '|') + 1, sizeof(int) * 100);
+	t = counter_split(s, t);
 	if (ft_strchr(s, '|'))
-		parse_with_pipes(ft_split(s, '|'), command);
+		parse_with_pipes(t, cmd);
 	else
-		parse_single(s, command);
-	execute(command, env);
-	//TODO ; Free la commande
+	{
+		cmd->pipe = NULL;
+		parse_single_2(t[0], cmd->tokens);
+	}
+	execute(cmd, env);
+	free_liste(t);
+	free_command(cmd);
+}
+
+void	parse_with_pipes(char **t, t_cmd *c)
+{
+	int		i;
+	t_cmd	*c_bck;
+
+	c_bck = c;
+	i = 0;
+	while (t[i])
+	{
+		parse_single_2(t[i], c_bck->tokens);
+		if (t[i + 1])
+		{
+			c_bck->pipe = ft_calloc(2, sizeof(t_cmd));
+			c_bck = c_bck->pipe;
+			c_bck->tokens = ft_calloc(2, sizeof(t_word));
+		}
+		else
+			c_bck->pipe = NULL;
+		i++;
+	}
 }
 
 void	iterate(char *s, char **env)
 {
-	char **lst;
-	int	i;
-	
+	char	**lst;
+	int		i;
+
 	i = 0;
-	lst = ft_split(s, ';');
+
+	//TODO : Chercher la bonne taille
+	lst = (char **) ft_calloc(count_occur(s, ';') + 1, sizeof(int) * 100);
+	lst = split_semicolon(s, lst);
+	log_input(s);
 	while (lst[i])
 	{
-		ft_printf("DEBUG : Found line\x1b[32m %s\x1b[37m\n", lst[i]);
 		parse(lst[i], env);
 		i++;
 	}
+	free_liste(lst);
 }

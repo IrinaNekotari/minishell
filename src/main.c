@@ -16,6 +16,7 @@ int	g_received_signal = -1;
 
 void	welcome_message(void)
 {
+	log_open_exit(1);
 	ft_printf("\x1b[37m###########################################");
 	ft_printf("########################\n");
 	ft_printf("#				  				  #\n");
@@ -32,35 +33,35 @@ void	welcome_message(void)
 	ft_printf("#  \x1b[34m|_|  |_|_____|_| \\_|_____");
 	ft_printf("|_____/|_|  |_|______|______|______|\x1b[37m  #\n");
 	ft_printf("#		  						  #\n");
-	ft_printf("#		\x1b[31mPar Nolan MASCRIER et Martin JUETTE		  ");
+	ft_printf("#		😎️\x1b[31mPar Nolan MASCRIER et Martin JUETTE🤑️		  ");
 	ft_printf("\x1b[37m#\n##########################################");
-	ft_printf("#########################\n");
+	ft_printf("#########################\n\n");
 }
 
 void	interrupt_sig(int sig)
 {
 	if (sig == SIGINT)
 	{
-		//TODO : Doit afficher un nouveau prompt
-		ft_printf("\x1b[31m\nTerminating the minishell with ");
-		ft_printf("\x1b[37mCTRL + C \x1b[31m...");
+		ft_printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+		g_received_signal = SIGINT;
 	}
 	else
 	{
-		ft_printf("\x1b[31m\nTerminating the minishell with ");
-		ft_printf("\x1b[37mCTRL + Z \x1b[31m...");
-		/*TODO : Tous les free et compagnie**/
-		ft_printf("\x1b[31m\nGoodbye");
+		rl_clear_history();
+		ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n");
+		log_open_exit(0);
 		exit(0);
 	}
 }
 
 void	ft_eof(void)
 {
-	ft_printf("\x1b[31m\nTerminating the minishell with ");
-	ft_printf("\x1b[37mCTRL + D (EoF) \x1b[31m...");
-	/*TODO : Tous les free et compagnie*/
-	ft_printf("\x1b[31m\nGoodbye");
+	rl_clear_history();
+	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n");
+	log_open_exit(0);
 	exit(0);
 }
 
@@ -74,17 +75,22 @@ int	main(int args, char *argv[], char *env[])
 	signal(SIGINT, interrupt_sig);
 	signal(SIGTSTP, interrupt_sig);
 	signal(SIGQUIT, SIG_IGN);
-	to_parse = readline("\n~$ ");
-	if (!to_parse)
-		ft_eof();
-	while (to_parse)
+	while (1)
 	{
+		to_parse = readline("minishell~$ ");
+		if (!to_parse)
+			ft_eof();
 		to_parse = check_quote(to_parse);
+		if (!to_parse)
+		{
+			ft_printf("\n");
+			continue ;
+		}
+		if (!parse_error(to_parse))
+			continue ;
 		add_history(to_parse);
 		iterate(to_parse, env);
 		free(to_parse);
-		to_parse = readline("~$ ");
-		if (!to_parse)
-			ft_eof();
+		g_received_signal = -1;
 	}
 }

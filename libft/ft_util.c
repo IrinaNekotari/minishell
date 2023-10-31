@@ -65,7 +65,7 @@ void	ft_to_hexa(size_t ptr, char *set, int *len)
 }
 
 void	ft_putnbr_hexa(unsigned int nb, char	*set, int *len)
-{	
+{
 	if (nb >= 16)
 	{
 		ft_putnbr_hexa(nb / 16, set, len);

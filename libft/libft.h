@@ -31,7 +31,6 @@ typedef struct s_list2
 	struct s_list2	*next;
 }	t_list2;
 
-
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);

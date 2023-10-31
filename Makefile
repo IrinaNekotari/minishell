@@ -14,7 +14,8 @@ FLAG = -Wall -Wextra -Werror
 
 NAME = libftprintf.a
 
-SRC = src/main.c src/parse.c src/parse_single.c
+SRC = src/main.c src/parse.c src/parse_error.c src/parse_single.c src/parse_single_2.c src/memory.c src/logger.c src/quote_utils.c \
+	 src/char_utils.c src/debug_exec.c src/execute.c src/countersplit.c
 
 OBJ  = $(SRC:.c=.o)
 
@@ -29,7 +30,7 @@ $(NAME):lib mini
 
 mini:$(OBJ)
 	@echo "\e[34mCompilation de minishell ...\e[97m\e[4m"
-	gcc $(FLAG) $(SRC) -o minishell -Iinclude -Llibft/ -lft -lreadline
+	gcc $(FLAG) $(SRC) -o minishell -Iinclude -Llibft/ -lft -lreadline -g
 	@echo "\e[0m\033[1;32mMinishell compilee.\n"
 
 lib:
