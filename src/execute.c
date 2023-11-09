@@ -12,6 +12,25 @@
 
 #include "minishell.h"
 
+int	chain_as_equals(t_cmd *cmd, char *cmp)
+{
+	t_cmd	*bck;
+
+	bck = cmd;
+	while (bck->tokens)
+	{
+		if (ft_equals(bck->tokens->str, cmp))
+		{
+			if (!bck->tokens->quote)
+				return (1);
+		}
+		if (!bck->tokens->next)
+			return (0);
+		bck->tokens = bck->tokens->next;
+	}
+	return (0);
+}
+
 int	ft_equals(char *s1, char *s2)
 {
 	int	i;
@@ -26,6 +45,12 @@ int	ft_equals(char *s1, char *s2)
 	if (s1[i] != s2[i])
 		return (0);
 	return (1);
+}
+
+void	execute_general(t_cmd *cmd, char **env)
+{
+	(void)cmd;
+	(void)env;
 }
 
 void	get_orders(t_cmd *cmd, char **env)
