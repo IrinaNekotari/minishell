@@ -14,20 +14,23 @@
 
 int	chain_as_equals(t_cmd *cmd, char *cmp)
 {
-	t_cmd	*bck;
+	t_word	*bck;
 
-	bck = cmd;
-	while (bck->tokens)
+	bck = cmd->tokens;
+	while (bck)
 	{
-		if (ft_equals(bck->tokens->str, cmp))
+		ft_printf("Comparing %s and %s\n", bck->str, cmp);
+		if (ft_equals(bck->str, cmp))
 		{
-			if (!bck->tokens->quote)
+			if (!bck->quote)
+			{
+				bck = cmd->tokens;
 				return (1);
+			}
 		}
-		if (!bck->tokens->next)
-			return (0);
-		bck->tokens = bck->tokens->next;
+		bck = bck->next;
 	}
+	bck = cmd->tokens;
 	return (0);
 }
 
@@ -57,13 +60,16 @@ void	get_orders(t_cmd *cmd, char **env)
 {
 	if (ft_equals(cmd->tokens->str, "pwd"))
 		ft_pwd(cmd, env);
+	else if (ft_equals(cmd->tokens->str, "exit"))
+		ft_exit(cmd, env);
 	else
+	{
+		debug_show_all(cmd);
 		execute_general(cmd, env);
+	}
 }
 
 void	execute(t_cmd *cmd, char **env)
 {
-	debug_show_all(cmd);
 	get_orders(cmd, env);
-	return ;
 }

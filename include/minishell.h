@@ -116,7 +116,7 @@ void	execute_general(t_cmd *cmd, char **env);
 int	chain_as_equals(t_cmd *cmd, char *cmp);
 int	ft_equals(char *s1, char *s2);
 void	ft_pwd(t_cmd *cmd, char **env);
-void	ft_set(t_cmd *cmd, char **env);
+void	ft_export(t_cmd *cmd, char **env);
 void	ft_unset(t_cmd *cmd, char **env);
 void	ft_echo(t_cmd *cmd, char **env);
 void	ft_env(t_cmd *cmd, char **env);

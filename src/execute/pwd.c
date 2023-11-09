@@ -38,15 +38,19 @@ static void	force_your_way(t_cmd *c, char *pwd)
 	}
 }
 
+
+//TODO : y'a une fuite memoire la dedans pour des raisons
 static void	print_from_fd(t_cmd *cmd, char * meth, char *pwd)
 {
 	int		fd;
 	t_cmd	*bck;
 
 	bck = cmd;
+	//Ce morceau de merde putride fait tout planter; TODO a corriger
 	while (!ft_equals(bck->tokens->str, ">"))
 		bck->tokens = bck->tokens->next;
 	bck->tokens = bck->tokens->next;
+	ft_printf("%s\n", bck->tokens->str);
 	fd = open(bck->tokens->str, O_RDONLY);
 	if (fd == -1)
 	{

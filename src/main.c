@@ -90,7 +90,8 @@ int	main(int args, char *argv[], char *env[])
 			continue ;
 		add_history(to_parse);
 		iterate(to_parse, env);
-		free(to_parse);
+		if (g_received_signal == -3)
+			ft_eof();
 		g_received_signal = -1;
 	}
 }
