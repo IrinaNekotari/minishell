@@ -112,5 +112,12 @@ void	execute(t_cmd *cmd, char **env);
 int	is_blank(char *ptr, int j);
 char	**counter_split(char *s, char **to_ret);
 char	**split_semicolon(char *s, char **to_ret);
+void	execute_general(t_cmd *cmd, char **env);
+void	ft_pwd(t_cmd *cmd, char **env);
+void	ft_set(t_cmd *cmd, char **env);
+void	ft_unset(t_cmd *cmd, char **env);
+void	ft_echo(t_cmd *cmd, char **env);
+void	ft_env(t_cmd *cmd, char **env);
+void	ft_exit(t_cmd *cmd, char **env);
 
 #endif

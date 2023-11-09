@@ -66,7 +66,7 @@ char	**split_semicolon(char *s, char **to_ret)
 	return (to_ret);
 }
 
-static void split_antislash(char *s)
+/*static void split_antislash(char *s)
 {
 	int		i;
 	int		j;
@@ -90,7 +90,7 @@ static void split_antislash(char *s)
 			quote = s[i];
 		}
 	}
-}
+}*/
 
 //TODO : Norminer tout ca
 char	**counter_split(char *s, char **to_ret)
@@ -109,8 +109,7 @@ char	**counter_split(char *s, char **to_ret)
 	quote = 0;
 	while (s[i])
 	{
-		split_antislash(s)
-		/*if (s[i] == '\\' && !quoted)
+		if (s[i] == '\\' && !quoted)
 		{
 			if (is_escapable2(s[i+1]))
 				i++;
@@ -122,7 +121,7 @@ char	**counter_split(char *s, char **to_ret)
 				quoted = 1;
 				quote = s[i];
 			}
-		}*/
+		}
 		else if (s[i] == quote && quoted == 1)
 			quoted = 0;
 		if (s[i] == '|' && quoted == 0)
