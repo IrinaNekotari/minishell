@@ -70,6 +70,8 @@ typedef struct	s_var
 typedef struct s_cmd
 {
 	struct s_word	*tokens;
+	char	**input;
+	char	**output;
 	struct s_cmd	*pipe;
 }	t_cmd;
 

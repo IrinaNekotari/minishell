@@ -1,0 +1,55 @@
+Quand tu fais
+commande > a > b > c ... > z
+La sortie de la commande n'est enregistree QUE dans Z !
+Si y'avait des trucs dans a b ... Ils sont effacés !
+
+Quand tu fais 
+commande > a < b
+Un message d'erreur est affiche si b n'existe pas, a est quand même cree mais
+laissé vide ! Si y'avait des trucs dedans, c'est effacé !
+
+AJOUTER UNE FONCTION QUI CREE LES SORTIES DANS NOTRE STRUCTURE
+UN TABLEAU DE CHAINE
+SEUL LE DERNIER MEMBRE DE LA CHAINE SERA IMPRIME DEDANS
+LE RESTE SERA JUSTE CREE OU VIDEE
+
+Quand tu fais
+commande > a << b > c << d ...
+Dans le prompt, il va falloir écrire 
+>  d
+>  b
+>  d
+C'est complétement stupide si tu fais genre
+echo bite > a << a << b << c << d
+Va falloir tapper
+> d
+> c
+> b
+> a
+> b 
+> c
+> d
+!!!!
+WTF mec
+
+Erreurs :
+b >			-> bash: syntax error near unexpected token `newline'
+b >> 			-> bash: syntax error near unexpected token `newline'
+b < 			-> bash: syntax error near unexpected token `newline'
+b << 			-> bash: syntax error near unexpected token `newline'
+b <> e			-> marche, cree un fichier e vide
+b >< e			-> bash: syntax error near unexpected token `<'
+b <<> e 		-> bash: syntax error near unexpected token `>'
+b <<>> e		-> bash: syntax error near unexpected token `>>'
+b <>> e		-> bash: syntax error near unexpected token `>'
+b ><< e		-> bash: syntax error near unexpected token `<<'
+b >>< e		-> bash: syntax error near unexpected token `<'
+b >><< e		-> bash: syntax error near unexpected token `<<'
+b ... |		-> ouvre un prompt pour mettre plus de pipe PAS A GERER
+b ... ||		-> ouvre un prompt pour mettre plus de pipe PAS A GERER
+b ... || a ...		-> pipe normal
+| a ...		-> bash: syntax error near unexpected token `|'
+|| a ...		-> bash: syntax error near unexpected token `||'
+a ... ||| b ... 	-> bash: syntax error near unexpected token `|'
+a ... |||| b ...	-> bash: syntax error near unexpected token `||'
+a ... ||||(+) b ...	-> bash: syntax error near unexpected token `||'
