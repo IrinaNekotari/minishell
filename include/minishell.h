@@ -26,7 +26,7 @@
 # define ERR_CMD_NOT_FOUND "minishell: command not found:"
 # define ERR_TOO_MANY_ARGS ": too many arguments"
 
-# define LOGGER 1
+# define LOGGER 0
 # define LOG_TO_FILE 0
 # define FALSE 0
 # define TRUE 1
@@ -54,10 +54,8 @@ typedef struct	s_word
 */
 typedef struct	s_env
 {
-	//char	**env;
-	//char	*oldpwd;
-	char	*val;
-	struct s_env	*next;
+	char	**env;
+	char	*oldpwd;
 }	t_env;
 typedef struct	s_var
 {
@@ -117,15 +115,14 @@ int	is_blank(char *ptr, int j);
 char	**counter_split(char *s, char **to_ret);
 char	**split_semicolon(char *s, char **to_ret);
 void	execute_general(t_cmd *cmd, char **env);
-void	*ft_memdel(void *ptr);
+int	chain_as_equals(t_cmd *cmd, char *cmp);
+int	ft_equals(char *s1, char *s2);
 void	ft_pwd(t_cmd *cmd, char **env);
-void	ft_set(t_cmd *cmd, char **env);
-int		ft_env(t_env *env);
-int				ft_unset(t_cmd *cmd, t_main *shell);
-//void	ft_unset(t_cmd *cmd, char **env);
+void	ft_export(t_cmd *cmd, char **env);
+void	ft_unset(t_cmd *cmd, char **env);
 void	ft_echo(t_cmd *cmd, char **env);
-int		ft_env(t_env *env);
-//void	ft_env(t_cmd *cmd, char **env);
+void	ft_env(t_cmd *cmd, char **env);
 void	ft_exit(t_cmd *cmd, char **env);
+int	ft_equals(char *s1, char *s2);
 
 #endif
