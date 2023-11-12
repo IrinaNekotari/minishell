@@ -14,6 +14,15 @@ SEUL LE DERNIER MEMBRE DE LA CHAINE SERA IMPRIME DEDANS
 LE RESTE SERA JUSTE CREE OU VIDEE
 
 Quand tu fais
+echo a > b c
+c'est comme écrire
+echo a c > b
+de même
+echo a > b c > d
+revient a écrire
+echo a c > b > d
+
+Quand tu fais
 commande > a << b > c << d ...
 Dans le prompt, il va falloir écrire 
 >  d

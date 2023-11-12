@@ -47,6 +47,7 @@ void	parse(char *s, char **env)
 		cmd->pipe = NULL;
 		parse_single_2(t[0], cmd->tokens);
 	}
+	generate_io(cmd);
 	execute(cmd, env);
 	free_liste(t);
 	free_command(cmd);

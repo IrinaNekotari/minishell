@@ -31,14 +31,20 @@
 # define FALSE 0
 # define TRUE 1
 
+# define SINGLE_OUTPUT 1
+# define DOUBLE_OUTPUT 2
+# define SINGLE_INPUT 3
+# define DOUBLE_INPUT 4
+
 /*
 * Stocke les donnees pour les redirections < > << >>
 */
-typedef struct s_redir
+typedef struct s_io
 {
-	int	fd;
+	int	io;
 	char	*file;
-}	t_redir;
+	struct s_io	*next;
+}	t_io;
 
 /*
 * Stocke un "mot" et stocke s'il est quote par des '' "" ou \
@@ -70,8 +76,8 @@ typedef struct	s_var
 typedef struct s_cmd
 {
 	struct s_word	*tokens;
-	char	**input;
-	char	**output;
+	struct s_io *input;
+	struct s_io *output;
 	struct s_cmd	*pipe;
 }	t_cmd;
 
@@ -124,5 +130,6 @@ void	ft_echo(t_cmd *cmd, char **env);
 void	ft_env(t_cmd *cmd, char **env);
 void	ft_exit(t_cmd *cmd, char **env);
 int	ft_equals(char *s1, char *s2);
+void	generate_io(t_cmd *cmd);
 
 #endif
