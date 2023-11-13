@@ -6,6 +6,7 @@ static void	print_to_sortie(t_cmd *cmd, char *meth, char *pwd)
 	t_cmd	*bck;
 
 	bck = cmd;
+	ft_printf("On est la\n");
 	while (!ft_equals(bck->tokens->str, meth))
 		bck->tokens = bck->tokens->next;
 	bck->tokens = bck->tokens->next;
@@ -71,13 +72,16 @@ void	ft_pwd(t_cmd *cmd, char **env)
 	(void)env;
 	dir = (char *)ft_calloc(100, sizeof(char));
 	getcwd(dir, 100);
-	if (chain_as_equals(cmd, ">"))
+	if (chain_as_equals(&cmd, ">"))
+	{
+		ft_printf("On est la\n");
 		print_to_sortie(cmd, ">", dir);
-	else if (chain_as_equals(cmd, ">>"))
+	}
+	else if (chain_as_equals(&cmd, ">>"))
 		print_to_sortie(cmd, ">>", dir);
-	else if (chain_as_equals(cmd, "<"))
+	else if (chain_as_equals(&cmd, "<"))
 		print_from_fd(cmd, "<", dir);
-	else if (chain_as_equals(cmd, "<<"))
+	else if (chain_as_equals(&cmd, "<<"))
 		print_from_fd(cmd, "<<", dir);
 	else
 		ft_printf("%s\n", dir);

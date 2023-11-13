@@ -44,6 +44,7 @@ typedef struct s_io
 	int	io;
 	char	*file;
 	struct s_io	*next;
+	struct s_io	*previous;
 }	t_io;
 
 /*
@@ -54,6 +55,7 @@ typedef struct	s_word
 	char		*str;
 	char		quote;
 	struct s_word	*next;
+	struct s_word	*previous;
 }	t_word;
 /*
 * Stocke les valeurs d'environnement
@@ -79,6 +81,7 @@ typedef struct s_cmd
 	struct s_io *input;
 	struct s_io *output;
 	struct s_cmd	*pipe;
+	struct s_cmd	*previous;
 }	t_cmd;
 
 /*
@@ -121,7 +124,7 @@ int	is_blank(char *ptr, int j);
 char	**counter_split(char *s, char **to_ret);
 char	**split_semicolon(char *s, char **to_ret);
 void	execute_general(t_cmd *cmd, char **env);
-int	chain_as_equals(t_cmd *cmd, char *cmp);
+int	chain_as_equals(t_cmd **cmd, char *cmp);
 int	ft_equals(char *s1, char *s2);
 void	ft_pwd(t_cmd *cmd, char **env);
 void	ft_export(t_cmd *cmd, char **env);
@@ -130,6 +133,9 @@ void	ft_echo(t_cmd *cmd, char **env);
 void	ft_env(t_cmd *cmd, char **env);
 void	ft_exit(t_cmd *cmd, char **env);
 int	ft_equals(char *s1, char *s2);
-void	generate_io(t_cmd *cmd);
+void	generate_io(t_cmd **cmd);
+void	rollback_tokens(t_cmd **cmd);
+void	rollback_io(t_cmd **cmd);
+void	rollback_cmd(t_cmd **cmd);
 
 #endif

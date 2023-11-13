@@ -19,53 +19,84 @@ int	is_io(char *s)
 		return (0);
 }
 
-void	slash_tokens(t_word *w)
+
+void	slash_tokens(t_cmd **cmd)
 {
 	t_word	*bck;
 
-	bck = w;
-	if (w->str)
-		free(w->str);
-	w = w->next;
+	bck = (*cmd)->tokens;
+	(*cmd)->tokens->previous->next = (*cmd)->tokens->next;
+	if ((*cmd)->tokens->str)
+		free((*cmd)->tokens->str);
+	(*cmd)->tokens->next->previous = (*cmd)->tokens->previous;
+	(*cmd)->tokens = (*cmd)->tokens->next;
 	free(bck);
 }
 
-
-void	generate_io(t_cmd *cmd)
+void	rollback_tokens(t_cmd **cmd)
 {
-	t_cmd	*bck;
+	if (!(*cmd) || !(*cmd)->tokens)
+		return ;
+	while ((*cmd)->tokens->previous)
+		(*cmd)->tokens = (*cmd)->tokens->previous;
+}
+
+void	rollback_io(t_cmd **cmd)
+{
+	if (!(*cmd) || !(*cmd)->input || !(*cmd)->output)
+		return ;
+	while ((*cmd)->input->previous)
+		(*cmd)->input = (*cmd)->output->previous;
+	while ((*cmd)->output->previous)
+		(*cmd)->output = (*cmd)->output->previous;
+}
+
+void	rollback_cmd(t_cmd **cmd)
+{
+	if (!(*cmd) || !(*cmd)->previous)
+		return ;
+	while ((*cmd)->previous)
+		(*cmd) = (*cmd)->previous;
+}
+
+void	generate_io(t_cmd **cmd)
+{
 	int	i;
 
 	i = 0;
-	bck = cmd;
-	bck->input = ft_calloc(1 , sizeof(t_io));
-	bck->output = ft_calloc(1 , sizeof(t_io));
-	while (bck->tokens)
+	(*cmd)->input = ft_calloc(1 , sizeof(t_io));
+	(*cmd)->input->previous = NULL;
+	(*cmd)->output = ft_calloc(1 , sizeof(t_io));
+	(*cmd)->output->previous = NULL;
+	while ((*cmd)->tokens->str)
 	{
-		if (is_io(bck->tokens->str) && !bck->tokens->quote)
+		if (is_io((*cmd)->tokens->str) && !(*cmd)->tokens->quote)
 		{
-			i = is_io(bck->tokens->str);
-			slash_tokens(bck->tokens);
-			bck->tokens = bck->tokens->next;
+			i = is_io((*cmd)->tokens->str);
+			slash_tokens(cmd);
 			if (i == SINGLE_OUTPUT || i == DOUBLE_OUTPUT)
 			{
-				bck->output->file = ft_strdup(bck->tokens->str);
-				bck->output->io = i;
-				bck->output->next = ft_calloc(1 , sizeof(t_io));
-				bck->output = bck->output->next;
+				(*cmd)->output->file = ft_strdup((*cmd)->tokens->str);
+				(*cmd)->output->io = i;
+				(*cmd)->output->next = ft_calloc(1 , sizeof(t_io));
+				(*cmd)->output->next->previous = (*cmd)->output;
+				(*cmd)->output = (*cmd)->output->next;
 			}
 			else
 			{
-				bck->input->file = ft_strdup(bck->tokens->str);
-				bck->input->io = i;
-				bck->input->next = ft_calloc(1 , sizeof(t_io));
-				bck->input = bck->output->next;
+				(*cmd)->input->file = ft_strdup((*cmd)->tokens->str);
+				(*cmd)->input->io = i;
+				(*cmd)->input->next = ft_calloc(1 , sizeof(t_io));
+				(*cmd)->input->next->previous = (*cmd)->output;
+				(*cmd)->input = (*cmd)->output->next;
 			}
-			slash_tokens(bck->tokens);
+			slash_tokens(cmd);
 		}
 		else
-			bck->tokens = bck->tokens->next;
+			(*cmd)->tokens = (*cmd)->tokens->next;
 	}
-	if (bck->pipe)
-		generate_io(bck->pipe);
+	rollback_io(cmd);
+	rollback_tokens(cmd);
+	if ((*cmd)->pipe)
+		generate_io(&(*cmd)->pipe);
 }

@@ -21,14 +21,25 @@ void	free_token(t_word *w)
 	free(w);
 }
 
+void	free_io(t_io *io)
+{
+	if (io->file)
+		free(io->file);
+	if (io->next)
+		free_io(io->next);
+	free(io);
+}
+
 void	free_command(t_cmd *c)
 {
 	if (c->tokens)
 		free_token(c->tokens);
+	if (c->input)
+		free_io(c->input);
+	if (c->output)
+		free_io(c->output);
 	if (c->pipe)
-	{
 		free_command(c->pipe);
-	}
 	free(c);
 }
 

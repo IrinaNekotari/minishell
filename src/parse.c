@@ -36,8 +36,10 @@ void	parse(char *s, char **env)
 	t_cmd	*cmd;
 	char	**t;
 
-	cmd = ft_calloc(2, sizeof(t_cmd));
-	cmd->tokens = ft_calloc(2, sizeof(t_word));
+	cmd = ft_calloc(1, sizeof(t_cmd));
+	cmd->previous = NULL;
+	cmd->tokens = ft_calloc(1, sizeof(t_word));
+	cmd->tokens->previous = NULL;
 	t = (char **) ft_calloc(count_occur(s, '|') + 1, sizeof(int) * 100);
 	t = counter_split(s, t);
 	if (ft_strchr(s, '|'))
@@ -47,7 +49,9 @@ void	parse(char *s, char **env)
 		cmd->pipe = NULL;
 		parse_single_2(t[0], cmd->tokens);
 	}
-	generate_io(cmd);
+	rollback_io(&cmd);
+	rollback_tokens(&cmd);
+	generate_io(&cmd);
 	execute(cmd, env);
 	free_liste(t);
 	free_command(cmd);
@@ -66,6 +70,7 @@ void	parse_with_pipes(char **t, t_cmd *c)
 		if (t[i + 1])
 		{
 			c_bck->pipe = ft_calloc(2, sizeof(t_cmd));
+			c_bck->pipe->previous = c_bck;
 			c_bck = c_bck->pipe;
 			c_bck->tokens = ft_calloc(2, sizeof(t_word));
 		}

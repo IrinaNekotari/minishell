@@ -12,25 +12,22 @@
 
 #include "minishell.h"
 
-int	chain_as_equals(t_cmd *cmd, char *cmp)
+int	chain_as_equals(t_cmd **cmd, char *cmp)
 {
-	t_word	*bck;
-
-	bck = cmd->tokens;
-	while (bck)
+	while ((*cmd)->tokens->str)
 	{
-		ft_printf("Comparing %s and %s\n", bck->str, cmp);
-		if (ft_equals(bck->str, cmp))
+		ft_printf("Comparing %s and %s\n", (*cmd)->tokens->str, cmp);
+		if (ft_equals((*cmd)->tokens->str, cmp))
 		{
-			if (!bck->quote)
+			if (!(*cmd)->tokens->quote)
 			{
-				bck = cmd->tokens;
+				(*cmd)->tokens = (*cmd)->tokens->next;
 				return (1);
 			}
 		}
-		bck = bck->next;
+		(*cmd)->tokens = (*cmd)->tokens->next;
 	}
-	bck = cmd->tokens;
+	rollback_tokens(cmd);
 	return (0);
 }
 
@@ -60,14 +57,19 @@ void	execute_general(t_cmd *cmd, char **env)
 //TODO : Meme probleme partout : cmd n'est pas "rembobiné" et ça me casse les testiciules sa mere
 void	get_orders(t_cmd *cmd, char **env)
 {
-	if (ft_equals(cmd->tokens->str, "pwd"))
-		ft_pwd(cmd, env);
-	else if (ft_equals(cmd->tokens->str, "exit"))
-		ft_exit(cmd, env);
-	else
+	rollback_cmd(&cmd);
+	while (cmd)
 	{
-		debug_show_all(cmd);
-		execute_general(cmd, env);
+		if (ft_equals(cmd->tokens->str, "pwd"))
+			ft_pwd(cmd, env);
+		else if (ft_equals(cmd->tokens->str, "exit"))
+			ft_exit(cmd, env);
+		else
+		{
+			debug_show_all(cmd);
+			execute_general(cmd, env);
+		}
+		cmd = cmd->pipe;
 	}
 }
 

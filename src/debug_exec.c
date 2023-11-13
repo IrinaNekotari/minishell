@@ -36,6 +36,52 @@ void	debug_show_command(t_word *t)
 	}
 }
 
+void	debug_show_input(t_io *io)
+{
+	t_io	*bck;
+
+	bck = io;
+	ft_printf("Found inputs for the command\n");
+	while (bck)
+	{
+		if (bck->file)
+		{
+			ft_printf("🤖️ Input %s", bck->file);
+			if (bck->io == SINGLE_INPUT)
+				ft_printf(", using <\n");
+			else
+				ft_printf(", using <<\n");
+		}
+		if (bck->next)
+			bck = bck->next;
+		else
+			break ;
+	}
+}
+
+void	debug_show_output(t_io *io)
+{
+	t_io	*bck;
+
+	bck = io;
+	ft_printf("Found outputs for the command\n");
+	while (bck)
+	{
+		if (bck->file)
+		{
+			ft_printf("👺️ Output %s", bck->file);
+			if (bck->io == SINGLE_OUTPUT)
+				ft_printf(", using <\n");
+			else
+				ft_printf(", using <<\n");
+		}
+		if (bck->next)
+			bck = bck->next;
+		else
+			break ;
+	}
+}
+
 void	debug_show_all(t_cmd *c)
 {
 	t_cmd	*bck;
@@ -52,4 +98,8 @@ void	debug_show_all(t_cmd *c)
 		else
 			break ;
 	}
+	if (c->input->file)
+		debug_show_input(c->input);
+	if (c->input->file)
+		debug_show_output(c->output);
 }
