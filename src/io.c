@@ -46,7 +46,7 @@ void	rollback_io(t_cmd **cmd)
 	if (!(*cmd) || !(*cmd)->input || !(*cmd)->output)
 		return ;
 	while ((*cmd)->input->previous)
-		(*cmd)->input = (*cmd)->output->previous;
+		(*cmd)->input = (*cmd)->input->previous;
 	while ((*cmd)->output->previous)
 		(*cmd)->output = (*cmd)->output->previous;
 }
@@ -87,8 +87,8 @@ void	generate_io(t_cmd **cmd)
 				(*cmd)->input->file = ft_strdup((*cmd)->tokens->str);
 				(*cmd)->input->io = i;
 				(*cmd)->input->next = ft_calloc(1 , sizeof(t_io));
-				(*cmd)->input->next->previous = (*cmd)->output;
-				(*cmd)->input = (*cmd)->output->next;
+				(*cmd)->input->next->previous = (*cmd)->input;
+				(*cmd)->input = (*cmd)->input->next;
 			}
 			slash_tokens(cmd);
 		}

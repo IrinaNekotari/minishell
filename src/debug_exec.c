@@ -71,9 +71,9 @@ void	debug_show_output(t_io *io)
 		{
 			ft_printf("👺️ Output %s", bck->file);
 			if (bck->io == SINGLE_OUTPUT)
-				ft_printf(", using <\n");
+				ft_printf(", using >\n");
 			else
-				ft_printf(", using <<\n");
+				ft_printf(", using >>\n");
 		}
 		if (bck->next)
 			bck = bck->next;
@@ -100,6 +100,6 @@ void	debug_show_all(t_cmd *c)
 	}
 	if (c->input->file)
 		debug_show_input(c->input);
-	if (c->input->file)
+	if (c->output->file)
 		debug_show_output(c->output);
 }
