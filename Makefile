@@ -23,7 +23,7 @@ SRC = src/main.c src/parse.c src/parse_error.c src/parse_single.c src/parse_sing
 OBJ  = $(SRC:.c=.o)
 
 #Flags pour les nettoyages
-CLEANCMD = rm -rf src/*.o src/execute/*.o
+CLEANCMD = rm -rf src/*.o src/execute/*.o src/utils/*.o
 FCLEANCMD = rm -f *.a minishell
 
 #Cree la lib, et garde les fichiers .o generes

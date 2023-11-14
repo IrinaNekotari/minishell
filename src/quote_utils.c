@@ -38,6 +38,22 @@ char	*ft_concat(char *s1, char *s2)
 	return (res);
 }
 
+char	*ft_append(char *str, char c)
+{
+	int		i;
+	char	*ret;
+
+	i = 0;
+	ret = (char*) ft_calloc(ft_strlen(str) + 2, sizeof(char));
+	while (str[i])
+	{
+		ret[i] = str[i];
+		i++;
+	}
+	ret[i] = c;
+	return (ret);
+}
+
 char	*add_quote(char *s, char quote)
 {
 	char	*str;

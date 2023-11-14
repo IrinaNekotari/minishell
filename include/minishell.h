@@ -151,5 +151,6 @@ void	print_io(t_cmd *cmd, char *str);
 void	handle_output(t_cmd *cmd, char *str);
 int	handle_input(t_cmd *cmd);
 void	handle_output_create(t_cmd *cmd);
+char	*ft_append(char *str, char c);
 
 #endif
