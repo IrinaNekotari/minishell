@@ -17,7 +17,8 @@ NAME = libftprintf.a
 SRC = src/main.c src/parse.c src/parse_error.c src/parse_single.c src/parse_single_2.c src/memory.c src/logger.c src/quote_utils.c \
 	 src/char_utils.c src/debug_exec.c src/execute.c src/countersplit.c \
 	 src/syntax_checker.c src/io.c \
-	 src/execute/pwd.c src/execute/exit.c src/execute/_io_writer.c
+	 src/execute/pwd.c src/execute/exit.c \
+	 src/utils/_io_writer.c src/utils/_io_input.c src/utils/_io_output.c
 
 OBJ  = $(SRC:.c=.o)
 

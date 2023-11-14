@@ -86,8 +86,8 @@ int	main(int args, char *argv[], char *env[])
 			ft_printf("\n");
 			continue ;
 		}
-		if (!parse_error(to_parse))
-			continue ;
+		//if (!parse_error(to_parse))
+		//	continue ;
 		add_history(to_parse);
 		iterate(to_parse, env);
 		if (g_received_signal == -3)

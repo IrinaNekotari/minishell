@@ -54,7 +54,6 @@ void	execute_general(t_cmd *cmd, char **env)
 }
 
 
-//TODO : Meme probleme partout : cmd n'est pas "rembobiné" et ça me casse les testiciules sa mere
 void	get_orders(t_cmd *cmd, char **env)
 {
 	rollback_cmd(&cmd);
