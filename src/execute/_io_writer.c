@@ -88,21 +88,15 @@ static void	handle_output(t_cmd *cmd, char *str)
 	{
 		if (cmd->output->next->file)
 			fd = open(cmd->output->file, O_CREAT 
-					| O_RDWR | O_TRUNC);
+					| O_RDWR | O_TRUNC, 0777);
 		else
 		{
-			if (cmd->output->io == SINGLE_INPUT)
-			{
+			if (cmd->output->io == SINGLE_OUTPUT)
 				fd = open(cmd->output->file, O_CREAT 
-					| O_RDWR | O_TRUNC);
-				ft_printf("BOOM !\n");
-			}
+					| O_RDWR | O_TRUNC, 0777);
 			else
-			{
 				fd = open(cmd->output->file, O_CREAT 
-					| O_RDWR | O_APPEND);
-				ft_printf("BIM !\n");
-			}
+					| O_RDWR | O_APPEND, 0777);
 			ft_putstr_fd(str, fd);
 		}
 		close(fd);
