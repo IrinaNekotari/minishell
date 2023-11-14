@@ -9,9 +9,14 @@ Un message d'erreur est affiche si b n'existe pas, a est quand même cree mais
 laissé vide ! Si y'avait des trucs dedans, c'est effacé !
 
 AJOUTER UNE FONCTION QUI CREE LES SORTIES DANS NOTRE STRUCTURE
-UN TABLEAU DE CHAINE
+UN TABLEAU DE CHAINE -----> Fait
 SEUL LE DERNIER MEMBRE DE LA CHAINE SERA IMPRIME DEDANS
 LE RESTE SERA JUSTE CREE OU VIDEE
+
+Quand tu fais
+echo a < b < c ... < d
+ça vérifie si tous les input existe, et si ça trouve pas il ne renvoie
+en erreur que le 1er qu'il trouve pas 
 
 Quand tu fais
 echo a > b c

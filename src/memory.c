@@ -32,6 +32,8 @@ void	free_io(t_io *io)
 
 void	free_command(t_cmd *c)
 {
+	rollback_io(&c);
+	rollback_tokens(&c);
 	if (c->tokens)
 		free_token(c->tokens);
 	if (c->input)

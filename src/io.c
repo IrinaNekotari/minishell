@@ -59,6 +59,7 @@ void	rollback_cmd(t_cmd **cmd)
 		(*cmd) = (*cmd)->previous;
 }
 
+//TODO : NETTOYER CETTE MEEEEEEEEEEERDE
 void	generate_io(t_cmd **cmd)
 {
 	int	i;
@@ -81,6 +82,7 @@ void	generate_io(t_cmd **cmd)
 				(*cmd)->output->next = ft_calloc(1 , sizeof(t_io));
 				(*cmd)->output->next->previous = (*cmd)->output;
 				(*cmd)->output = (*cmd)->output->next;
+				(*cmd)->output->file = NULL;
 			}
 			else
 			{
@@ -89,6 +91,7 @@ void	generate_io(t_cmd **cmd)
 				(*cmd)->input->next = ft_calloc(1 , sizeof(t_io));
 				(*cmd)->input->next->previous = (*cmd)->input;
 				(*cmd)->input = (*cmd)->input->next;
+				(*cmd)->input->file = NULL;
 			}
 			slash_tokens(cmd);
 		}

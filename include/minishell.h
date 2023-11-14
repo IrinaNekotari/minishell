@@ -72,6 +72,16 @@ typedef struct	s_var
 	uint8_t	return_value;
 }	t_var;
 
+/**
+* Une liste chainee basique utilisee dans les verifs io
+*/
+typedef struct s_pile
+{
+	char	*str;
+	struct s_pile	*next;
+	struct s_pile	*previous;
+}	t_pile;
+
 /*
 * Stocke les donnees de la commande
 */
@@ -137,5 +147,6 @@ void	generate_io(t_cmd **cmd);
 void	rollback_tokens(t_cmd **cmd);
 void	rollback_io(t_cmd **cmd);
 void	rollback_cmd(t_cmd **cmd);
+void	print_io(t_cmd *cmd, char *str);
 
 #endif
