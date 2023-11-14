@@ -8,6 +8,7 @@
 */
 void	print_io(t_cmd *cmd, char *str)
 {
+	handle_output_create(cmd);
 	if (cmd->input->file)
 	{
 		if (!handle_input(cmd))
