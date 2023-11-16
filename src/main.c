@@ -35,7 +35,7 @@ void	welcome_message(void)
 	ft_printf("#		  						  #\n");
 	ft_printf("#		😎️\x1b[31mPar Nolan MASCRIER et Martin JUETTE🤑️		  ");
 	ft_printf("\x1b[37m#\n##########################################");
-	ft_printf("#########################\n\n");
+	ft_printf("#########################\n");
 }
 
 void	interrupt_sig(int sig)

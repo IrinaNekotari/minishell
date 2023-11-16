@@ -61,7 +61,7 @@ void	get_orders(t_cmd *cmd, char **env)
 	{
 		if (ft_equals(cmd->tokens->str, "pwd"))
 			ft_pwd(cmd, env);
-		if (ft_equals(cmd->tokens->str, "env"))
+		else if (ft_equals(cmd->tokens->str, "env"))
 			ft_env(cmd, env);
 		else if (ft_equals(cmd->tokens->str, "exit"))
 			ft_exit(cmd, env);

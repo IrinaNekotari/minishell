@@ -16,7 +16,7 @@ void	print_io(t_cmd *cmd, char *str)
 		if (!handle_input(cmd))
 			return ;
 	}
-	print = ft_append(str, '\n');
+	print = ft_append(str, ' ');
 	if (cmd->output->file)
 		handle_output(cmd, print);
 	else if (!cmd->pipe)

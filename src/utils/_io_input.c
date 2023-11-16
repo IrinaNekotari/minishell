@@ -67,7 +67,7 @@ int	handle_input(t_cmd *cmd)
 		fd = open(cmd->input->file, O_RDONLY);
 		if (cmd->input->io == SINGLE_INPUT && fd == -1)
 		{
-			ft_printf("[\x1b[31mERROR\x1b[37m] : \"%s\" is not a file or a directory !\n", cmd->input->file);
+			ft_printf("[\x1b[31mERROR\x1b[37m] : \"%s\" is not a file or a directory !", cmd->input->file);
 			return (0);
 		}
 		if (fd >= 0)
