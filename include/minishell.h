@@ -18,6 +18,7 @@
 # include <stdint.h>
 # include <sys/types.h>
 # include <signal.h>
+# include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
@@ -25,6 +26,8 @@
 
 # define ERR_CMD_NOT_FOUND "minishell: command not found:"
 # define ERR_TOO_MANY_ARGS ": too many arguments"
+
+# define SUCCESS 0
 
 # define LOGGER 0
 # define LOG_TO_FILE 0

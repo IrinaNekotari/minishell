@@ -47,13 +47,6 @@ int	ft_equals(char *s1, char *s2)
 	return (1);
 }
 
-void	execute_general(t_cmd *cmd, char **env)
-{
-	(void)cmd;
-	(void)env;
-}
-
-
 void	get_orders(t_cmd *cmd, char **env)
 {
 	rollback_cmd(&cmd);
@@ -66,10 +59,7 @@ void	get_orders(t_cmd *cmd, char **env)
 		else if (ft_equals(cmd->tokens->str, "exit"))
 			ft_exit(cmd, env);
 		else
-		{
-			debug_show_all(cmd);
 			execute_general(cmd, env);
-		}
 		cmd = cmd->pipe;
 	}
 }

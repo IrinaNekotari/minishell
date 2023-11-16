@@ -35,6 +35,7 @@ static char	*flatten(char **s)
 	return (ret);
 }
 
+//TODO : Trouver la bonne taille pour le calloc
 static char	**copy_env(char **env)
 {
 	char	**ret;
@@ -53,6 +54,7 @@ static char	**copy_env(char **env)
 	return (ret);
 }
 
+//TODO : Trouver la bonne taille pour le calloc
 static void	append_env(char ***env, char *s)
 {
 	char	**ret;
