@@ -50,17 +50,25 @@ void	interrupt_sig(int sig)
 	}
 	else
 	{
-		rl_clear_history();
+		ft_printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+		g_received_signal = -3;
+		/*rl_clear_history();
 		ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n");
 		log_open_exit(0);
-		exit(0);
+		exit(0);*/
 	}
 }
 
-void	ft_eof(void)
+void	ft_eof(t_env *env)
 {
+	(void)env;
 	rl_clear_history();
 	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n");
+	//rollback_env(&env);
+	//free_env(env);
 	log_open_exit(0);
 	exit(0);
 }
@@ -71,15 +79,18 @@ int	main(int args, char *argv[], char *env[])
 
 	(void) args;
 	(void) argv;
+	t_env	*envv;
+
 	welcome_message();
 	signal(SIGINT, interrupt_sig);
 	signal(SIGTSTP, interrupt_sig);
 	signal(SIGQUIT, SIG_IGN);
+	envv = make_env(env);
 	while (1)
 	{
 		to_parse = readline("minishell~$ ");
 		if (!to_parse)
-			ft_eof();
+			ft_eof(envv);
 		to_parse = check_quote(to_parse);
 		if (!to_parse)
 		{
@@ -89,9 +100,9 @@ int	main(int args, char *argv[], char *env[])
 		//if (!parse_error(to_parse))
 		//	continue ;
 		add_history(to_parse);
-		iterate(to_parse, env);
+		iterate(to_parse, envv);
 		if (g_received_signal == -3)
-			ft_eof();
+			ft_eof(envv);
 		g_received_signal = -1;
 	}
 }

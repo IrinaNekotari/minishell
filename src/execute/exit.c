@@ -2,7 +2,7 @@
 
 extern int	g_received_signal;
 
-void	ft_exit(t_cmd *cmd, char **env)
+void	ft_exit(t_cmd *cmd, t_env *env)
 {
 	(void)cmd;
 	(void)env;

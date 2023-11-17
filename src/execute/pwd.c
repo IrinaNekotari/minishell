@@ -1,12 +1,10 @@
 #include "minishell.h"
 
-void	ft_pwd(t_cmd *cmd, char **env)
+void	ft_pwd(t_cmd *cmd, t_env *env)
 {
 	char	*dir;
 
-	(void)env;
-	dir = (char *)ft_calloc(100, sizeof(char));
-	getcwd(dir, 100);
+	dir = ft_getenv(env, "PWD");
 	print_io(cmd, dir);
 	free(dir);
 }

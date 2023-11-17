@@ -24,17 +24,20 @@ static char	**create_args(t_cmd *cmd)
 	return (ret);
 }
 
-static void	exe(char *path, char **args, t_cmd *cmd, char **env)
+static void	exe(char *path, char **args, t_cmd *cmd, t_env *env)
 {
 	int	pid;
 	int	ret;
 
 	ret = SUCCESS;
 	(void)cmd;
+	(void)env;
+	(void)args;
+	(void)path;
 	pid = fork();
 	if (pid == 0)
 	{
-		execve(path, args, env);
+		//execve(path, args, env);
 		ft_printf("BOOOM!!!!\n");
 		exit(ret);
 	}
@@ -45,7 +48,7 @@ static void	exe(char *path, char **args, t_cmd *cmd, char **env)
 	}
 }
 
-void	execute_general(t_cmd *cmd, char **env)
+void	execute_general(t_cmd *cmd, t_env *env)
 {
 	char	**args;
 	

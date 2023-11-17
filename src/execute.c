@@ -47,7 +47,7 @@ int	ft_equals(char *s1, char *s2)
 	return (1);
 }
 
-void	get_orders(t_cmd *cmd, char **env)
+void	get_orders(t_cmd *cmd, t_env *env)
 {
 	rollback_cmd(&cmd);
 	while (cmd)
@@ -64,7 +64,7 @@ void	get_orders(t_cmd *cmd, char **env)
 	}
 }
 
-void	execute(t_cmd *cmd, char **env)
+void	execute(t_cmd *cmd, t_env *env)
 {
 	get_orders(cmd, env);
 }

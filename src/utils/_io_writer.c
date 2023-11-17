@@ -8,18 +8,14 @@
 */
 void	print_io(t_cmd *cmd, char *str)
 {
-	char	*print;
-
 	handle_output_create(cmd);
 	if (cmd->input->file)
 	{
 		if (!handle_input(cmd))
 			return ;
 	}
-	print = ft_append(str, ' ');
 	if (cmd->output->file)
-		handle_output(cmd, print);
+		handle_output(cmd, str);
 	else if (!cmd->pipe)
-		ft_printf("%s\n", print);
-	free(print);
+		ft_printf("%s\n", str);
 }

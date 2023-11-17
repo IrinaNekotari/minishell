@@ -31,7 +31,7 @@ int	count_occur(char *str, char c)
 	return (count);
 }
 
-void	parse(char *s, char **env)
+void	parse(char *s, t_env *env)
 {
 	t_cmd	*cmd;
 	char	**t;
@@ -80,7 +80,7 @@ void	parse_with_pipes(char **t, t_cmd *c)
 	}
 }
 
-void	iterate(char *s, char **env)
+void	iterate(char *s, t_env *env)
 {
 	char	**lst;
 	int		i;

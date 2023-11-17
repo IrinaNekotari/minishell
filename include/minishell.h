@@ -65,9 +65,12 @@ typedef struct	s_word
 */
 typedef struct	s_env
 {
-	char	**env;
-	char	*oldpwd;
+	char	*name;
+	char	*value;
+	struct s_env	*next;
+	struct s_env	*previous;
 }	t_env;
+
 typedef struct	s_var
 {
 	bool		exit;
@@ -110,9 +113,9 @@ typedef struct	s_main
 
 extern int	g_received_signal;
 
-void	parse(char *s, char **env);
+void	parse(char *s, t_env *env);
 char	*check_quote(char *s);
-void	iterate(char *s, char **env);
+void	iterate(char *s, t_env *env);
 void	parse_single(char *s, t_word *c);
 void	parse_single_2(char *s, t_word *c);
 void	parse_with_pipes(char **t, t_cmd *c);
@@ -132,19 +135,19 @@ int	is_escapable2(char c);
 int	is_blank(char *ptr, int j);
 void	debug_show_command(t_word *t);
 void	debug_show_all(t_cmd *c);
-void	execute(t_cmd *cmd, char **env);
+void	execute(t_cmd *cmd, t_env *env);
 int	is_blank(char *ptr, int j);
 char	**counter_split(char *s, char **to_ret);
 char	**split_semicolon(char *s, char **to_ret);
-void	execute_general(t_cmd *cmd, char **env);
+void	execute_general(t_cmd *cmd, t_env *env);
 int	chain_as_equals(t_cmd **cmd, char *cmp);
 int	ft_equals(char *s1, char *s2);
-void	ft_pwd(t_cmd *cmd, char **env);
-void	ft_export(t_cmd *cmd, char **env);
-void	ft_unset(t_cmd *cmd, char **env);
-void	ft_echo(t_cmd *cmd, char **env);
-void	ft_env(t_cmd *cmd, char **env);
-void	ft_exit(t_cmd *cmd, char **env);
+void	ft_pwd(t_cmd *cmd, t_env *env);
+void	ft_export(t_cmd *cmd, t_env *env);
+void	ft_unset(t_cmd *cmd, t_env *env);
+void	ft_echo(t_cmd *cmd, t_env *env);
+void	ft_env(t_cmd *cmd, t_env *env);
+void	ft_exit(t_cmd *cmd, t_env *env);
 int	ft_equals(char *s1, char *s2);
 void	generate_io(t_cmd **cmd);
 void	rollback_tokens(t_cmd **cmd);
@@ -155,5 +158,12 @@ void	handle_output(t_cmd *cmd, char *str);
 int	handle_input(t_cmd *cmd);
 void	handle_output_create(t_cmd *cmd);
 char	*ft_append(char *str, char c);
+void	rollback_env(t_env **env);
+t_env	*make_env(char **env);
+char	*ft_getenv(t_env *env, char *search);
+void	add_to_env(t_env **env, char *name, char *value);
+void	del_from_env(t_env **env, char *name);
+void	free_env(t_env *env);
+char	*ft_concat2(char *s1, char *s2);
 
 #endif

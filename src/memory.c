@@ -45,6 +45,17 @@ void	free_command(t_cmd *c)
 	free(c);
 }
 
+void	free_env(t_env *env)
+{
+	if (env->name)
+		free(env->name);
+	if (env->value)
+		free(env->value);
+	if (env->next)
+		free(env->next);
+	free(env);
+}
+
 void	free_liste(char **lst)
 {
 	int	i;
