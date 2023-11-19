@@ -55,6 +55,8 @@ char	*ft_getenv(t_env *env, char *search)
 {
 	char	*ret;
 
+	if (!search)
+		return (NULL);
 	while (env)
 	{
 		if (ft_equals(env->name, search))

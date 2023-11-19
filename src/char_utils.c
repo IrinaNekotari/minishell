@@ -12,6 +12,16 @@
 
 #include "minishell.h"
 
+int	is_usable(char c)
+{
+	if (ft_isalpha(c))
+		return (1);
+	if (c == '_')
+		return (1);
+	else
+		return (0);
+}
+
 int	is_whitespace(char c)
 {
 	if (c == ' ')

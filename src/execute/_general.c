@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 //TODO : Trouver la bonne taille pour le calloc
-static char	**create_args(t_cmd *cmd)
+char	**create_args(t_cmd *cmd)
 {
 	char	**ret;
 	int		i;
@@ -24,7 +24,7 @@ static char	**create_args(t_cmd *cmd)
 	return (ret);
 }
 
-static void	exe(char *path, char **args, t_cmd *cmd, t_env *env)
+void	exe(char *path, char **args, t_cmd *cmd, t_env *env)
 {
 	int	pid;
 	int	ret;
@@ -48,12 +48,14 @@ static void	exe(char *path, char **args, t_cmd *cmd, t_env *env)
 	}
 }
 
-void	execute_general(t_cmd *cmd, t_env *env)
+void	execute_general(t_cmd *cmd, t_main *main)
 {
-	char	**args;
+	/*char	**args;
 	
 	args = create_args(cmd);
-	exe(cmd->tokens->str, args, cmd, env);
-	free_liste(args);
+	exe(cmd->tokens->str, args, cmd, main->env);
+	free_liste(args);*/
+	(void)main;
+	debug_show_all(cmd);
 
 }

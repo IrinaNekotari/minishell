@@ -31,7 +31,7 @@ int	count_occur(char *str, char c)
 	return (count);
 }
 
-void	parse(char *s, t_env *env)
+void	parse(char *s, t_main *main)
 {
 	t_cmd	*cmd;
 	char	**t;
@@ -51,8 +51,9 @@ void	parse(char *s, t_env *env)
 	}
 	rollback_io(&cmd);
 	rollback_tokens(&cmd);
+	generate_variables(&cmd, main->env);
 	generate_io(&cmd);
-	execute(cmd, env);
+	execute(cmd, main);
 	free_liste(t);
 	free_command(cmd);
 }
@@ -80,7 +81,7 @@ void	parse_with_pipes(char **t, t_cmd *c)
 	}
 }
 
-void	iterate(char *s, t_env *env)
+void	iterate(char *s, t_main *main)
 {
 	char	**lst;
 	int		i;
@@ -94,7 +95,7 @@ void	iterate(char *s, t_env *env)
 	free(s);
 	while (lst[i])
 	{
-		parse(lst[i], env);
+		parse(lst[i], main);
 		i++;
 	}
 	free_liste(lst);

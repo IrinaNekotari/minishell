@@ -47,24 +47,24 @@ int	ft_equals(char *s1, char *s2)
 	return (1);
 }
 
-void	get_orders(t_cmd *cmd, t_env *env)
+void	get_orders(t_cmd *cmd, t_main *main)
 {
 	rollback_cmd(&cmd);
 	while (cmd)
 	{
 		if (ft_equals(cmd->tokens->str, "pwd"))
-			ft_pwd(cmd, env);
+			ft_pwd(cmd, main->env);
 		else if (ft_equals(cmd->tokens->str, "env"))
-			ft_env(cmd, env);
+			ft_env(cmd, main->env);
 		else if (ft_equals(cmd->tokens->str, "exit"))
-			ft_exit(cmd, env);
+			ft_exit(cmd, main->env);
 		else
-			execute_general(cmd, env);
+			execute_general(cmd, main);
 		cmd = cmd->pipe;
 	}
 }
 
-void	execute(t_cmd *cmd, t_env *env)
+void	execute(t_cmd *cmd, t_main *main)
 {
-	get_orders(cmd, env);
+	get_orders(cmd, main);
 }

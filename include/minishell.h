@@ -106,16 +106,15 @@ typedef struct s_cmd
 */
 typedef struct	s_main
 {
-	char	*prompt;
-	t_env	env;
-	t_var	var;
+	int	last;
+	t_env	*env;
 }	t_main;
 
 extern int	g_received_signal;
 
-void	parse(char *s, t_env *env);
+void	parse(char *s, t_main *main);
 char	*check_quote(char *s);
-void	iterate(char *s, t_env *env);
+void	iterate(char *s, t_main *main);
 void	parse_single(char *s, t_word *c);
 void	parse_single_2(char *s, t_word *c);
 void	parse_with_pipes(char **t, t_cmd *c);
@@ -123,6 +122,7 @@ void	ft_trimword(t_word *c);
 void	free_command(t_cmd *c);
 void	free_liste(char **lst);
 void	log_input(char	*str);
+void	generate_variables(t_cmd **cmd, t_env *env);
 void	log_parse_single(char *str);
 void	log_open_exit(int i);
 char	*ft_concat(char *s1, char *s2);
@@ -135,11 +135,11 @@ int	is_escapable2(char c);
 int	is_blank(char *ptr, int j);
 void	debug_show_command(t_word *t);
 void	debug_show_all(t_cmd *c);
-void	execute(t_cmd *cmd, t_env *env);
+void	execute(t_cmd *cmd, t_main *main);
 int	is_blank(char *ptr, int j);
 char	**counter_split(char *s, char **to_ret);
 char	**split_semicolon(char *s, char **to_ret);
-void	execute_general(t_cmd *cmd, t_env *env);
+void	execute_general(t_cmd *cmd, t_main *main);
 int	chain_as_equals(t_cmd **cmd, char *cmp);
 int	ft_equals(char *s1, char *s2);
 void	ft_pwd(t_cmd *cmd, t_env *env);
@@ -167,5 +167,6 @@ void	free_env(t_env *env);
 char	*ft_concat2(char *s1, char *s2);
 void	super_concat(char **a, char *b);
 char	**env_to_array(t_env *env);
+int	is_usable(char c);
 
 #endif

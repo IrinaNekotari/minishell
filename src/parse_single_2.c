@@ -63,6 +63,9 @@ void	escape(t_word **bck, int *i, int *j, char *s)
 		(*bck)->str[(*j)++] = s[(*i)++];
 }
 
+
+//FUUUUUUUUUUUUUUUUUUUUUUUUUu
+//ON DOIT RAJOUTER UN TRUUUUUUUUUUUUUUUUC
 void	parse_single_2(char *s, t_word *c)
 {
 	int	i;
