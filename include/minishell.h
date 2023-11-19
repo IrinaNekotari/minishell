@@ -39,6 +39,8 @@
 # define SINGLE_INPUT 3
 # define DOUBLE_INPUT 4
 
+# define IGNORE_NEW_LINE -8
+
 /*
 * Stocke les donnees pour les redirections < > << >>
 */

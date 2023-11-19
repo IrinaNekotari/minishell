@@ -19,6 +19,7 @@ void	create_new_block(t_word **bck, int *j, char *s)
 		(*bck)->next = ft_calloc(1, sizeof(t_word));
 		(*bck)->next->previous = (*bck);
 		(*bck) = (*bck)->next;
+		(*bck)->quote = 0;
 		(*bck)->str = ft_calloc(ft_strlen(s) + 1, sizeof(char));
 		*j = 0;
 	}

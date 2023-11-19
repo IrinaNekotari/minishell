@@ -29,7 +29,7 @@ void	handle_output(t_cmd *cmd, char *str)
 	else
 		fd = open(cmd->output->file, O_CREAT 
 			| O_RDWR | O_APPEND, 0777);
-	if (cmd->output->io == DOUBLE_OUTPUT)
+	if (cmd->output->io == DOUBLE_OUTPUT && g_received_signal != IGNORE_NEW_LINE)
 		ft_putstr_fd("\n", fd);
 	ft_putstr_fd(str, fd);
 	close(fd);

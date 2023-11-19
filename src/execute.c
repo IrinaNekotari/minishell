@@ -36,6 +36,8 @@ int	ft_equals(char *s1, char *s2)
 	int	i;
 
 	i = 0;
+	if (!s1 || !s2)
+		return (0);
 	while (s1[i] && s2[i])
 	{
 		if (s1[i] != s2[i])
@@ -58,6 +60,12 @@ void	get_orders(t_cmd *cmd, t_main *main)
 			ft_env(cmd, main->env);
 		else if (ft_equals(cmd->tokens->str, "exit"))
 			ft_exit(cmd, main->env);
+		else if (ft_equals(cmd->tokens->str, "echo"))
+			ft_echo(cmd, main->env);
+		/*else if (ft_equals(cmd->tokens->str, "export"))
+			ft_export(cmd, main->env);
+		else if (ft_equals(cmd->tokens->str, "unset"))
+			ft_unset(cmd, main->env);*/
 		else
 			execute_general(cmd, main);
 		cmd = cmd->pipe;
