@@ -20,7 +20,9 @@ SRC = src/main.c src/parse.c src/parse_error.c src/parse_single.c src/parse_sing
 	 src/concat.c \
 	 src/execute/pwd.c src/execute/exit.c src/execute/env.c \
 	 src/utils/_io_writer.c src/utils/_io_input.c src/utils/_io_output.c \
-	 src/execute/_general.c src/utils/work_env.c src/links_rollbacks.c
+	 src/execute/_general.c src/links_rollbacks.c \
+	 src/utils/work_env.c src/execute/echo.c src/execute/cd.c \
+	 src/utils/work_env_func.c
 
 OBJ  = $(SRC:.c=.o)
 

@@ -146,9 +146,9 @@ void	ft_pwd(t_cmd *cmd, t_env *env);
 void	ft_export(t_cmd *cmd, t_env *env);
 void	ft_unset(t_cmd *cmd, t_env *env);
 void	ft_echo(t_cmd *cmd, t_env *env);
+void	ft_cd(t_cmd *cmd, t_env *env);
 void	ft_env(t_cmd *cmd, t_env *env);
 void	ft_exit(t_cmd *cmd, t_env *env);
-int	ft_equals(char *s1, char *s2);
 void	generate_io(t_cmd **cmd);
 void	rollback_tokens(t_cmd **cmd);
 void	rollback_io(t_cmd **cmd);
@@ -165,5 +165,7 @@ void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);
 char	*ft_concat2(char *s1, char *s2);
+void	super_concat(char **a, char *b);
+char	**env_to_array(t_env *env);
 
 #endif

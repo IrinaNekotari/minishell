@@ -25,11 +25,11 @@ char	*ft_concat2(char *s1, char *s2)
 	return (res);
 }
 
-static void	super_concat(char **a, char **b)
+void	super_concat(char **a, char *b)
 {
 	char	*bck;
 
-	bck = ft_concat((*a), (*b));
+	bck = ft_concat2((*a), b);
 	free((*a));
 	(*a) = ft_strdup(bck);
 	free(bck);
@@ -53,7 +53,7 @@ char	*flatten(char **s)
 		ret = ft_strdup(s[0]);
 		while (s[i])
 		{
-			super_concat(&ret, &s[i]);
+			super_concat(&ret, s[i]);
 			i++;
 		}
 	}

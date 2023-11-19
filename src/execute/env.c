@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-static void	super_concat(char **a, char *b)
-{
-	char	*bck;
-
-	bck = ft_concat2((*a), b);
-	free((*a));
-	(*a) = ft_strdup(bck);
-	free(bck);
-}
-
 static char	*create_list(t_env *env)
 {
 	char *a;

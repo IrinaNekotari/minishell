@@ -1,51 +1,75 @@
 #include "minishell.h"
 
-void	del_from_env(t_env **env, char *name)
-{
-	(void)env;
-	(void)name;
-	//TODO : Retire le maillon de la chaine qui correspond a name
-	//Indices : Parcourt la chaine jusqu'a tomber sur le bon name
-	//Ne fait rien si t'arrives au bout
-	//Pour retirer le chainon, inspire toi de ma fonction "slash_tokens"
-	//Qui est dans io.c
-	//Puis, rembobine la chaine avec ça
-	//void	rollback_env(t_env **env);
-}
+//PS ; Je les ai mises dans work_env_func
 
-void	add_to_env(t_env **env, char *name, char *value)
-{
-	(void)env;
-	(void)name;
-	(void)value;
-	//TODO : Ajoute le doublet name=value dans l'env. 
-	//Indices : Parcours la chaine jusqu'au bout
-	//C'est un ajout tout con
-	//Regarde comment j'ai fait dans le generate env
-	//Subtilité : si name existe déjà, mets a jour la value
-	//Puis, rembobine la chaine avec ça
-	//void	rollback_env(t_env **env);
-}
 
-char	*ft_getenv(t_env *env, char *search)
+/**
+* Retourne la profondeur de l'environnement
+*/
+static int	env_depth(t_env *env)
 {
-	char	*ret;
+	int	i;
 
+	i = 0;
 	while (env)
 	{
-		if (ft_equals(env->name, search))
-		{
-			ret = ft_strdup(env->value);
-			while (env->previous)
-				env = env->previous;
-			return (ret);
-		}
 		env = env->next;
+		i++;
 	}
-	return (NULL);
+	while (env->previous)
+		env = env->previous;
+	return (i);
 }
 
-char	*generate_env(char *env, int meth)
+/**
+* Retourne la plus longue taille de chaine de l'environnement
+*/
+static int	env_longest(t_env *env)
+{
+	int	len;
+	int	bck;
+
+	len = 0;
+	while (env)
+	{
+		bck = (int)ft_strlen(env->name) + (int)ft_strlen(env->value);
+		if (bck > len)
+			len = bck;
+		env = env->next;
+	}
+	while (env->previous)
+		env = env->previous;
+	return (len);
+}
+
+/**
+* Crée un array a partir des variables d'environnement
+*/
+char	**env_to_array(t_env *env)
+{
+	char	**ret;
+	int			len;
+	int			i;
+
+	len = env_longest(env) + 3;
+	i = 0;
+	ret = ft_calloc((env_depth(env) + 1) * len, sizeof(char));
+	while (env)
+	{
+		ret[i] = ft_strdup(env->name);
+		super_concat(&ret[i], "=");
+		super_concat(&ret[i], env->value);
+		super_concat(&ret[i], "\n");
+		env = env->next;
+		i++;	
+	}
+	while (env->previous)
+		env = env->previous;
+	ret[i] = NULL;
+	return (ret);
+}
+
+static char	*generate_env(char *env, int meth)
 {
 	int	i;
 	int	j;
