@@ -35,6 +35,7 @@ void	found_the_flame(char **ret, int *j, char *val)
 }
 
 //TODO : Chercher la bonne taille du calloc (ultra cancer)
+//TODO : Norminer (encore plus cancer)
 char	*get_variables(char *str, t_main *main)
 {
 	char	*ret;
