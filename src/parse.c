@@ -51,7 +51,7 @@ void	parse(char *s, t_main *main)
 	}
 	rollback_io(&cmd);
 	rollback_tokens(&cmd);
-	generate_variables(&cmd, main->env);
+	generate_variables(&cmd, main);
 	generate_io(&cmd);
 	execute(cmd, main);
 	free_liste(t);

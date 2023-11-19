@@ -84,6 +84,7 @@ int	main(int args, char *argv[], char *env[])
 	signal(SIGTSTP, interrupt_sig);
 	signal(SIGQUIT, SIG_IGN);
 	main.env = make_env(env);
+	main.last = 0;
 	while (1)
 	{
 		to_parse = readline("minishell~$ ");

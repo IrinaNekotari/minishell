@@ -122,7 +122,7 @@ void	ft_trimword(t_word *c);
 void	free_command(t_cmd *c);
 void	free_liste(char **lst);
 void	log_input(char	*str);
-void	generate_variables(t_cmd **cmd, t_env *env);
+void	generate_variables(t_cmd **cmd, t_main *main);
 void	log_parse_single(char *str);
 void	log_open_exit(int i);
 char	*ft_concat(char *s1, char *s2);

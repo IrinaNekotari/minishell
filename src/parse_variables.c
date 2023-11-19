@@ -35,7 +35,7 @@ void	found_the_flame(char **ret, int *j, char *val)
 }
 
 //TODO : Chercher la bonne taille du calloc (ultra cancer)
-char	*get_variables(char *str, t_env *env)
+char	*get_variables(char *str, t_main *main)
 {
 	char	*ret;
 	char	*get;
@@ -48,10 +48,16 @@ char	*get_variables(char *str, t_env *env)
 	ret = ft_calloc(ft_strlen(str) * 1000, sizeof(char));
 	while (str[i])
 	{
-		if (str[i] == '$' && is_usable(str[i + 1]))
+		if (str[i] == '$' && str[i + 1] == '?')
+		{
+			val = ft_itoa(main->last);
+			i += 2;
+			found_the_flame(&ret, &j, val);
+		}
+		else if (str[i] == '$' && is_usable(str[i + 1]))
 		{
 			get = find_the_flame(&i, str);
-			val = ft_getenv(env, get);
+			val = ft_getenv(main->env, get);
 			found_the_flame(&ret, &j, val);
 			if (get)
 				free(get);
@@ -64,7 +70,7 @@ char	*get_variables(char *str, t_env *env)
 	return (ret);
 }
 
-void	generate_variables(t_cmd **cmd, t_env *env)
+void	generate_variables(t_cmd **cmd, t_main *main)
 {
 	char	*search;
 
@@ -72,7 +78,7 @@ void	generate_variables(t_cmd **cmd, t_env *env)
 	{
 		if ((*cmd)->tokens->quote != '\'')
 		{
-			search = get_variables((*cmd)->tokens->str, env);
+			search = get_variables((*cmd)->tokens->str, main);
 			free((*cmd)->tokens->str);
 			(*cmd)->tokens->str = ft_strdup(search);
 			free(search);
