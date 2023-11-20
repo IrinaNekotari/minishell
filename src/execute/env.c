@@ -17,6 +17,24 @@ static char	*create_list(t_env *env)
 	return (a);
 }
 
+int		is_valid_env(const char *env)
+{
+	int		i;
+
+	i = 0;
+	if (ft_isdigit(env[i]) == 1)
+		return (0);
+	while (env[i] && env[i] != '=')
+	{
+		if (ft_isalnum(env[i]) == 0)
+			return (-1);
+		i++;
+	}
+	if (env[i] != '=')
+		return (2);
+	return (1);
+}
+
 void	ft_env(t_cmd *cmd, t_env *env)
 {
 	char	*vars;
