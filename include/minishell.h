@@ -39,6 +39,12 @@
 # define SINGLE_INPUT 3
 # define DOUBLE_INPUT 4
 
+# define INFO 0
+# define WARNING 1
+# define ERROR 2
+# define CRITICAL 3
+# define FUBAR 4
+
 # define IGNORE_NEW_LINE -8
 
 /*
@@ -211,5 +217,6 @@ char	**env_to_array(t_env *env);
 int	is_usable(char c);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
+void	error_print(int severerity, char *msg, char *add);
 
 #endif

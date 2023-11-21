@@ -138,6 +138,11 @@ char	**counter_split(char *s, char **to_ret)
 			to_ret[k][j++] = s[i++];
 			while (is_whitespace(s[i]))
 				i++;
+			if (!s[i])
+			{
+				to_ret[k][j - 1] = 0;
+				break ;
+			}
 		}
 		else
 			to_ret[k][j++] = s[i++];

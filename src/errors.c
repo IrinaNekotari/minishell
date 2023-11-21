@@ -19,3 +19,23 @@ void	error_exec(int err)
 	r = strerror(err);
 	ft_printf("[\x1b[31mERROR\x1b[37m] \x1b[33m%s\x1b[37m\n", r);
 }
+
+void	error_print(int severity, char *msg, char *add)
+{
+	if (severity == INFO)
+		ft_printf("[\x1b[32mNOTICE\x1b[37m]");
+	else if (severity == WARNING)
+		ft_printf("[\x1b[33mWARNING\x1b[37m]");
+	else if (severity == ERROR)
+		ft_printf("[\x1b[31mERROR\x1b[37m]");
+	else if (severity == CRITICAL)
+		ft_printf("[\x1b[35mCRITICAL !!!\x1b[37m]");
+	else if (severity == FUBAR)
+		ft_printf("[\x1b[1m\x1b[31mHOLY SHIT\x1b[0m\x1b[37m]");
+	else
+		ft_printf("[DEBUG\x1b[37m]");
+	if (add)
+		ft_printf(" %s : %s\n", add, msg);
+	else
+		ft_printf(" %s\n", msg);
+}

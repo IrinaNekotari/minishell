@@ -44,11 +44,15 @@ void	ft_export(t_cmd *cmd, t_env **env)
 	{
 		if (!is_valid_input(cmd->tokens->str))
 		{
-			ft_printf("`%s': not a valid identifier\n", cmd->tokens->str);
+			error_print(ERROR, "not a valid identifier",cmd->tokens->str);
 			return ;
 		}
 		generate_env(cmd->tokens->str, &name, &value);
-		add_to_env(env, name, value);
+		if (value && value[0])
+			add_to_env(env, name, value);
 		cmd->tokens = cmd->tokens->next;
+		free(name);
+		if (value)
+			free(value);
 	}
 }

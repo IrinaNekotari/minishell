@@ -29,28 +29,39 @@ void    update_env(t_env **env, char *name, char *newvalue)
 
 void    del_from_env(t_env **env, char *name)
 {
-    t_env *element;
-    while ((*env))
-    {
-    	printf("Comparing %s and %s\n", (*env)->name, name);
-        if (ft_equals((*env)->name, name))
-        {           
-            element = (*env);
-            free((*env)->name);
-            free((*env)->value);
-            if ((*env)->next)
-                  (*env)->next->previous = (*env)->previous;
-            if ((*env)->previous)
-                  (*env)->previous->next = (*env)->next;
-            free(element);
-            (*env) = (*env)->next;
-        }
-        if ((*env)->next)
-        	(*env) = (*env)->next;
-        else
-        	break;
-    }
-    rollback_env(env);
+	t_env	*element;
+
+	while ((*env))
+	{
+		if (ft_equals((*env)->name, name))
+		{
+			element = (*env);
+			free(element->name);
+			free(element->value);
+			if (element->next)
+			{
+				(*env) = (*env)->next;
+				if (element->previous)
+				{
+					(*env)->previous = element->previous;
+					element->previous->next = element->next;
+				}
+				else
+					(*env)->previous = NULL;
+			}
+			else if (element->previous)
+			{
+				(*env) = (*env)->previous;
+				(*env)->next = NULL;
+			}
+			free(element);
+		}
+		if ((*env)->next)
+			(*env) = (*env)->next;
+		else
+			break;
+	}
+	rollback_env(env);
 }
 
 void    add_to_env(t_env **env, char *name, char *value)

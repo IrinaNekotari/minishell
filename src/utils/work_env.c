@@ -102,6 +102,12 @@ void	generate_env(char *env, char **name, char **value)
 	(*value) = ft_calloc(ft_strlen(env), sizeof(char));
 	while (env[++i] && env[i] != '=')
 		(*name)[i] = env[i];
+	if (!env[i])
+	{
+		free((*value));
+		(*value) = NULL;
+		return ;
+	}
 	i++;
 	while (env[i])
 		(*value)[++j] = env[i++];

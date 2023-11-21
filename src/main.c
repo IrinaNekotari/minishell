@@ -48,6 +48,8 @@ void	interrupt_sig(int sig)
 		rl_redisplay();
 		g_received_signal = SIGINT;
 	}
+	else if (sig == SIGSEGV)
+		error_print(FUBAR, "Dump this core 🔪️", NULL);
 	else
 	{
 		ft_printf("\n");
@@ -55,10 +57,6 @@ void	interrupt_sig(int sig)
 		rl_on_new_line();
 		rl_redisplay();
 		g_received_signal = -3;
-		/*rl_clear_history();
-		ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n");
-		log_open_exit(0);
-		exit(0);*/
 	}
 }
 
