@@ -66,9 +66,23 @@ void	ft_eof(t_main *main)
 {
 	(void)main;
 	rl_clear_history();
-	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n");
+	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n\x1b[0m ");
 	log_open_exit(0);
 	exit(0);
+}
+
+int	ft_empty(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!is_whitespace(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int	main(int args, char *argv[], char *env[])
@@ -85,9 +99,10 @@ int	main(int args, char *argv[], char *env[])
 	signal(SIGQUIT, SIG_IGN);
 	main.env = make_env(env);
 	main.last = 0;
+	main.initpwd = ft_getenv(main.env, "PWD");
 	while (1)
 	{
-		to_parse = readline("minishell~$ ");
+		to_parse = readline("\x1b[37mminishell~$ ");
 		if (!to_parse)
 			ft_eof(&main);
 		to_parse = check_quote(to_parse);
@@ -99,9 +114,11 @@ int	main(int args, char *argv[], char *env[])
 		//if (!parse_error(to_parse))
 		//	continue ;
 		add_history(to_parse);
-		iterate(to_parse, &main);
+		if (to_parse && !ft_empty(to_parse))
+			iterate(to_parse, &main);
 		if (g_received_signal == -3)
 			ft_eof(&main);
 		g_received_signal = -1;
+		free(to_parse);
 	}
 }

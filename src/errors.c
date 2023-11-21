@@ -1,25 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmascrie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/11 11:27:59 by nmascrie          #+#    #+#             */
-/*   Updated: 2023/04/11 11:28:01 by nmascrie         ###   ########.fr       */
+/*   Created: 2023/11/21 13:43:40 by nmascrie          #+#    #+#             */
+/*   Updated: 2023/11/21 13:43:42 by nmascrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void	error_exec(int err)
 {
-	size_t	i;
+	char	*r;
 
-	if (!s)
-		return (1);
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	r = strerror(err);
+	ft_printf("[\x1b[31mERROR\x1b[37m] \x1b[33m%s\x1b[37m\n", r);
 }

@@ -71,15 +71,20 @@ char	*get_variables(char *str, t_main *main)
 	return (ret);
 }
 
-void	generate_variables(t_cmd **cmd, t_main *main)
+void	generate_variables(t_cmd **cmd, t_main **main)
 {
 	char	*search;
 
 	while ((*cmd)->tokens->str)
 	{
+		if (ft_equals((*cmd)->tokens->next->str, " "))
+		{
+			rollback_tokens(cmd);
+			return ;
+		}
 		if ((*cmd)->tokens->quote != '\'')
 		{
-			search = get_variables((*cmd)->tokens->str, main);
+			search = get_variables((*cmd)->tokens->str, (*main));
 			free((*cmd)->tokens->str);
 			(*cmd)->tokens->str = ft_strdup(search);
 			free(search);

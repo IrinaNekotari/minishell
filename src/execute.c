@@ -49,30 +49,30 @@ int	ft_equals(char *s1, char *s2)
 	return (1);
 }
 
-void	get_orders(t_cmd *cmd, t_main *main)
+void	get_orders(t_cmd *cmd, t_main **main)
 {
 	rollback_cmd(&cmd);
 	while (cmd)
 	{
 		if (ft_equals(cmd->tokens->str, "pwd"))
-			ft_pwd(cmd, main->env);
+			ft_pwd(cmd, (*main)->env);
 		else if (ft_equals(cmd->tokens->str, "env"))
-			ft_env(cmd, main->env);
+			ft_env(cmd, (*main)->env);
 		else if (ft_equals(cmd->tokens->str, "exit"))
-			ft_exit(cmd, main->env);
+			ft_exit(cmd, (*main)->env);
 		else if (ft_equals(cmd->tokens->str, "echo"))
-			ft_echo(cmd, main->env);
-		/*else if (ft_equals(cmd->tokens->str, "export"))
-			ft_export(cmd, main->env);
+			ft_echo(cmd, (*main)->env);
+		else if (ft_equals(cmd->tokens->str, "export"))
+			ft_export(cmd, &((*main)->env));
 		else if (ft_equals(cmd->tokens->str, "unset"))
-			ft_unset(cmd, main->env);*/
+			ft_unset(cmd, &((*main)->env));
 		else
-			execute_general(cmd, main);
+			execute_general(cmd, (*main));
 		cmd = cmd->pipe;
 	}
 }
 
-void	execute(t_cmd *cmd, t_main *main)
+void	execute(t_cmd *cmd, t_main **main)
 {
 	get_orders(cmd, main);
 }
