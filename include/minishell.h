@@ -192,7 +192,7 @@ void	ft_pwd(t_cmd *cmd, t_env *env);
 void	ft_export(t_cmd *cmd, t_env **env);
 void	ft_unset(t_cmd *cmd, t_env **env);
 void	ft_echo(t_cmd *cmd, t_env *env);
-void	ft_cd(t_cmd *cmd, t_env *env);
+void	ft_cd(t_cmd *cmd, t_main **main);
 void    update_env(t_env **env, char *name, char *newvalue);
 void	ft_env(t_cmd *cmd, t_env *env);
 void	ft_exit(t_cmd *cmd, t_env *env);

@@ -66,6 +66,8 @@ void	get_orders(t_cmd *cmd, t_main **main)
 			ft_export(cmd, &((*main)->env));
 		else if (ft_equals(cmd->tokens->str, "unset"))
 			ft_unset(cmd, &((*main)->env));
+		else if (ft_equals(cmd->tokens->str, "cd"))
+			ft_cd(cmd, main);
 		else
 			execute_general(cmd, (*main));
 		cmd = cmd->pipe;

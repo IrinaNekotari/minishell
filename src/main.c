@@ -83,14 +83,35 @@ int	ft_empty(char *str)
 	return (1);
 }
 
+void	get_prompt(t_main *main)
+{
+	char	*temp;
+	char	*prompt;
+
+	temp = ft_getenv(main->env, "PWD");
+	if (ft_equals(main->initpwd, temp))
+		ft_printf("[\x1b[36mHome\x1b[37m]");
+	else
+	{
+		prompt = ft_calloc(1, sizeof(char));
+		super_concat(&prompt, "[\x1b[33m");
+		free(temp);
+		temp = ft_getenv(main->env, "PWD");
+		super_concat(&prompt, temp);
+		super_concat(&prompt, "\x1b[37m]");
+		ft_printf("%s", prompt);
+		free(prompt);
+	}
+	free(temp);
+}
+
 int	main(int args, char *argv[], char *env[])
 {
 	char	*to_parse;
+	t_main	main;
 
 	(void) args;
 	(void) argv;
-	t_main	main;
-
 	welcome_message();
 	signal(SIGINT, interrupt_sig);
 	signal(SIGTSTP, interrupt_sig);
@@ -100,7 +121,8 @@ int	main(int args, char *argv[], char *env[])
 	main.initpwd = ft_getenv(main.env, "PWD");
 	while (1)
 	{
-		to_parse = readline("\x1b[37mminishell~$ ");
+		get_prompt(&main);
+		to_parse = readline(" minishell ~$ ");
 		if (!to_parse)
 			ft_eof(&main);
 		to_parse = check_quote(to_parse);
