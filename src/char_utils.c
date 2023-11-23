@@ -18,8 +18,22 @@ int	is_usable(char c)
 		return (1);
 	if (c == '_')
 		return (1);
-	else
-		return (0);
+	return (0);
+}
+
+int	is_delim(char c)
+{
+	if (c == '"')
+		return (1);
+	if (c == '\'')
+		return (1);
+	if (c == '<')
+		return (1);
+	if (c == '>')
+		return (1);
+	if (c == '|')
+		return (1);
+	return (0);
 }
 
 int	is_whitespace(char c)

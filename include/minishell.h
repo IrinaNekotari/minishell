@@ -157,9 +157,9 @@ extern int	g_received_signal;
 void	parse(char *s, t_main **main);
 char	*check_quote(char *s);
 void	iterate(char *s, t_main *main);
-void	parse_single(char *s, t_word *c);
+void	parse_single(char *s, t_cmd **cmd);
 void	parse_single_2(char *s, t_word *c);
-void	parse_with_pipes(char **t, t_cmd *c);
+void	parse_with_pipes(char **t, t_cmd **c);
 void	ft_trimword(t_word *c);
 void	free_command(t_cmd *c);
 void	free_liste(char **lst);
@@ -217,6 +217,9 @@ char	**env_to_array(t_env *env);
 int	is_usable(char c);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
+int	error_syntax(int severity, char *loc);
 void	error_print(int severerity, char *msg, char *add);
+int	check_chevrons(t_cmd **cmd);
+int	is_delim(char c);
 
 #endif

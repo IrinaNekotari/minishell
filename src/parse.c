@@ -38,47 +38,47 @@ void	parse(char *s, t_main **main)
 
 	cmd = ft_calloc(1, sizeof(t_cmd));
 	cmd->previous = NULL;
-	cmd->tokens = ft_calloc(1, sizeof(t_word));
-	cmd->tokens->previous = NULL;
 	t = (char **) ft_calloc(count_occur(s, '|') + 1, sizeof(int) * 100);
 	t = counter_split(s, t);
 	if (ft_strchr(s, '|'))
-		parse_with_pipes(t, cmd);
+		parse_with_pipes(t, &cmd);
 	else
 	{
 		cmd->pipe = NULL;
-		parse_single_2(t[0], cmd->tokens);
+		parse_single(t[0], &cmd);
+		rollback_io(&cmd);
+		rollback_tokens(&cmd);
 	}
-	rollback_io(&cmd);
-	rollback_tokens(&cmd);
-	generate_variables(&cmd, main);
-	generate_io(&cmd);
-	execute(cmd, main);
+	if (check_chevrons(&cmd))
+	{
+		generate_variables(&cmd, main);
+		generate_io(&cmd);
+		execute(cmd, main);
+	}
 	free_liste(t);
 	free_command(cmd);
 }
 
-void	parse_with_pipes(char **t, t_cmd *c)
+void	parse_with_pipes(char **t, t_cmd **c)
 {
 	int		i;
-	t_cmd	*c_bck;
-
-	c_bck = c;
 	i = 0;
 	while (t[i])
 	{
-		parse_single_2(t[i], c_bck->tokens);
+		parse_single(t[i], c);
+		rollback_io(c);
+		rollback_tokens(c);
 		if (t[i + 1])
 		{
-			c_bck->pipe = ft_calloc(2, sizeof(t_cmd));
-			c_bck->pipe->previous = c_bck;
-			c_bck = c_bck->pipe;
-			c_bck->tokens = ft_calloc(2, sizeof(t_word));
+			(*c)->pipe = ft_calloc(1, sizeof(t_cmd));
+			(*c)->pipe->previous = (*c);
+			(*c) = (*c)->pipe;
 		}
 		else
-			c_bck->pipe = NULL;
+			(*c)->pipe = NULL;
 		i++;
 	}
+	rollback_cmd(c);
 }
 
 void	iterate(char *s, t_main *main)

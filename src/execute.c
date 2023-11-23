@@ -54,6 +54,7 @@ void	get_orders(t_cmd *cmd, t_main **main)
 	rollback_cmd(&cmd);
 	while (cmd)
 	{
+		ft_printf("executing %s\n", cmd->tokens->str);
 		if (ft_equals(cmd->tokens->str, "pwd"))
 			ft_pwd(cmd, (*main)->env);
 		else if (ft_equals(cmd->tokens->str, "env"))

@@ -71,4 +71,5 @@ void	generate_io(t_cmd **cmd)
 	rollback_tokens(cmd);
 	if ((*cmd)->pipe)
 		generate_io(&(*cmd)->pipe);
+	rollback_cmd(cmd);
 }

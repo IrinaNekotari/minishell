@@ -66,32 +66,6 @@ char	**split_semicolon(char *s, char **to_ret)
 	return (to_ret);
 }
 
-/*static void split_antislash(char *s)
-{
-	int		i;
-	int		j;
-	int		quoted;
-	char		quote;
-	
-	i = 0;
-	j = 0;
-	quoted = 0;
-	quote = 0;
-	if (s[i] == '\\' && !quoted)
-	{
-		if (is_escapable2(s[i+1]))
-			i++;
-	}
-	if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
-	{
-		if ((i >= 1 && s[i - 1] != '\\') || i == 0)
-		{
-			quoted = 1;
-			quote = s[i];
-		}
-	}
-}*/
-
 //TODO : Norminer tout ca
 char	**counter_split(char *s, char **to_ret)
 {
@@ -131,6 +105,9 @@ char	**counter_split(char *s, char **to_ret)
 				j = 0;
 				k++;
 				to_ret[k] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
+				i++;
+				while (is_whitespace(s[i]))
+					i++;
 			}
 		}
 		if (is_whitespace(s[i]) && quoted == 0)
