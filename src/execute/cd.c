@@ -28,8 +28,10 @@ void	ft_cd(t_cmd *cmd, t_main **main)
 	//(void)cmd;
 	//(void)main;
 	char *oldpwd;
+	char *newpwd;
 	int	i;
 	int	j;
+	int	k;
 	int	cd_ret;
 	//Tu vas devoir jouer avec les (*main) et &((*main)->env) ...
 	//Ouille ouille ouille
@@ -37,6 +39,8 @@ void	ft_cd(t_cmd *cmd, t_main **main)
 	//Indices : T'auras besoin de update env dans tous les cas
 	//Il faudra que tu update la variable d'environnement "PWD"
 	//Commence par le plus simple : l'erreur
+	newpwd = (char *)malloc(sizeof(char) * (ft_strlen(cmd->tokens->next->str)));
+	j = 0;
 	if (cmd->tokens->next->next->str)
 		ft_printf("string not in pwd: %s\n", cmd->tokens->next->next->str);
 	//Puis, par cd tout seul : Remets PWD a initpwd ...
@@ -84,7 +88,25 @@ void	ft_cd(t_cmd *cmd, t_main **main)
 	//Pour le chemin relatif, va falloir concat ...
 	else //relative path
 	{
+		oldpwd = (*main)->initpwd;
+		i = ft_strlen(oldpwd);
+		j = 0;
+		k = 0;
+		
+		while (newpwd[j] == oldpwd[j])
+		{
+			newpwd[j] = oldpwd[j];
+			j++;
+		}
+		while (newpwd[j])
+		{
+			newpwd[j] = cmd->tokens->next->str[k];
+			j++;
+			k++;
+		}
 		(void)cmd;
 		(void)main;
-	}	
+	}
+	newpwd[j] = '\0';
+	update_env(&(*main)->env, "PWD", newpwd);
 }
