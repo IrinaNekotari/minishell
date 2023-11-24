@@ -43,15 +43,15 @@ cd a b -> Erreur too many arguments
 //Pour le chemin relatif, va falloir concat ...
 void	ft_cd(t_cmd *cmd, t_main **main)
 {
-	//(void)cmd;
-	//(void)main;
 	char *oldpwd;
 	//Deux variables, mais tu les utilises jamais en 
 	//même temps : pas besoin des deux
 	char *newpwd;
 	int	i;
+	//Tu n'as besoin que de i
 	int	j;
 	int	k;
+	//CD ret est de type DIR*
 	int	cd_ret;
 
 	//Non; effectue le test AVANT d'alloc - la, tu risque d'essayer d'allocer un truc qui existe pas
