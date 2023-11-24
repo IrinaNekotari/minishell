@@ -66,6 +66,7 @@ void	ft_eof(t_main *main)
 	rl_clear_history();
 	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n\x1b[0m ");
 	log_open_exit(0);
+	chdir(main->initpwd);
 	exit(0);
 }
 

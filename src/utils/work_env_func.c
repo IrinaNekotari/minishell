@@ -14,17 +14,21 @@
 
 void    update_env(t_env **env, char *name, char *newvalue)
 {
-    while ((*env))
-    {
-        if (ft_equals((*env)->name, name))
-        {
-            free((*env)->value);
-            (*env)->value = ft_strdup(newvalue);
-        }
-        (*env) = (*env)->next;
-    }
-    rollback_env(env);
-    return ;
+	while ((*env))
+	{
+		if (ft_equals((*env)->name, name))
+		{
+			free((*env)->value);
+			(*env)->value = ft_strdup(newvalue);
+			rollback_env(env);
+			return ;
+		}
+		if ((*env)->next)
+			(*env) = (*env)->next;
+		else
+			break;
+	}
+	rollback_env(env);
 }
 
 void    del_from_env(t_env **env, char *name)
