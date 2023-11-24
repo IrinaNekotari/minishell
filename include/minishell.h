@@ -23,6 +23,7 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <errno.h>
+# include <dirent.h>
 
 # define ERR_CMD_NOT_FOUND "minishell: command not found:"
 # define ERR_TOO_MANY_ARGS ": too many arguments"
