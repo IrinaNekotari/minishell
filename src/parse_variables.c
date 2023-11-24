@@ -77,7 +77,6 @@ void	generate_variables(t_cmd **cmd, t_main **main)
 
 	while ((*cmd)->tokens->str)
 	{
-		//ft_printf("Checking %s\n", (*cmd)->tokens->str);
 		if (ft_equals((*cmd)->tokens->next->str, " "))
 		{
 			rollback_tokens(cmd);

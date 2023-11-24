@@ -34,6 +34,8 @@ void	generate_io(t_cmd **cmd)
 	int	i;
 
 	i = 0;
+	rollback_io(cmd);
+	rollback_tokens(cmd);
 	(*cmd)->input = ft_calloc(1 , sizeof(t_io));
 	(*cmd)->input->previous = NULL;
 	(*cmd)->output = ft_calloc(1 , sizeof(t_io));
@@ -71,5 +73,4 @@ void	generate_io(t_cmd **cmd)
 	rollback_tokens(cmd);
 	if ((*cmd)->pipe)
 		generate_io(&(*cmd)->pipe);
-	rollback_cmd(cmd);
 }

@@ -31,28 +31,51 @@ int	count_occur(char *str, char c)
 	return (count);
 }
 
+void	init_command(t_cmd **cmd, char *line)
+{
+	(*cmd) = ft_calloc(1, sizeof(t_cmd));
+	(*cmd)->pipe = NULL;
+	(*cmd)->previous = NULL;
+	parse_single(line, cmd);
+}
+
+void	add_command(t_cmd **cmd, char *line)
+{
+	if (!(*cmd))
+		init_command(cmd, line);
+	else
+	{
+		(*cmd)->pipe = ft_calloc(1, sizeof(t_cmd));
+		(*cmd)->pipe->previous = (*cmd);
+		(*cmd) = (*cmd)->pipe;
+		(*cmd)->pipe = NULL;
+		parse_single(line, cmd);
+		//ft_printf("Found %s\n", (*cmd)->tokens->str);
+	}
+}
+
 void	parse(char *s, t_main **main)
 {
 	t_cmd	*cmd;
 	char	**t;
+	int	i;
 
-	cmd = ft_calloc(1, sizeof(t_cmd));
-	cmd->previous = NULL;
+	cmd = NULL;
 	t = (char **) ft_calloc(count_occur(s, '|') + 1, sizeof(int) * 100);
 	t = counter_split(s, t);
-	if (ft_strchr(s, '|'))
-		parse_with_pipes(t, &cmd);
-	else
+	i = 0;
+	while (t[i])
 	{
-		cmd->pipe = NULL;
-		parse_single(t[0], &cmd);
-		rollback_io(&cmd);
-		rollback_tokens(&cmd);
+		add_command(&cmd, t[i]);
+		i++;
 	}
 	if (check_chevrons(&cmd))
 	{
+		rollback_cmd(&cmd);
 		generate_variables(&cmd, main);
+		rollback_cmd(&cmd);
 		generate_io(&cmd);
+		rollback_cmd(&cmd);
 		execute(cmd, main);
 	}
 	free_liste(t);

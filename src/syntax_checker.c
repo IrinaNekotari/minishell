@@ -66,5 +66,7 @@ int	check_chevrons(t_cmd **cmd)
 	}
 	while ((*cmd)->tokens->previous)
 		(*cmd)->tokens = (*cmd)->tokens->previous;
+	if ((*cmd)->pipe)
+		check_chevrons(&((*cmd)->pipe));
 	return (1);
 }
