@@ -47,11 +47,11 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 	int		i;
 	char	*try;
 	char	**paths;
-	int	*pipes;
+	//int	*pipes;
 	char	*try2;
 
-	pipes = ft_calloc(2, sizeof(int));
-	pipe(pipes);
+	//pipes = ft_calloc(2, sizeof(int));
+	//pipe((*main)->pipes);
 	//TODO : Gerer les erreurs ?
 	try2 = ft_calloc(100000, sizeof(char));
 	ret = SUCCESS;
@@ -60,8 +60,8 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 	if (pid == 0)
 	{
 		i = 0;
-		close(pipes[0]);
-		dup2(pipes[1], 1);
+		dup2((*main)->pipes[1], 1);
+		close((*main)->pipes[0]);
 		while (paths[i])
 		{
 			try = ft_calloc(1, sizeof(char));
@@ -78,14 +78,13 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 	else
 	{
 		waitpid(pid, &ret, 0);
-		close(pipes[1]);
+		close((*main)->pipes[1]);
 		i = 1;
 		while (i)
-			i = read(pipes[0], try2, 1023);
+			i = read((*main)->pipes[0], try2, 1023);
 	}
 	free_liste(paths);
 	(*main)->last = ret;
-	free(pipes);
 	return (try2);
 }
 
@@ -108,6 +107,6 @@ void	execute_general(t_cmd *cmd, t_main *main)
 		free_liste(args);
 	free(path);
 	free(file);
-	print_io2(cmd, write);
+	print_io(cmd, write, main);
 	free(write);
 }

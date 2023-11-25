@@ -29,7 +29,7 @@ static int	is_valid_input(char *input)
 	return (1);
 }
 
-void	ft_unset(t_cmd *cmd, t_env **env)
+void	ft_unset(t_cmd *cmd, t_main **main)
 {
 	int	boolean;
 
@@ -49,7 +49,7 @@ void	ft_unset(t_cmd *cmd, t_env **env)
 			error_print(ERROR, "not a valid identifier",cmd->tokens->str);
 			boolean = 1;
 		}
-		del_from_env(env, cmd->tokens->str);
+		del_from_env(&((*main)->env), cmd->tokens->str);
 		cmd->tokens = cmd->tokens->next;
 	}
 }

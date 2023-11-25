@@ -2,11 +2,10 @@
 
 extern int	g_received_signal;
 
-void	ft_echo(t_cmd *cmd, t_env *env)
+void	ft_echo(t_cmd *cmd, t_main *main)
 {
 	char	*str;
 
-	(void)env;
 	str = ft_calloc(1, sizeof(char));
 	cmd->tokens = cmd->tokens->next;
 	if (ft_equals(cmd->tokens->str, "-n"))
@@ -21,6 +20,6 @@ void	ft_echo(t_cmd *cmd, t_env *env)
 			super_concat(&str, " ");
 		cmd->tokens = cmd->tokens->next;
 	}
-	print_io(cmd, str);
+	print_io(cmd, str, main);
 	free(str);
 }

@@ -143,6 +143,7 @@ typedef struct	s_main
 {
 	int		last;
 	char	*initpwd;
+	int	*pipes;
 	t_env	*env;
 }	t_main;
 
@@ -169,6 +170,18 @@ int		input_depth(t_cmd *cmd);
 int		output_depth(t_cmd *cmd);
 int		tokens_depth(t_cmd *cmd);
 
+/*
+*	Builtins et execution
+*/
+void	ft_pwd(t_cmd *cmd, t_main *main);
+void	ft_export(t_cmd *cmd, t_main **main);
+void	ft_unset(t_cmd *cmd, t_main **main);
+void	ft_echo(t_cmd *cmd, t_main *main);
+void	ft_cd(t_cmd *cmd, t_main **main);
+void	ft_env(t_cmd *cmd, t_main *main);
+void	ft_exit(t_cmd *cmd, t_main *main);
+void	execute_general(t_cmd *cmd, t_main *main);
+
 void	parse(char *s, t_main **main);
 void	iterate(char *s, t_main *main);
 void	parse_single(char *s, t_cmd **cmd);
@@ -186,21 +199,12 @@ void	debug_show_all(t_cmd *c);
 void	execute(t_cmd *cmd, t_main **main);
 void	sort_env(char **tab, int env_len);
 void	print_sorted_env(t_env *env);
-void	execute_general(t_cmd *cmd, t_main *main);
-void	ft_pwd(t_cmd *cmd, t_env *env);
-void	ft_export(t_cmd *cmd, t_env **env);
-void	ft_unset(t_cmd *cmd, t_env **env);
-void	ft_echo(t_cmd *cmd, t_env *env);
-void	ft_cd(t_cmd *cmd, t_main **main);
-void    update_env(t_env **env, char *name, char *newvalue);
-void	ft_env(t_cmd *cmd, t_env *env);
-void	ft_exit(t_cmd *cmd, t_env *env);
 void	generate_io(t_cmd **cmd);
+void	update_env(t_env **env, char *name, char *newvalue);
 void	rollback_tokens(t_cmd **cmd);
 void	rollback_io(t_cmd **cmd);
 void	rollback_cmd(t_cmd **cmd);
-void	print_io(t_cmd *cmd, char *str);
-void	print_io2(t_cmd *cmd, char *str);
+void	print_io(t_cmd *cmd, char *str, t_main *main);
 void	handle_output(t_cmd *cmd, char *str);
 void	handle_output_create(t_cmd *cmd);
 void	rollback_env(t_env **env);

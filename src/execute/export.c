@@ -29,14 +29,14 @@ static int	is_valid_input(char *input)
 	return (1);
 }
 
-void	ft_export(t_cmd *cmd, t_env **env)
+void	ft_export(t_cmd *cmd, t_main **main)
 {
 	char	*name;
 	char	*value;
 	
 	if (!cmd->tokens->next->str)
 	{
-		print_sorted_env((*env));
+		print_sorted_env((*main)->env);
 		return ;
 	}
 	cmd->tokens = cmd->tokens->next;
@@ -49,7 +49,7 @@ void	ft_export(t_cmd *cmd, t_env **env)
 		}
 		generate_env(cmd->tokens->str, &name, &value);
 		if (value && value[0])
-			add_to_env(env, name, value);
+			add_to_env(&((*main)->env), name, value);
 		cmd->tokens = cmd->tokens->next;
 		free(name);
 		if (value)

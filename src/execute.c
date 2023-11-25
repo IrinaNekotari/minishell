@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 int	chain_as_equals(t_cmd **cmd, char *cmp)
 {
 	while ((*cmd)->tokens->str)
@@ -54,26 +56,31 @@ void	get_orders(t_cmd *cmd, t_main **main)
 	while (cmd)
 	{
 		if (ft_equals(cmd->tokens->str, "pwd"))
-			ft_pwd(cmd, (*main)->env);
+			ft_pwd(cmd, (*main));
 		else if (ft_equals(cmd->tokens->str, "env"))
-			ft_env(cmd, (*main)->env);
+			ft_env(cmd, (*main));
 		else if (ft_equals(cmd->tokens->str, "exit"))
-			ft_exit(cmd, (*main)->env);
+			ft_exit(cmd, (*main));
 		else if (ft_equals(cmd->tokens->str, "echo"))
-			ft_echo(cmd, (*main)->env);
+			ft_echo(cmd, (*main));
 		else if (ft_equals(cmd->tokens->str, "export"))
-			ft_export(cmd, &((*main)->env));
+			ft_export(cmd, main);
 		else if (ft_equals(cmd->tokens->str, "unset"))
-			ft_unset(cmd, &((*main)->env));
+			ft_unset(cmd, main);
 		else if (ft_equals(cmd->tokens->str, "cd"))
 			ft_cd(cmd, main);
 		else
 			execute_general(cmd, (*main));
+		if (g_received_signal == -3)
+			break ;
 		cmd = cmd->pipe;
 	}
 }
 
 void	execute(t_cmd *cmd, t_main **main)
 {
+	(*main)->pipes = ft_calloc(2, sizeof(int));
+	pipe((*main)->pipes);
 	get_orders(cmd, main);
+	free((*main)->pipes);
 }

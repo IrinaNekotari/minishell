@@ -35,19 +35,19 @@ int		is_valid_env(const char *env)
 	return (1);
 }
 
-void	ft_env(t_cmd *cmd, t_env *env)
+void	ft_env(t_cmd *cmd, t_main *main)
 {
 	char	*vars;
 
 	if (!cmd->tokens->next->str)
 	{
-		vars = create_list(env);
-		print_io(cmd, vars);
+		vars = create_list(main->env);
+		print_io(cmd, vars, main);
 		free(vars);
 	}
 	else
 	{
-		vars = create_list(env);
+		vars = create_list(main->env);
 		cmd->tokens = cmd->tokens->next;
 		while (cmd->tokens->str)
 		{
@@ -62,7 +62,7 @@ void	ft_env(t_cmd *cmd, t_env *env)
 			super_concat(&vars, cmd->tokens->str);
 			cmd->tokens = cmd->tokens->next;
 		}
-		print_io(cmd, vars);
+		print_io(cmd, vars, main);
 		free(vars);
 	}
 }
