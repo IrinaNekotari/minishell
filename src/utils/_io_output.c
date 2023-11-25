@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 void	handle_output_create(t_cmd *cmd)
 {
 	int	fd;

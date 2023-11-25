@@ -86,8 +86,8 @@ typedef struct s_norme
 */
 typedef struct s_io
 {
-	int	io;
-	char	*file;
+	int			io;
+	char		*file;
 	struct s_io	*next;
 	struct s_io	*previous;
 }	t_io;
@@ -97,8 +97,8 @@ typedef struct s_io
 */
 typedef struct	s_word
 {
+	char			quote;
 	char		*str;
-	char		quote;
 	struct s_word	*next;
 	struct s_word	*previous;
 }	t_word;
@@ -107,25 +107,18 @@ typedef struct	s_word
 */
 typedef struct	s_env
 {
-	char	*name;
-	char	*value;
+	char		*name;
+	char		*value;
 	struct s_env	*next;
 	struct s_env	*previous;
 }	t_env;
-
-typedef struct	s_var
-{
-	bool		exit;
-	bool		is_a_tty;
-	uint8_t	return_value;
-}	t_var;
 
 /**
 * Une liste chainee basique utilisee dans les verifs io
 */
 typedef struct s_pile
 {
-	char	*str;
+	char		*str;
 	struct s_pile	*next;
 	struct s_pile	*previous;
 }	t_pile;
@@ -136,8 +129,8 @@ typedef struct s_pile
 typedef struct s_cmd
 {
 	struct s_word	*tokens;
-	struct s_io *input;
-	struct s_io *output;
+	struct s_io	*input;
+	struct s_io	*output;
 	struct s_cmd	*pipe;
 	struct s_cmd	*previous;
 }	t_cmd;
@@ -148,15 +141,35 @@ typedef struct s_cmd
 */
 typedef struct	s_main
 {
-	int	last;
+	int		last;
 	char	*initpwd;
 	t_env	*env;
 }	t_main;
 
 extern int	g_received_signal;
 
+int		is_whitespace(char c);
+int		parse_error(char *str);
+int		is_escapable(char c);
+int		is_escapable2(char c);
+int		is_blank(char *ptr, int j);
+int		is_blank(char *ptr, int j);
+int		str_env_len(char **env);
+int		chain_as_equals(t_cmd **cmd, char *cmp);
+int		ft_equals(char *s1, char *s2);
+int		handle_input(t_cmd *cmd);
+int		is_usable(char c);
+int		error_syntax(int severity, char *loc);
+int		check_chevrons(t_cmd **cmd);
+int		is_delim(char c);
+int		input_length(t_cmd *cmd);
+int		output_length(t_cmd *cmd);
+int		tokens_length(t_cmd *cmd);
+int		input_depth(t_cmd *cmd);
+int		output_depth(t_cmd *cmd);
+int		tokens_depth(t_cmd *cmd);
+
 void	parse(char *s, t_main **main);
-char	*check_quote(char *s);
 void	iterate(char *s, t_main *main);
 void	parse_single(char *s, t_cmd **cmd);
 void	parse_single_2(char *s, t_word *c);
@@ -168,27 +181,12 @@ void	log_input(char	*str);
 void	generate_variables(t_cmd **cmd, t_main **main);
 void	log_parse_single(char *str);
 void	log_open_exit(int i);
-char	*ft_concat(char *s1, char *s2);
-char	*add_quote(char *s, char quote);
-char	*check_quote(char *s);
-char	*env_to_str(t_env *lst);
-int	is_whitespace(char c);
-int	parse_error(char *str);
-int	is_escapable(char c);
-int	is_escapable2(char c);
-int	is_blank(char *ptr, int j);
 void	debug_show_command(t_word *t);
 void	debug_show_all(t_cmd *c);
 void	execute(t_cmd *cmd, t_main **main);
 void	sort_env(char **tab, int env_len);
 void	print_sorted_env(t_env *env);
-int	is_blank(char *ptr, int j);
-int	str_env_len(char **env);
-char	**counter_split(char *s, char **to_ret);
-char	**split_semicolon(char *s, char **to_ret);
 void	execute_general(t_cmd *cmd, t_main *main);
-int	chain_as_equals(t_cmd **cmd, char *cmp);
-int	ft_equals(char *s1, char *s2);
 void	ft_pwd(t_cmd *cmd, t_env *env);
 void	ft_export(t_cmd *cmd, t_env **env);
 void	ft_unset(t_cmd *cmd, t_env **env);
@@ -202,25 +200,31 @@ void	rollback_tokens(t_cmd **cmd);
 void	rollback_io(t_cmd **cmd);
 void	rollback_cmd(t_cmd **cmd);
 void	print_io(t_cmd *cmd, char *str);
+void	print_io2(t_cmd *cmd, char *str);
 void	handle_output(t_cmd *cmd, char *str);
-int	handle_input(t_cmd *cmd);
 void	handle_output_create(t_cmd *cmd);
-char	*ft_append(char *str, char c);
 void	rollback_env(t_env **env);
-t_env	*make_env(char **env);
-char	*ft_getenv(t_env *env, char *search);
 void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);
-char	*ft_concat2(char *s1, char *s2);
 void	super_concat(char **a, char *b);
-char	**env_to_array(t_env *env);
-int	is_usable(char c);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
-int	error_syntax(int severity, char *loc);
 void	error_print(int severerity, char *msg, char *add);
-int	check_chevrons(t_cmd **cmd);
-int	is_delim(char c);
+
+char	*check_quote(char *s);
+char	*ft_concat(char *s1, char *s2);
+char	*add_quote(char *s, char quote);
+char	*check_quote(char *s);
+char	*env_to_str(t_env *lst);
+char	*ft_append(char *str, char c);
+char	*ft_getenv(t_env *env, char *search);
+char	*ft_concat2(char *s1, char *s2);
+
+char	**counter_split(char *s, char **to_ret);
+char	**split_semicolon(char *s, char **to_ret);
+char	**env_to_array(t_env *env);
+
+t_env	*make_env(char **env);
 
 #endif

@@ -23,3 +23,18 @@ void	print_io(t_cmd *cmd, char *str)
 	else if (!cmd->pipe)
 		ft_printf("%s\n", str);
 }
+
+void	print_io2(t_cmd *cmd, char *str)
+{
+	handle_output_create(cmd);
+	g_received_signal = IGNORE_NEW_LINE;
+	if (cmd->input->file)
+	{
+		if (!handle_input(cmd))
+			return ;
+	}
+	if (cmd->output->file)
+		handle_output(cmd, str);
+	else if (!cmd->pipe)
+		ft_printf("%s", str);
+}
