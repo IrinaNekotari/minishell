@@ -119,6 +119,7 @@ int	main(int args, char *argv[], char *env[])
 	signal(SIGQUIT, SIG_IGN);
 	main.env = make_env(env);
 	main.last = 0;
+	main.inpipe = ft_calloc(1, sizeof(char));
 	main.initpwd = ft_getenv(main.env, "PWD");
 	while (1)
 	{

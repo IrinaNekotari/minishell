@@ -133,6 +133,7 @@ typedef struct s_cmd
 	struct s_io	*output;
 	struct s_cmd	*pipe;
 	struct s_cmd	*previous;
+	int		*pipes;
 }	t_cmd;
 
 /*
@@ -143,7 +144,9 @@ typedef struct	s_main
 {
 	int		last;
 	char	*initpwd;
+	char	*inpipe;
 	int	*pipes;
+	int	state;
 	t_env	*env;
 }	t_main;
 
@@ -204,7 +207,7 @@ void	update_env(t_env **env, char *name, char *newvalue);
 void	rollback_tokens(t_cmd **cmd);
 void	rollback_io(t_cmd **cmd);
 void	rollback_cmd(t_cmd **cmd);
-void	print_io(t_cmd *cmd, char *str, t_main *main);
+void	print_io(t_cmd *cmd, char *str, t_main **main);
 void	handle_output(t_cmd *cmd, char *str);
 void	handle_output_create(t_cmd *cmd);
 void	rollback_env(t_env **env);

@@ -74,13 +74,17 @@ void	get_orders(t_cmd *cmd, t_main **main)
 		if (g_received_signal == -3)
 			break ;
 		cmd = cmd->pipe;
+		(*main)->state = 1;
 	}
 }
 
 void	execute(t_cmd *cmd, t_main **main)
 {
+	(*main)->state = 0;
 	(*main)->pipes = ft_calloc(2, sizeof(int));
 	pipe((*main)->pipes);
 	get_orders(cmd, main);
+	close((*main)->pipes[0]);
+	close((*main)->pipes[1]);
 	free((*main)->pipes);
 }

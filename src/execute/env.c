@@ -42,7 +42,7 @@ void	ft_env(t_cmd *cmd, t_main *main)
 	if (!cmd->tokens->next->str)
 	{
 		vars = create_list(main->env);
-		print_io(cmd, vars, main);
+		print_io(cmd, vars, &main);
 		free(vars);
 	}
 	else
@@ -62,7 +62,7 @@ void	ft_env(t_cmd *cmd, t_main *main)
 			super_concat(&vars, cmd->tokens->str);
 			cmd->tokens = cmd->tokens->next;
 		}
-		print_io(cmd, vars, main);
+		print_io(cmd, vars, &main);
 		free(vars);
 	}
 }

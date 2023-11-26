@@ -8,7 +8,7 @@ extern int	g_received_signal;
 * est indique, et a la console sinon et si
 * la commande n'as pas de pipe suivante
 */
-void	print_io(t_cmd *cmd, char *str, t_main *main)
+void	print_io(t_cmd *cmd, char *str, t_main **main)
 {
 	handle_output_create(cmd);
 	if (cmd->input->file)
@@ -22,6 +22,11 @@ void	print_io(t_cmd *cmd, char *str, t_main *main)
 		ft_printf("%s", str);
 	else if (!cmd->pipe)
 		ft_printf("%s\n", str);
-	if (cmd->pipe)
-		ft_putstr_fd(str, main->pipes[1]);
+	//if (cmd->pipe)
+	//	ft_putstr_fd(str, cmd->pipes[0]);
+	//(void)main;
+	//ft_putstr_fd(str, cmd->pipes[1]);
+	if ((*main)->inpipe)
+		free((*main)->inpipe);
+	(*main)->inpipe = ft_strdup(str);
 }

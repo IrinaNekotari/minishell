@@ -20,6 +20,6 @@ void	ft_echo(t_cmd *cmd, t_main *main)
 			super_concat(&str, " ");
 		cmd->tokens = cmd->tokens->next;
 	}
-	print_io(cmd, str, main);
+	print_io(cmd, str, &main);
 	free(str);
 }

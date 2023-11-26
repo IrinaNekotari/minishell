@@ -36,6 +36,7 @@ void	init_command(t_cmd **cmd, char *line)
 	(*cmd) = ft_calloc(1, sizeof(t_cmd));
 	(*cmd)->pipe = NULL;
 	(*cmd)->previous = NULL;
+	(*cmd)->pipes = ft_calloc(2, sizeof(int));
 	parse_single(line, cmd);
 }
 
@@ -49,8 +50,8 @@ void	add_command(t_cmd **cmd, char *line)
 		(*cmd)->pipe->previous = (*cmd);
 		(*cmd) = (*cmd)->pipe;
 		(*cmd)->pipe = NULL;
+		(*cmd)->pipes = ft_calloc(2, sizeof(int));
 		parse_single(line, cmd);
-		//ft_printf("Found %s\n", (*cmd)->tokens->str);
 	}
 }
 

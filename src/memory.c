@@ -34,6 +34,8 @@ void	free_command(t_cmd *c)
 {
 	rollback_io(&c);
 	rollback_tokens(&c);
+	if (c->pipes)
+		free(c->pipes);
 	if (c->tokens)
 		free_token(c->tokens);
 	if (c->input)

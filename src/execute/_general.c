@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 static int	good_size(t_cmd *cmd)
 {
 	int	i;
@@ -40,6 +42,7 @@ static int	exec(char *try, char **args, t_main **main)
 
 //TODO : Gestion des erreurs
 //JAMAIS on arrive a norminer cet étron fumant
+//J'ai suivi ce tuto : https://www.mbillaud.fr/notes/pipeline.html
 char	*exe(char *path, char *file, char ** args, t_main **main)
 {
 	int		pid;
@@ -47,11 +50,11 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 	int		i;
 	char	*try;
 	char	**paths;
-	//int	*pipes;
+	//static int	*pipes;
 	char	*try2;
 
 	//pipes = ft_calloc(2, sizeof(int));
-	//pipe((*main)->pipes);
+	//pipe(pipes);
 	//TODO : Gerer les erreurs ?
 	try2 = ft_calloc(100000, sizeof(char));
 	ret = SUCCESS;
@@ -60,10 +63,36 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 	if (pid == 0)
 	{
 		i = 0;
-		dup2((*main)->pipes[1], 1);
+		//Cas général
+		if ((*main)->state == 1)
+		{
+			//ft_putstr_fd((*main)->inpipe, pipes[0]);
+			dup2((*main)->pipes[0], STDIN_FILENO);
+		}
+		//Première commande - Donc pas de pipe a lire
+		else
+			dup2((*main)->pipes[1], STDOUT_FILENO);
 		close((*main)->pipes[0]);
+		close((*main)->pipes[1]);
+		//ft_putstr_fd((*main)->inpipe, 1);
+		//close(0);
+		//dup2(pipes[0], 0);
+		//MARTIN
+		//Demande aux autres comment nous sortir de la
+		//Comment on est censé envoyer le résultat de la pipe
+		//précédante 
+		//Au besoin, elle est stockée dans
+		// (*main)->inpipe en char *
+		//Dans l'entrée de la commande actuelle
+		//J'ai essayé plein de trucs, mais rien trouvé
+		//ça me hante en pleine nuit ces conneries
+		//Les pipes sont ouvertes dans l'execute
 		while (paths[i])
 		{
+			//Ce que fait ce morceau : pour chaque variable
+			//PATH, ça concatène le PATH avec un / et le
+			//Nom de l'executable (premier token), 
+			//Et tente de l'executer
 			try = ft_calloc(1, sizeof(char));
 			super_concat(&try, paths[i]);
 			super_concat(&try, "/");
@@ -72,19 +101,26 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 			free(try);
 			i++;
 		}
+		//Si jamais toutes les executions ont échoués
+		//On affiche l'erreur et on retourne le code d'erreur
 		error_exec(errno);
 		exit(ret);
 	}
 	else
 	{
+		//La, on attends que le fork se finisse
 		waitpid(pid, &ret, 0);
 		close((*main)->pipes[1]);
+		//On reconstitue le retour (sortie standard)
+		//Dans le char * try
+		//Qu'on retourne a la fin
 		i = 1;
 		while (i)
 			i = read((*main)->pipes[0], try2, 1023);
 	}
 	free_liste(paths);
 	(*main)->last = ret;
+	//free(pipes);
 	return (try2);
 }
 
@@ -107,6 +143,7 @@ void	execute_general(t_cmd *cmd, t_main *main)
 		free_liste(args);
 	free(path);
 	free(file);
-	print_io(cmd, write, main);
+	g_received_signal = IGNORE_NEW_LINE;
+	print_io(cmd, write, &main);
 	free(write);
 }
