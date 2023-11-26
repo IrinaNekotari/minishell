@@ -12,55 +12,6 @@
 
 #include "minishell.h"
 
-//PS ; Je les ai mises dans work_env_func
-
-
-/**
-* Retourne la profondeur de l'environnement
-*/
-static int	env_depth(t_env *env)
-{
-	int	i;
-
-	i = 0;
-	while (env)
-	{
-		i++;
-		if (env->next)
-			env = env->next;
-		else
-			break ;
-	}
-	while (env->previous)
-		env = env->previous;
-	return (i);
-}
-
-/**
-* Retourne la plus longue taille de chaine de l'environnement
-*/
-static int	env_longest(t_env *env)
-{
-	int	len;
-	int	bck;
-
-	len = 0;
-	bck = 0;
-	while (env)
-	{
-		bck = (int)ft_strlen(env->name) + (int)ft_strlen(env->value);
-		if (bck > len)
-			len = bck;
-		if (env->next)
-			env = env->next;
-		else
-			break ;
-	}
-	while (env->previous)
-		env = env->previous;
-	return (len);
-}
-
 /**
 * Crée un array a partir des variables d'environnement
 */
@@ -70,7 +21,7 @@ char	**env_to_array(t_env *env)
 	int			len;
 	int			i;
 
-	len = env_longest(env) + 3;
+	len = env_length(env) + 3;
 	i = 0;
 	ret = ft_calloc((env_depth(env) + 1) * len, sizeof(char));
 	while (env)

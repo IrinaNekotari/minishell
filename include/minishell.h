@@ -169,9 +169,11 @@ int		is_delim(char c);
 int		input_length(t_cmd *cmd);
 int		output_length(t_cmd *cmd);
 int		tokens_length(t_cmd *cmd);
+int		env_length(t_env *env);
 int		input_depth(t_cmd *cmd);
 int		output_depth(t_cmd *cmd);
 int		tokens_depth(t_cmd *cmd);
+int		env_depth(t_env *env);
 
 /*
 *	Builtins et execution

@@ -37,8 +37,6 @@ void	ft_unset(t_cmd *cmd, t_main **main)
 	if (!cmd->tokens->next->str)
 	{
 		error_print(ERROR, "not enough arguments !", NULL);
-		//TODO : Martin check sur les pc de 42
-		//Chez moi il affiche rien dans cette situation !
 		return ;
 	}
 	cmd->tokens = cmd->tokens->next;
@@ -46,7 +44,8 @@ void	ft_unset(t_cmd *cmd, t_main **main)
 	{
 		if (!is_valid_input(cmd->tokens->str) && boolean == 0)
 		{
-			error_print(ERROR, "not a valid identifier",cmd->tokens->str);
+			error_print(ERROR, "not a valid identifier",
+					cmd->tokens->str);
 			boolean = 1;
 		}
 		del_from_env(&((*main)->env), cmd->tokens->str);

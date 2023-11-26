@@ -1,5 +1,8 @@
 #include "minishell.h"
 
+/**
+*	Retourne la profondeur de l'input
+*/
 int	input_depth(t_cmd *cmd)
 {
 	int	depth;
@@ -15,6 +18,9 @@ int	input_depth(t_cmd *cmd)
 	return (depth);
 }
 
+/**
+*	Retourne la profondeur de l'output
+*/
 int	output_depth(t_cmd *cmd)
 {
 	int	depth;
@@ -30,6 +36,9 @@ int	output_depth(t_cmd *cmd)
 	return (depth);
 }
 
+/**
+*	Retourne la profondeur des tokens
+*/
 int	tokens_depth(t_cmd *cmd)
 {
 	int	depth;
@@ -42,5 +51,26 @@ int	tokens_depth(t_cmd *cmd)
 	}
 	while (cmd->tokens->previous)
 		cmd->tokens = cmd->tokens->previous;
+	return (depth);	
+}
+
+/**
+*	Retourne la profondeur de l'env
+*/
+int	env_depth(t_env *env)
+{
+	int	depth;
+
+	depth = 0;
+	while (env)
+	{
+		depth++;
+		if (env->next)
+			env = env->next;
+		else
+			break ;
+	}
+	while (env->previous)
+		env = env->previous;
 	return (depth);	
 }

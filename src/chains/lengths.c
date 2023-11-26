@@ -56,3 +56,27 @@ int	tokens_length(t_cmd *cmd)
 		cmd->output = cmd->output->previous;
 	return ((int)len);
 }
+
+/**
+* Retourne la taille du string le plus long dans l'environement
+*/
+int	env_length(t_env *env)
+{
+	size_t	len;
+	size_t	cmp;
+
+	len = 0;
+	while (env)
+	{
+		cmp = ft_strlen(env->name) + ft_strlen(env->value) + 1;
+		if (cmp > len)
+			len = cmp;
+		if (env->next)
+			env = env->next;
+		else
+			break ;
+	}
+	while (env->previous)
+		env = env->previous;
+	return ((int)len);
+}

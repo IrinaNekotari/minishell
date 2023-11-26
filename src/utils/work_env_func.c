@@ -31,6 +31,7 @@ void    update_env(t_env **env, char *name, char *newvalue)
 	rollback_env(env);
 }
 
+//TODO : A norminer
 void    del_from_env(t_env **env, char *name)
 {
 	t_env	*element;

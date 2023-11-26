@@ -12,9 +12,25 @@
 
 #include "minishell.h"
 
-void	ft_cd(t_cmd *cmd, t_main **main)
+static void	exec_cd(t_cmd *cmd, t_main **main)
 {
 	int		dd;
+	char	*buffer;
+
+	dd = chdir(cmd->tokens->next->str);
+	if (dd == -1)
+	{
+		error_exec(errno);
+		return ;
+	}
+	buffer = ft_calloc(250, sizeof(char));
+	getcwd(buffer, 250);
+	update_env(&((*main)->env), "PWD", buffer);
+	free(buffer);
+}
+
+void	ft_cd(t_cmd *cmd, t_main **main)
+{
 	char	*buffer;
 
 	if (cmd->tokens->next && cmd->tokens->next->next
@@ -27,20 +43,9 @@ void	ft_cd(t_cmd *cmd, t_main **main)
 	{
 		buffer = ft_strdup((*main)->initpwd);
 		update_env(&((*main)->env), "PWD", buffer);
-		dd = chdir(buffer);
+		chdir(buffer);
 		free(buffer);
 	}
 	else
-	{
-		dd = chdir(cmd->tokens->next->str);
-		if (dd == -1)
-		{
-			error_exec(errno);
-			return ;
-		}
-		buffer = ft_calloc(250, sizeof(char));
-		getcwd(buffer, 250);
-		update_env(&((*main)->env), "PWD", buffer);
-		free(buffer);
-	}
+		exec_cd(cmd, main);
 }

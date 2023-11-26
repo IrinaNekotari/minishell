@@ -36,6 +36,7 @@ void	found_the_flame(char **ret, int *j, char *val)
 
 //TODO : Chercher la bonne taille du calloc (ultra cancer)
 //TODO : Norminer (encore plus cancer)
+//TODO : On a un invalid read a la ligne 51 (Ultra Super Cancer Sayan 3)
 char	*get_variables(char *str, t_main *main)
 {
 	char	*ret;
@@ -46,7 +47,7 @@ char	*get_variables(char *str, t_main *main)
 
 	i = 0;
 	j = 0;
-	ret = ft_calloc(ft_strlen(str) * 1000, sizeof(char));
+	ret = ft_calloc(ft_strlen(str) * 10000, sizeof(char));
 	while (str[i])
 	{
 		if (str[i] == '$' && str[i + 1] == '?')

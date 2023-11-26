@@ -12,7 +12,10 @@
 
 #include "minishell.h"
 
-
+/**
+On a pas besoin de ce fichier : Size env existe déjà dans chains/length ou depths, strcmp existe déjà (et utilise mon ft_equals ...)
+Essaye de tout mettre dans export
+*/
 static int	ft_strcmp(char *s1, char *s2)
 {
 	int i;
@@ -130,6 +133,8 @@ void	print_sorted_env(t_env *env)
 	i = 0;
 	while (tab[i])
 	{
+		//A retravailler : Utilise mon print_io
+		//et super concat : T'as besoin de genre 3 lignes pour le faire
 		ft_putstr_fd("declare -x ", 1);
 		ft_putendl_fd(tab[i], 1);
 		i++;

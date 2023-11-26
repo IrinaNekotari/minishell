@@ -106,18 +106,15 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 		error_exec(errno);
 		exit(ret);
 	}
-	else
-	{
-		//La, on attends que le fork se finisse
-		waitpid(pid, &ret, 0);
-		close((*main)->pipes[1]);
-		//On reconstitue le retour (sortie standard)
-		//Dans le char * try
-		//Qu'on retourne a la fin
-		i = 1;
-		while (i)
-			i = read((*main)->pipes[0], try2, 1023);
-	}
+	//La, on attends que le fork se finisse
+	waitpid(pid, &ret, 0);
+	close((*main)->pipes[1]);
+	//On reconstitue le retour (sortie standard)
+	//Dans le char * try
+	//Qu'on retourne a la fin
+	i = 1;
+	while (i)
+		i = read((*main)->pipes[0], try2, 1023);
 	free_liste(paths);
 	(*main)->last = ret;
 	//free(pipes);
