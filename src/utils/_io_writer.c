@@ -25,7 +25,7 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 	//if (cmd->pipe)
 	//	ft_putstr_fd(str, cmd->pipes[0]);
 	//(void)main;
-	ft_putstr_fd(str, (*main)->pipes[0]);
+	//ft_putstr_fd(str, (*main)->pipes[(*main)->state][0]);
 	if ((*main)->inpipe)
 		free((*main)->inpipe);
 	(*main)->inpipe = ft_strdup(str);

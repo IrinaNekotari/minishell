@@ -66,14 +66,17 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 		//Cas général
 		if ((*main)->state == 1)
 		{
-			//ft_putstr_fd((*main)->inpipe, pipes[0]);
-			dup2((*main)->pipes[0], STDIN_FILENO);
+			//ft_putstr_fd((*main)->inpipe, (*main)->pipes2[0]);
+			dup2((*main)->pipes2[1], STDIN_FILENO);
+			//dup2(STDIN_FILENO, (*main)->pipes[0]);
 		}
-		//Première commande - Donc pas de pipe a lire
-		else
-			dup2((*main)->pipes[1], STDOUT_FILENO);
-		close((*main)->pipes[0]);
+		dup2((*main)->pipes[1], STDOUT_FILENO);
+		//dup2((*main)->pipes[1], (*main)->pipes2[1]);
+		//dup2(STDOUT_FILENO, (*main)->pipes[1]);
+		//close((*main)->pipes[0]);
 		close((*main)->pipes[1]);
+		//close((*main)->pipes2[0]);
+		//close((*main)->pipes2[1]);
 		//ft_putstr_fd((*main)->inpipe, 1);
 		//close(0);
 		//dup2(pipes[0], 0);
@@ -108,6 +111,7 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 	}
 	//La, on attends que le fork se finisse
 	waitpid(pid, &ret, 0);
+	dup2((*main)->pipes[0], (*main)->pipes2[1]);
 	close((*main)->pipes[1]);
 	//On reconstitue le retour (sortie standard)
 	//Dans le char * try
@@ -117,6 +121,7 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 		i = read((*main)->pipes[0], try2, 1023);
 	free_liste(paths);
 	(*main)->last = ret;
+	ft_putstr_fd(try2, (*main)->pipes2[1]);
 	//free(pipes);
 	return (try2);
 }

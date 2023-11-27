@@ -146,6 +146,7 @@ typedef struct	s_main
 	char	*initpwd;
 	char	*inpipe;
 	int	*pipes;
+	int	*pipes2;
 	int	state;
 	t_env	*env;
 }	t_main;
@@ -174,6 +175,7 @@ int		input_depth(t_cmd *cmd);
 int		output_depth(t_cmd *cmd);
 int		tokens_depth(t_cmd *cmd);
 int		env_depth(t_env *env);
+int		cmd_depth(t_cmd *cmd);
 
 /*
 *	Builtins et execution

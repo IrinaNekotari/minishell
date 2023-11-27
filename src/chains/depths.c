@@ -74,3 +74,24 @@ int	env_depth(t_env *env)
 		env = env->previous;
 	return (depth);	
 }
+
+/**
+*	Retourne le nombres de commandes
+*/
+int	cmd_depth(t_cmd *cmd)
+{
+	int	depth;
+
+	depth = 0;
+	while (cmd)
+	{
+		depth++;
+		if (cmd->pipe)
+			cmd = cmd->pipe;
+		else
+			break ;
+	}
+	while (cmd->previous)
+		cmd = cmd->previous;
+	return (depth);	
+}
