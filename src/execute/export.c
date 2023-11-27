@@ -15,7 +15,7 @@
 static int	is_valid_input(char *input)
 {
 	int	i;
-	
+
 	i = 0;
 	if(ft_isdigit(input[i]) == 1)
 		return (0);
@@ -29,30 +29,50 @@ static int	is_valid_input(char *input)
 	return (1);
 }
 
-void	ft_export(t_cmd *cmd, t_main **main)
+static char	*create_list(t_env *env)
 {
-	char	*name;
-	char	*value;
+	char *a;
+
+	a = ft_calloc(1, sizeof(char));
+	while (env)
+	{
+		super_concat(&a, "declare -x ");
+		super_concat(&a, env->name);
+		super_concat(&a, "=");
+		super_concat(&a, env->value);
+		if (env->next)
+			super_concat(&a, "\n");
+		env = env->next;
+	}
+	return (a);
+}
+
+void	ft_export(t_cmd *cmd, t_main *main)
+{
+	char	*vars;
 	
 	if (!cmd->tokens->next->str)
 	{
-		print_sorted_env((*main)->env);
-		return ;
+		vars = create_list(main->env);
+		print_io(cmd, vars, &main);
+		free(vars);
 	}
-	cmd->tokens = cmd->tokens->next;
-	while (cmd->tokens->str)
+	else
 	{
-		if (!is_valid_input(cmd->tokens->str))
-		{
-			error_print(ERROR, "not a valid identifier",cmd->tokens->str);
-			return ;
-		}
-		generate_env(cmd->tokens->str, &name, &value);
-		if (value && value[0])
-			add_to_env(&((*main)->env), name, value);
+		vars = create_list(main->env);
 		cmd->tokens = cmd->tokens->next;
-		free(name);
-		if (value)
-			free(value);
+		while (cmd->tokens->str)
+		{
+			if (!is_valid_input(cmd->tokens->str))
+			{
+				error_print(ERROR, "not a valid identifier",cmd->tokens->str);
+				return ;
+			}
+			super_concat(&vars, "\n");
+			super_concat(&vars, cmd->tokens->str);
+			cmd->tokens = cmd->tokens->next;
+		}
+		print_io(cmd, vars, &main);
+		free(vars);
 	}
 }

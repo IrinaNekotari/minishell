@@ -179,7 +179,7 @@ int		env_depth(t_env *env);
 *	Builtins et execution
 */
 void	ft_pwd(t_cmd *cmd, t_main *main);
-void	ft_export(t_cmd *cmd, t_main **main);
+void	ft_export(t_cmd *cmd, t_main *main);
 void	ft_unset(t_cmd *cmd, t_main **main);
 void	ft_echo(t_cmd *cmd, t_main *main);
 void	ft_cd(t_cmd *cmd, t_main **main);
