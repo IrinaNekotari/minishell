@@ -66,9 +66,8 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 		//Cas général
 		if ((*main)->state == 1)
 		{
-			//ft_putstr_fd((*main)->inpipe, (*main)->pipes2[0]);
-			dup2((*main)->pipes2[1], STDIN_FILENO);
-			//dup2(STDIN_FILENO, (*main)->pipes[0]);
+			dup2((*main)->pipes[0], STDIN_FILENO);
+			//ft_putstr_fd((*main)->inpipe, (*main)->pipes[0]);
 		}
 		dup2((*main)->pipes[1], STDOUT_FILENO);
 		//dup2((*main)->pipes[1], (*main)->pipes2[1]);
@@ -80,8 +79,6 @@ char	*exe(char *path, char *file, char ** args, t_main **main)
 		//ft_putstr_fd((*main)->inpipe, 1);
 		//close(0);
 		//dup2(pipes[0], 0);
-		//MARTIN
-		//Demande aux autres comment nous sortir de la
 		//Comment on est censé envoyer le résultat de la pipe
 		//précédante 
 		//Au besoin, elle est stockée dans
