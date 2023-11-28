@@ -16,7 +16,7 @@ int	count_occur(char *str, char c)
 {
 	int	i;
 	int	count;
-	
+
 	i = 0;
 	count = 0;
 	while (str[i])
@@ -59,7 +59,7 @@ void	parse(char *s, t_main **main)
 {
 	t_cmd	*cmd;
 	char	**t;
-	int	i;
+	int		i;
 
 	cmd = NULL;
 	t = (char **) ft_calloc(count_occur(s, '|') + 1, sizeof(int) * 100);
@@ -86,6 +86,7 @@ void	parse(char *s, t_main **main)
 void	parse_with_pipes(char **t, t_cmd **c)
 {
 	int		i;
+
 	i = 0;
 	while (t[i])
 	{
@@ -111,7 +112,6 @@ void	iterate(char *s, t_main *main)
 	int		i;
 
 	i = 0;
-
 	//TODO : Chercher la bonne taille
 	lst = (char **) ft_calloc(count_occur(s, ';') + 1, sizeof(int) * 100);
 	lst = split_semicolon(s, lst);

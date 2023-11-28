@@ -179,7 +179,7 @@ int		env_depth(t_env *env);
 *	Builtins et execution
 */
 void	ft_pwd(t_cmd *cmd, t_main *main);
-void	ft_export(t_cmd *cmd, t_main *main);
+void	ft_export(t_cmd *cmd, t_main **main);
 void	ft_unset(t_cmd *cmd, t_main **main);
 void	ft_echo(t_cmd *cmd, t_main *main);
 void	ft_cd(t_cmd *cmd, t_main **main);
@@ -203,7 +203,7 @@ void	debug_show_command(t_word *t);
 void	debug_show_all(t_cmd *c);
 void	execute(t_cmd *cmd, t_main **main);
 void	sort_env(char **tab, int env_len);
-void	print_sorted_env(t_env *env);
+char	*print_sorted_env(t_env *env);
 void	generate_io(t_cmd **cmd);
 void	update_env(t_env **env, char *name, char *newvalue);
 void	rollback_tokens(t_cmd **cmd);

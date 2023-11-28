@@ -64,7 +64,7 @@ void	get_orders(t_cmd *cmd, t_main **main)
 		else if (ft_equals(cmd->tokens->str, "echo"))
 			ft_echo(cmd, (*main));
 		else if (ft_equals(cmd->tokens->str, "export"))
-			ft_export(cmd, (*main));
+			ft_export(cmd, main);
 		else if (ft_equals(cmd->tokens->str, "unset"))
 			ft_unset(cmd, main);
 		else if (ft_equals(cmd->tokens->str, "cd"))

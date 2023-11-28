@@ -25,7 +25,7 @@ void	add_word(t_cmd **cmd, char *str, char quote)
 {
 	if (!(*cmd)->tokens)
 		init_tokens(cmd, str, quote);
-	else 
+	else
 	{
 		(*cmd)->tokens->next = ft_calloc(1, sizeof(t_word));
 		(*cmd)->tokens->next->previous = (*cmd)->tokens;
@@ -84,7 +84,7 @@ void	parse_single(char *s, t_cmd **cmd)
 {
 	int		i;
 	char		quote;
-	char	*temp;
+	char		*temp;
 
 	i = 0;
 	quote = 0;

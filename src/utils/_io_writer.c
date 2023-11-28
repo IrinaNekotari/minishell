@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   _io_writer.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 13:45:16 by mjuette           #+#    #+#             */
+/*   Updated: 2023/11/28 13:45:17 by mjuette          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 extern int	g_received_signal;
@@ -22,9 +34,6 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 		ft_printf("%s", str);
 	else if (!cmd->pipe)
 		ft_printf("%s\n", str);
-	//if (cmd->pipe)
-	//	ft_putstr_fd(str, cmd->pipes[0]);
-	//(void)main;
 	ft_putstr_fd(str, (*main)->pipes[0]);
 	if ((*main)->inpipe)
 		free((*main)->inpipe);

@@ -19,7 +19,7 @@ char	**split_semicolon(char *s, char **to_ret)
 	int		j;
 	int		k;
 	int		quoted;
-	char		quote;
+	char	quote;
 
 	to_ret[0] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
 	i = 0;
@@ -73,7 +73,7 @@ char	**counter_split(char *s, char **to_ret)
 	int		j;
 	int		k;
 	int		quoted;
-	char		quote;
+	char	quote;
 
 	to_ret[0] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
 	i = 0;
@@ -85,7 +85,7 @@ char	**counter_split(char *s, char **to_ret)
 	{
 		if (s[i] == '\\' && !quoted)
 		{
-			if (is_escapable2(s[i+1]))
+			if (is_escapable2(s[i + 1]))
 				i++;
 		}
 		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)

@@ -36,9 +36,9 @@ void	generate_io(t_cmd **cmd)
 	i = 0;
 	rollback_io(cmd);
 	rollback_tokens(cmd);
-	(*cmd)->input = ft_calloc(1 , sizeof(t_io));
+	(*cmd)->input = ft_calloc(1, sizeof(t_io));
 	(*cmd)->input->previous = NULL;
-	(*cmd)->output = ft_calloc(1 , sizeof(t_io));
+	(*cmd)->output = ft_calloc(1, sizeof(t_io));
 	(*cmd)->output->previous = NULL;
 	while ((*cmd)->tokens->str)
 	{
@@ -50,7 +50,7 @@ void	generate_io(t_cmd **cmd)
 			{
 				(*cmd)->output->file = ft_strdup((*cmd)->tokens->str);
 				(*cmd)->output->io = i;
-				(*cmd)->output->next = ft_calloc(1 , sizeof(t_io));
+				(*cmd)->output->next = ft_calloc(1, sizeof(t_io));
 				(*cmd)->output->next->previous = (*cmd)->output;
 				(*cmd)->output = (*cmd)->output->next;
 				(*cmd)->output->file = NULL;
@@ -59,7 +59,7 @@ void	generate_io(t_cmd **cmd)
 			{
 				(*cmd)->input->file = ft_strdup((*cmd)->tokens->str);
 				(*cmd)->input->io = i;
-				(*cmd)->input->next = ft_calloc(1 , sizeof(t_io));
+				(*cmd)->input->next = ft_calloc(1, sizeof(t_io));
 				(*cmd)->input->next->previous = (*cmd)->input;
 				(*cmd)->input = (*cmd)->input->next;
 				(*cmd)->input->file = NULL;

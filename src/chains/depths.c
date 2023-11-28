@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   depths.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 14:16:56 by mjuette           #+#    #+#             */
+/*   Updated: 2023/11/28 14:16:58 by mjuette          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 /**
@@ -51,7 +63,7 @@ int	tokens_depth(t_cmd *cmd)
 	}
 	while (cmd->tokens->previous)
 		cmd->tokens = cmd->tokens->previous;
-	return (depth);	
+	return (depth);
 }
 
 /**
@@ -72,5 +84,5 @@ int	env_depth(t_env *env)
 	}
 	while (env->previous)
 		env = env->previous;
-	return (depth);	
+	return (depth);
 }

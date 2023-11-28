@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   _io_input.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 13:43:51 by mjuette           #+#    #+#             */
+/*   Updated: 2023/11/28 13:44:06 by mjuette          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	search_for_double(t_cmd *cmd)
@@ -22,7 +34,7 @@ static int	search_for_double(t_cmd *cmd)
 static void	loop_rl(t_cmd *cmd, char *sortie)
 {
 	sortie = readline("> ");
-	while(!ft_equals(sortie, cmd->input->file))
+	while (!ft_equals(sortie, cmd->input->file))
 	{
 		free(sortie);
 		sortie = readline("> ");
@@ -62,13 +74,13 @@ int	handle_input(t_cmd *cmd)
 
 	if (search_for_double(cmd))
 		handle_double_input(cmd);
-	while(cmd->input->file)
+	while (cmd->input->file)
 	{
 		fd = open(cmd->input->file, O_RDONLY);
 		if (cmd->input->io == SINGLE_INPUT && fd == -1)
 		{
 			error_print(ERROR, "Not a file or directory",
-					cmd->input->file);
+				cmd->input->file);
 			return (0);
 		}
 		if (fd >= 0)

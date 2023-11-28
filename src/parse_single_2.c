@@ -43,7 +43,8 @@ int	chevrons(t_word **bck, int *i, int *j, char *s)
 		(*bck)->str[*j++] = s[*i++];
 		if ((*bck)->str[*j - 1] == s[*i])
 			(*bck)->str[*j++] = s[*i++];
-		if ((*i < (int)ft_strlen(s)) && s[*i] != '\0' && !is_whitespace(s[*i]) && (s[*i] != '<' && s[*i] != '>'))
+		if ((*i < (int)ft_strlen(s)) && s[*i] != '\0'
+			&& !is_whitespace(s[*i]) && (s[*i] != '<' && s[*i] != '>'))
 			create_new_block(bck, j, s);
 		if ((*i < (int)ft_strlen(s)) && s[*i] == 0)
 			return (0);
@@ -63,10 +64,9 @@ void	escape(t_word **bck, int *i, int *j, char *s)
 	else
 		(*bck)->str[(*j)++] = s[(*i)++];
 }
-
-
 //FUUUUUUUUUUUUUUUUUUUUUUUUUu
 //ON DOIT RAJOUTER UN TRUUUUUUUUUUUUUUUUC
+
 void	parse_single_2(char *s, t_word *c)
 {
 	int	i;
@@ -97,11 +97,11 @@ void	parse_single_2(char *s, t_word *c)
 		else if ((s[i] == '\'' || s[i] == '"') && quoted && s[i] == c->quote)
 		{
 			quoted = 0;
-			if (s[i + 1] != '\0' && !is_whitespace(s[i + 1]) && s[i+1] != '<'&& s[i+1] != '>')
+			if (s[i + 1] != '\0' && !is_whitespace(s[i + 1]) && s[i + 1] != '<'
+				&& s[i + 1] != '>')
 				create_new_block(&c, &j, s);
 			i++;
 		}
-		
 		else if (is_whitespace(s[i]) && !quoted)
 		{
 			create_new_block(&c, &j, s);
@@ -116,7 +116,9 @@ void	parse_single_2(char *s, t_word *c)
 				c->str[j++] = s[i++];
 				if (c->str[j - 1] == s[i])
 					c->str[j++] = s[i++];
-				if ((i < (int)ft_strlen(s)) && s[i] != '\0' && !is_whitespace(s[i]) && (s[i] != '<' && s[i] != '>'))
+				if ((i < (int)ft_strlen(s)) && s[i] != '\0'
+					&& !is_whitespace(s[i])
+					&& (s[i] != '<' && s[i] != '>'))
 				{
 					if (j != 0)
 					{
@@ -130,7 +132,7 @@ void	parse_single_2(char *s, t_word *c)
 					break ;
 			}
 			else
-				c->str[j++] = s[i++];	
+				c->str[j++] = s[i++];
 		}
 		else
 			c->str[j++] = s[i++];

@@ -44,7 +44,7 @@ char	*ft_append(char *str, char c)
 	char	*ret;
 
 	i = 0;
-	ret = (char*) ft_calloc(ft_strlen(str) + 2, sizeof(char));
+	ret = (char*)ft_calloc(ft_strlen(str) + 2, sizeof(char));
 	while (str[i])
 	{
 		ret[i] = str[i];

@@ -27,16 +27,17 @@ int	parse_error(char *str)
 	}
 	while (str[i])
 	{
-		// pipe error
-		if (str[i] == '|' && str[i+1] == '|' && str[i+2] == '|' && i < (int)ft_strlen(str)-2)
+		/* pipe error*/
+		if (str[i] == '|' && str[i + 1] == '|' && str[i + 2] == '|'
+			&& i < (int)ft_strlen(str) - 2)
 		{
 			ft_printf("parse error near `||'\n");
 			return (0);
 		}
-		else if(str[i] == '|')
+		else if (str[i] == '|')
 		{
-			j = i+1;
-			while(is_whitespace(str[j]))
+			j = i + 1;
+			while (is_whitespace(str[j]))
 				j++;
 			if (j == (int)ft_strlen(str))
 			{
@@ -50,15 +51,16 @@ int	parse_error(char *str)
 			}
 		}
 		//TODO chevron error
-		if (str[i] == '>' && str[i+1] == '>' && str[i+2] == '>' && i < (int)ft_strlen(str)-2)
+		if (str[i] == '>' && str[i + 1] == '>'
+			&& str[i + 2] == '>' && i < (int)ft_strlen(str) - 2)
 		{
 			ft_printf("parse error near `||'\n");
 			return (0);
 		}
-		else if(str[i] == '>')
+		else if (str[i] == '>')
 		{
-			j = i+1;
-			while(is_whitespace(str[j]))
+			j = i + 1;
+			while (is_whitespace(str[j]))
 				j++;
 			if (j == (int)ft_strlen(str))
 			{
@@ -71,15 +73,16 @@ int	parse_error(char *str)
 				return (0);
 			}
 		}
-		if (str[i] == '<' && str[i+1] == '<' && str[i+2] == '<' && i < (int)ft_strlen(str)-2)
+		if (str[i] == '<' && str[i + 1] == '<'
+			&& str[i + 2] == '<' && i < (int)ft_strlen(str) - 2)
 		{
 			ft_printf("parse error near `||'\n");
 			return (0);
 		}
-		else if(str[i] == '<')
+		else if (str[i] == '<')
 		{
 			j = i+1;
-			while(is_whitespace(str[j]))
+			while (is_whitespace(str[j]))
 				j++;
 			if (j == (int)ft_strlen(str))
 			{
@@ -93,12 +96,12 @@ int	parse_error(char *str)
 			}
 		}
 		//permission denied
-		if(str[i] == '"' && str[i + 1] == '"')
+		if (str[i] == '"' && str[i + 1] == '"')
 		{
 			ft_printf("technique interdite\n");
 			return (0);
 		}
-		if(str[i] == '\'' && str[i + 1] == '\'')
+		if (str[i] == '\'' && str[i + 1] == '\'')
 		{
 			ft_printf("technique interdite\n");
 			return (0);

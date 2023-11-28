@@ -15,14 +15,14 @@
 static int	is_valid_input(char *input)
 {
 	int	i;
-	
+
 	i = 0;
-	if(ft_isdigit(input[i]) == 1)
+	if (ft_isdigit(input[i]) == 1)
 		return (0);
 	i++;
 	while (input[i] && input[i] != '=')
 	{
-		if(ft_isalnum(input[i]) == 0)
+		if (ft_isalnum(input[i]) == 0)
 			return (-1);
 		i++;
 	}
@@ -45,7 +45,7 @@ void	ft_unset(t_cmd *cmd, t_main **main)
 		if (!is_valid_input(cmd->tokens->str) && boolean == 0)
 		{
 			error_print(ERROR, "not a valid identifier",
-					cmd->tokens->str);
+				cmd->tokens->str);
 			boolean = 1;
 		}
 		del_from_env(&((*main)->env), cmd->tokens->str);

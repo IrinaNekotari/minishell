@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   syntax_checker.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 14:54:39 by mjuette           #+#    #+#             */
+/*   Updated: 2023/11/28 14:54:41 by mjuette          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	is_chevrons(char *str, char quote)
@@ -35,12 +47,13 @@ static int	exception_de_merde(t_cmd **cmd)
 {
 	if (!(*cmd)->tokens->next)
 		return (error_syntax(ERROR, "newline"));
-	else if (is_chevrons((*cmd)->tokens->next->str, (*cmd)->tokens->next->quote))
+	else if (is_chevrons((*cmd)->tokens->next->str,
+		(*cmd)->tokens->next->quote))
 		return (error_syntax(ERROR, (*cmd)->tokens->next->str));
 	free((*cmd)->tokens->str);
 	(*cmd)->tokens->str = ft_strdup("<");
-	insert_token(cmd, (*cmd)->tokens->next->str, 
-			(*cmd)->tokens->next->quote);
+	insert_token(cmd, (*cmd)->tokens->next->str,
+		(*cmd)->tokens->next->quote);
 	insert_token(cmd, ">", 0);
 	return (1);
 }		
@@ -59,7 +72,8 @@ int	check_chevrons(t_cmd **cmd)
 		{
 			if (!(*cmd)->tokens->next->str)
 				return (error_syntax(ERROR, "newline"));
-			else if (is_chevrons((*cmd)->tokens->next->str, (*cmd)->tokens->next->quote))
+			else if (is_chevrons((*cmd)->tokens->next->str,
+				(*cmd)->tokens->next->quote))
 				return (error_syntax(ERROR, (*cmd)->tokens->next->str));
 		}
 		(*cmd)->tokens = (*cmd)->tokens->next;

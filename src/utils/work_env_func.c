@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void    update_env(t_env **env, char *name, char *newvalue)
+void	update_env(t_env **env, char *name, char *newvalue)
 {
 	while ((*env))
 	{
@@ -26,72 +26,75 @@ void    update_env(t_env **env, char *name, char *newvalue)
 		if ((*env)->next)
 			(*env) = (*env)->next;
 		else
-			break;
+			break ;
 	}
 	rollback_env(env);
 }
 
-//TODO : A norminer
-void    del_from_env(t_env **env, char *name)
+static	void	del_env(t_env *env)
 {
 	t_env	*element;
 
+	element = env;
+	free(element->name);
+	free(element->value);
+	if (element->next)
+	{
+		env = env->next;
+		if (element->previous)
+		{
+			env->previous = element->previous;
+			element->previous->next = element->next;
+		}
+		else
+			env->previous = NULL;
+	}
+	else if (element->previous)
+	{
+		env = env->previous;
+		env->next = NULL;
+	}
+	free(element);
+}
+
+//TODO : A norminer
+void	del_from_env(t_env **env, char *name)
+{
+	while ((*env))
+	{
+		if (ft_equals((*env)->name, name))
+			del_env((*env));
+		if ((*env)->next)
+			(*env) = (*env)->next;
+		else
+			break ;
+	}
+	rollback_env(env);
+}
+
+void	add_to_env(t_env **env, char *name, char *value)
+{
 	while ((*env))
 	{
 		if (ft_equals((*env)->name, name))
 		{
-			element = (*env);
-			free(element->name);
-			free(element->value);
-			if (element->next)
-			{
-				(*env) = (*env)->next;
-				if (element->previous)
-				{
-					(*env)->previous = element->previous;
-					element->previous->next = element->next;
-				}
-				else
-					(*env)->previous = NULL;
-			}
-			else if (element->previous)
-			{
-				(*env) = (*env)->previous;
-				(*env)->next = NULL;
-			}
-			free(element);
+			free((*env)->value);
+			(*env)->value = ft_strdup(value);
+			rollback_env(env);
+			return ;
 		}
 		if ((*env)->next)
 			(*env) = (*env)->next;
 		else
-			break;
+			break ;
 	}
+	(*env)->next = ft_calloc(1, sizeof(t_env));
+	(*env)->next->previous = (*env);
+	(*env) = (*env)->next;
+	(*env)->name = ft_strdup(name);
+	(*env)->value = ft_strdup(value);
+	(*env)->next = NULL;
 	rollback_env(env);
-}
-
-void    add_to_env(t_env **env, char *name, char *value)
-{
-    while ((*env))
-    {
-        if (ft_equals((*env)->name, name))
-        {
-          free((*env)->value);
-          (*env)->value = ft_strdup(value);
-          rollback_env(env);
-          return ;
-        }
-        if ((*env)->next)
-        	(*env) = (*env)->next;
-        else
-        	break;
-    }
-    (*env)->next = ft_calloc(1, sizeof(t_env));
-    (*env)->next->previous = (*env);
-    (*env) = (*env)->next;
-    (*env)->name = ft_strdup(name);
-    (*env)->value = ft_strdup(value);
-    (*env)->next = NULL;
-    rollback_env(env);
 }
 
 char	*ft_getenv(t_env *env, char *search)

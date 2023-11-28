@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 14:19:57 by mjuette           #+#    #+#             */
+/*   Updated: 2023/11/28 14:19:58 by mjuette          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static char	*create_list(t_env *env)
 {
-	char *a;
+	char	*a;
 
 	a = ft_calloc(1, sizeof(char));
 	while (env)
@@ -19,11 +31,11 @@ static char	*create_list(t_env *env)
 
 static int	err_env(t_cmd *cmd, char *vars)
 {
-	if(!ft_strchr(cmd->tokens->str, '='))
+	if (!ft_strchr(cmd->tokens->str, '='))
 	{
 		handle_output_create(cmd);
 		error_print(ERROR, "No such file or directory",
-				cmd->tokens->str);
+			cmd->tokens->str);
 		free(vars);
 		return (0);
 	}

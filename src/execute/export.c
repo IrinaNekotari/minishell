@@ -12,67 +12,66 @@
 
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 static int	is_valid_input(char *input)
 {
 	int	i;
 
 	i = 0;
-	if(ft_isdigit(input[i]) == 1)
+	if (input[0] == '=')
+		return (0);
+	if (ft_isdigit(input[i]) == 1)
 		return (0);
 	i++;
 	while (input[i] && input[i] != '=')
 	{
-		if(ft_isalnum(input[i]) == 0)
+		if (ft_isalnum(input[i]) == 0)
 			return (-1);
 		i++;
 	}
 	return (1);
 }
 
-static char	*create_list(t_env *env)
+int	is_valid_tokens(t_cmd *cmd)
 {
-	char *a;
-
-	a = ft_calloc(1, sizeof(char));
-	while (env)
+	while (cmd->tokens->str)
 	{
-		super_concat(&a, "declare -x ");
-		super_concat(&a, env->name);
-		super_concat(&a, "=");
-		super_concat(&a, env->value);
-		if (env->next)
-			super_concat(&a, "\n");
-		env = env->next;
+		if (!is_valid_input(cmd->tokens->str))
+		{
+			error_print(ERROR, "not a valid identifier", cmd->tokens->str);
+			return (0);
+		}
+		cmd->tokens = cmd->tokens->next;
 	}
-	return (a);
+	while (cmd->tokens->previous)
+		cmd->tokens = cmd->tokens->previous;
+	return (1);
 }
 
-void	ft_export(t_cmd *cmd, t_main *main)
+void	ft_export(t_cmd *cmd, t_main **main)
 {
 	char	*vars;
-	
+	char	*name;
+	char	*value;
+
 	if (!cmd->tokens->next->str)
 	{
-		vars = create_list(main->env);
-		print_io(cmd, vars, &main);
+		vars = print_sorted_env((*main)->env);
+		g_received_signal = IGNORE_NEW_LINE;
+		print_io(cmd, vars, main);
 		free(vars);
 	}
-	else
+	if (!is_valid_tokens(cmd))
+		return ;
+	while (cmd->tokens->str)
 	{
-		vars = create_list(main->env);
+		generate_env(cmd->tokens->str, &name, &value);
+		if (value && value[0])
+			add_to_env(&(*(main))->env, name, value);
 		cmd->tokens = cmd->tokens->next;
-		while (cmd->tokens->str)
-		{
-			if (!is_valid_input(cmd->tokens->str))
-			{
-				error_print(ERROR, "not a valid identifier",cmd->tokens->str);
-				return ;
-			}
-			super_concat(&vars, "\n");
-			super_concat(&vars, cmd->tokens->str);
-			cmd->tokens = cmd->tokens->next;
-		}
-		print_io(cmd, vars, &main);
-		free(vars);
+		free(name);
+		if (value)
+			free(value);
 	}
 }

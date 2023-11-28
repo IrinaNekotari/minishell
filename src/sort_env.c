@@ -47,19 +47,19 @@ int	str_env_len(char **env)
 {
 	int	i;
 
-	i=0;
+	i = 0;
 	while (env[i])
 		i++;
 	return (i);
 }
 
-char			*env_to_str(t_env *lst)
+char	*env_to_str(t_env *lst)
 {
 	char	*env;
 	int		i;
 	int		j;
 
-	if (!(env = malloc(sizeof(char) * 10*size_env(lst) + 1)))
+	if (!(env = malloc(sizeof(char) * 10 * size_env(lst) + 1)))
 		return (NULL);
 	i = 0;
 	while (lst && lst->next != NULL)
@@ -98,7 +98,7 @@ void	sort_env(char **tab, int env_len)
 {
 	int	ordered;
 	int	i;
-	char	*tmp;
+	char		*tmp;
 
 	ordered = 0;
 	while (tab && ordered == 0)
@@ -120,24 +120,26 @@ void	sort_env(char **tab, int env_len)
 	}
 }
 
-void	print_sorted_env(t_env *env)
+char	*print_sorted_env(t_env *env)
 {
 	int	i;
-	char	**tab;
 	char	*str_env;
+	char	*to_print;
+	char		**tab;
 
 	str_env = env_to_str(env);
 	tab = ft_split(str_env, '\n');
 	free(str_env);
 	sort_env(tab, str_env_len(tab));
+	to_print = ft_calloc(1, sizeof(char));
 	i = 0;
 	while (tab[i])
-	{
-		//A retravailler : Utilise mon print_io
-		//et super concat : T'as besoin de genre 3 lignes pour le faire
-		ft_putstr_fd("declare -x ", 1);
-		ft_putendl_fd(tab[i], 1);
+	{	
+		super_concat(&to_print, "declare -x ");
+		super_concat(&to_print, tab[i]);
+		super_concat(&to_print, "\n");
 		i++;
 	}
 	free_liste(tab);
+	return (to_print);
 }

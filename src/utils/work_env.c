@@ -18,8 +18,8 @@
 char	**env_to_array(t_env *env)
 {
 	char	**ret;
-	int			len;
-	int			i;
+	int		len;
+	int		i;
 
 	len = env_length(env) + 3;
 	i = 0;
