@@ -81,10 +81,11 @@ void	get_orders(t_cmd *cmd, t_main **main)
 void	execute(t_cmd *cmd, t_main **main)
 {
 	(*main)->state = 0;
-	(*main)->pipes = ft_calloc(2, sizeof(int));
+	(*main)->pipes = ft_calloc(cmd_depth(cmd) * 2, sizeof(int));
 	pipe((*main)->pipes);
+	(*main)->pipes2 = ft_calloc(cmd_depth(cmd) * 2, sizeof(int));
+	pipe((*main)->pipes2);
 	get_orders(cmd, main);
-	close((*main)->pipes[0]);
-	close((*main)->pipes[1]);
 	free((*main)->pipes);
+	free((*main)->pipes2);
 }

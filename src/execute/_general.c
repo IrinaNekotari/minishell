@@ -80,7 +80,7 @@ char	*exe(char *path, char *file, char **args, t_main **main)
 		if ((*main)->state == 1)
 		{
 			dup2((*main)->pipes[0], STDIN_FILENO);
-			ft_putstr_fd((*main)->inpipe, (*main)->pipes[0]);
+			//ft_putstr_fd((*main)->inpipe, (*main)->pipes[0]);
 		}
 		/*Première commande - Donc pas de pipe a lire*/
 		else
@@ -98,6 +98,24 @@ char	*exe(char *path, char *file, char **args, t_main **main)
 		J'ai essayé plein de trucs, mais rien trouvé
 		ça me hante en pleine nuit ces conneries
 		Les pipes sont ouvertes dans l'execute*/
+		dup2((*main)->pipes[1], STDOUT_FILENO);
+		//dup2((*main)->pipes[1], (*main)->pipes2[1]);
+		//dup2(STDOUT_FILENO, (*main)->pipes[1]);
+		//close((*main)->pipes[0]);
+		close((*main)->pipes[1]);
+		//close((*main)->pipes2[0]);
+		//close((*main)->pipes2[1]);
+		//ft_putstr_fd((*main)->inpipe, 1);
+		//close(0);
+		//dup2(pipes[0], 0);
+		//Comment on est censé envoyer le résultat de la pipe
+		//précédante 
+		//Au besoin, elle est stockée dans
+		// (*main)->inpipe en char *
+		//Dans l'entrée de la commande actuelle
+		//J'ai essayé plein de trucs, mais rien trouvé
+		//ça me hante en pleine nuit ces conneries
+		//Les pipes sont ouvertes dans l'execute
 		while (paths[i])
 		{
 			/*Ce que fait ce morceau : pour chaque variable
@@ -119,6 +137,7 @@ char	*exe(char *path, char *file, char **args, t_main **main)
 	}
 	/*La, on attends que le fork se finisse*/
 	waitpid(pid, &ret, 0);
+	dup2((*main)->pipes[0], (*main)->pipes2[1]);
 	close((*main)->pipes[1]);
 	/*On reconstitue le retour (sortie standard)
 	Dans le char * try
@@ -129,6 +148,8 @@ char	*exe(char *path, char *file, char **args, t_main **main)
 	free_liste(paths);
 	(*main)->last = ret;
 	/*free(pipes);*/
+	ft_putstr_fd(try2, (*main)->pipes2[1]);
+	//free(pipes);
 	return (try2);
 }
 
