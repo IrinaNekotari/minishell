@@ -137,7 +137,7 @@ char	*exe(char *path, char *file, char **args, t_main **main)
 	}
 	/*La, on attends que le fork se finisse*/
 	waitpid(pid, &ret, 0);
-	dup2((*main)->pipes[0], (*main)->pipes2[1]);
+	//dup2((*main)->pipes[0], (*main)->pipes2[1]);
 	close((*main)->pipes[1]);
 	/*On reconstitue le retour (sortie standard)
 	Dans le char * try
@@ -148,7 +148,7 @@ char	*exe(char *path, char *file, char **args, t_main **main)
 	free_liste(paths);
 	(*main)->last = ret;
 	/*free(pipes);*/
-	ft_putstr_fd(try2, (*main)->pipes2[1]);
+	//ft_putstr_fd(try2, (*main)->pipes2[1]);
 	//free(pipes);
 	return (try2);
 }

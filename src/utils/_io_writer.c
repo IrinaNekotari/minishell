@@ -30,16 +30,7 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 	}
 	if (cmd->output->file)
 		handle_output(cmd, str);
-	else if (!cmd->pipe && g_received_signal == IGNORE_NEW_LINE)
+	if ((*main)->mode == 1)
 		ft_printf("%s", str);
-	else if (!cmd->pipe)
-		ft_printf("%s\n", str);
-	ft_putstr_fd(str, (*main)->pipes[0]);
-	//if (cmd->pipe)
-	//	ft_putstr_fd(str, cmd->pipes[0]);
-	//(void)main;
-	//ft_putstr_fd(str, (*main)->pipes[(*main)->state][0]);
-	if ((*main)->inpipe)
-		free((*main)->inpipe);
-	(*main)->inpipe = ft_strdup(str);
+	(void)main;
 }

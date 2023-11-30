@@ -46,6 +46,10 @@
 # define CRITICAL 3
 # define FUBAR 4
 
+# define FIRST_PIPE 0
+# define LAST_PIPE 2
+# define IN_PIPE 1
+
 # define IGNORE_NEW_LINE -8
 
 /*
@@ -145,8 +149,8 @@ typedef struct	s_main
 	int		last;
 	char	*initpwd;
 	char	*inpipe;
-	int	*pipes;
-	int	*pipes2;
+	int	pipes[2];
+	int	mode;
 	int	state;
 	t_env	*env;
 }	t_main;
@@ -188,6 +192,7 @@ void	ft_cd(t_cmd *cmd, t_main **main);
 void	ft_env(t_cmd *cmd, t_main *main);
 void	ft_exit(t_cmd *cmd, t_main *main);
 void	execute_general(t_cmd *cmd, t_main *main);
+void	ft_exec(t_cmd *cmd, t_main **main);
 
 void	parse(char *s, t_main **main);
 void	iterate(char *s, t_main *main);

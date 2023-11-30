@@ -24,7 +24,7 @@ SRC = src/main.c src/parse.c src/parse_error.c src/parse_single.c src/parse_sing
 	 src/utils/work_env.c src/execute/echo.c src/execute/cd.c \
 	 src/utils/work_env_func.c src/parse_variables.c src/errors.c \
 	 src/chains/depths.c \
-	 src/chains/lengths.c
+	 src/chains/lengths.c src/execute/bin.c
 
 OBJ  = $(SRC:.c=.o)
 

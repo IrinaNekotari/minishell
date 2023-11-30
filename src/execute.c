@@ -55,6 +55,8 @@ void	get_orders(t_cmd *cmd, t_main **main)
 {
 	while (cmd)
 	{
+		if (!cmd->pipe)
+			(*main)->state = LAST_PIPE;
 		if (ft_equals(cmd->tokens->str, "pwd"))
 			ft_pwd(cmd, (*main));
 		else if (ft_equals(cmd->tokens->str, "env"))
@@ -74,18 +76,14 @@ void	get_orders(t_cmd *cmd, t_main **main)
 		if (g_received_signal == -3)
 			break ;
 		cmd = cmd->pipe;
-		(*main)->state = 1;
+		(*main)->state = IN_PIPE;
 	}
 }
 
 void	execute(t_cmd *cmd, t_main **main)
 {
-	(*main)->state = 0;
-	(*main)->pipes = ft_calloc(cmd_depth(cmd) * 2, sizeof(int));
-	pipe((*main)->pipes);
-	(*main)->pipes2 = ft_calloc(cmd_depth(cmd) * 2, sizeof(int));
-	pipe((*main)->pipes2);
-	get_orders(cmd, main);
-	free((*main)->pipes);
-	free((*main)->pipes2);
+	(*main)->state = FIRST_PIPE;
+	(*main)->mode = 0;
+	//get_orders(cmd, main);
+	ft_exec(cmd, main);
 }
