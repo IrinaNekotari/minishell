@@ -16,7 +16,6 @@ int	g_received_signal = -1;
 
 void	welcome_message(void)
 {
-	log_open_exit(1);
 	ft_printf("\x1b[37m###########################################");
 	ft_printf("########################\n");
 	ft_printf("#				  				  #\n");
@@ -65,23 +64,8 @@ void	ft_eof(t_main *main)
 	(void)main;
 	rl_clear_history();
 	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n\x1b[0m ");
-	log_open_exit(0);
 	chdir(main->initpwd);
 	exit(0);
-}
-
-int	ft_empty(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (!is_whitespace(str[i]))
-			return (0);
-		i++;
-	}
-	return (1);
 }
 
 void	get_prompt(t_main *main)
@@ -125,8 +109,9 @@ int	main(int args, char *argv[], char *env[])
 	{
 		get_prompt(&main);
 		to_parse = readline(" minishell ~$ ");
-		if (!to_parse)
+		if (!to_parse && main.state != 1)
 			ft_eof(&main);
+		main.state = 0;
 		to_parse = check_quote(to_parse);
 		if (!to_parse)
 		{

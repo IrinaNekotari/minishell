@@ -99,22 +99,22 @@ typedef struct s_io
 /*
 * Stocke un "mot" et stocke s'il est quote par des '' "" ou \
 */
-typedef struct	s_word
+typedef struct s_word
 {
 	char			quote;
-	char		*str;
+	char			*str;
 	struct s_word	*next;
 	struct s_word	*previous;
 }	t_word;
 /*
 * Stocke les valeurs d'environnement
 */
-typedef struct	s_env
+typedef struct s_env
 {
-	char		*name;
-	char		*value;
-	struct s_env	*next;
-	struct s_env	*previous;
+	struct s_env		*next;
+	struct s_env		*previous;
+	char				*name;
+	char				*value;
 }	t_env;
 
 /**
@@ -122,7 +122,7 @@ typedef struct	s_env
 */
 typedef struct s_pile
 {
-	char		*str;
+	char			*str;
 	struct s_pile	*next;
 	struct s_pile	*previous;
 }	t_pile;
@@ -132,26 +132,27 @@ typedef struct s_pile
 */
 typedef struct s_cmd
 {
+	struct s_io		*input;
+	struct s_io		*output;
 	struct s_word	*tokens;
-	struct s_io	*input;
-	struct s_io	*output;
 	struct s_cmd	*pipe;
 	struct s_cmd	*previous;
-	int		*pipes;
+	int				*pipes;
 }	t_cmd;
 
 /*
-*	Structure principale pour ballader les valeurs d'env, de val, et la derniere commande
+*	Structure principale pour ballader les valeurs d'env, 
+*	de val, et la derniere commande
 *	enregistree
 */
-typedef struct	s_main
+typedef struct s_main
 {
 	int		last;
+	int		pipes[2];
+	int		mode;
+	int		state;
 	char	*initpwd;
 	char	*inpipe;
-	int	pipes[2];
-	int	mode;
-	int	state;
 	t_env	*env;
 }	t_main;
 
@@ -164,7 +165,6 @@ int		is_escapable2(char c);
 int		is_blank(char *ptr, int j);
 int		is_blank(char *ptr, int j);
 int		str_env_len(char **env);
-int		chain_as_equals(t_cmd **cmd, char *cmp);
 int		ft_equals(char *s1, char *s2);
 int		handle_input(t_cmd *cmd);
 int		is_usable(char c);
@@ -180,6 +180,7 @@ int		output_depth(t_cmd *cmd);
 int		tokens_depth(t_cmd *cmd);
 int		env_depth(t_env *env);
 int		cmd_depth(t_cmd *cmd);
+int		ft_empty(char *str);
 
 /*
 *	Builtins et execution
@@ -220,6 +221,7 @@ void	print_io(t_cmd *cmd, char *str, t_main **main);
 void	handle_output(t_cmd *cmd, char *str);
 void	handle_output_create(t_cmd *cmd);
 void	rollback_env(t_env **env);
+void	ft_eof(t_main *main);
 void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);

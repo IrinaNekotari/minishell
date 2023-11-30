@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bin.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/30 14:22:12 by mjuette           #+#    #+#             */
+/*   Updated: 2023/11/30 14:22:13 by mjuette          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 extern int	g_received_signal;
@@ -45,7 +57,8 @@ static char	**create_args(t_cmd *cmd)
 void	fork_returns(t_cmd *cmd, t_main **main, int pid)
 {
 	waitpid(pid, &((*main)->last), 0);
-	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1 || close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
+	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1
+		|| close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		return ;
@@ -72,6 +85,19 @@ int	exec_builtin(t_cmd *cmd, t_main **main)
 		ft_cd(cmd, main);
 	if (g_received_signal == -3)
 		return (-1);
+	return (0);
+}
+
+int	is_system(t_cmd *cmd)
+{
+	if (ft_equals(cmd->tokens->str, "exit"))
+		return (1);
+	else if (ft_equals(cmd->tokens->str, "cd"))
+		return (1);
+	else if (ft_equals(cmd->tokens->str, "unset"))
+		return (1);
+	else if (ft_equals(cmd->tokens->str, "export") && !cmd->tokens->next->str)
+		return (1);
 	return (0);
 }
 
@@ -119,7 +145,8 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	}
 	//codes[1] = close((*main)->pipes[0]);
 	//codes[2] = close((*main)->pipes[1]);
-	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1 || close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
+	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
+		|| close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		exit(-1);
@@ -131,13 +158,12 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	exit(ret);
 }
 
-//A changer : cd, export (avec des arguments), unset et exit ne
-//doivent PAS être executés dans le fork !!!!
 void	ft_exec(t_cmd *cmd, t_main **main)
 {
 	int	pid;
 	int	i;
 
+	(*main)->state = 1;
 	if (!cmd->pipe)
 		(*main)->state = LAST_PIPE;
 	i = pipe((*main)->pipes);
@@ -146,6 +172,8 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		return ;
 	}
+	if (is_system(cmd))
+		exec_builtin(cmd, main);
 	pid = fork();
 	if (pid < 0)
 	{

@@ -18,7 +18,7 @@ Essaye de tout mettre dans export
 */
 static int	ft_strcmp(char *s1, char *s2)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
@@ -26,7 +26,7 @@ static int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-size_t			size_env(t_env *lst)
+size_t	size_env(t_env *lst)
 {
 	size_t	lst_len;
 
@@ -59,7 +59,8 @@ char	*env_to_str(t_env *lst)
 	int		i;
 	int		j;
 
-	if (!(env = malloc(sizeof(char) * 10 * size_env(lst) + 1)))
+	env = malloc(sizeof(char) * 10 * size_env(lst) + 1);
+	if (!env)
 		return (NULL);
 	i = 0;
 	while (lst && lst->next != NULL)
@@ -96,9 +97,9 @@ char	*env_to_str(t_env *lst)
 
 void	sort_env(char **tab, int env_len)
 {
-	int	ordered;
-	int	i;
-	char		*tmp;
+	char	*tmp;
+	int		ordered;
+	int		i;
 
 	ordered = 0;
 	while (tab && ordered == 0)
@@ -122,10 +123,10 @@ void	sort_env(char **tab, int env_len)
 
 char	*print_sorted_env(t_env *env)
 {
-	int	i;
-	char	*str_env;
-	char	*to_print;
+	char		*str_env;
+	char		*to_print;
 	char		**tab;
+	int			i;
 
 	str_env = env_to_str(env);
 	tab = ft_split(str_env, '\n');
@@ -134,7 +135,7 @@ char	*print_sorted_env(t_env *env)
 	to_print = ft_calloc(1, sizeof(char));
 	i = 0;
 	while (tab[i])
-	{	
+	{
 		super_concat(&to_print, "declare -x ");
 		super_concat(&to_print, tab[i]);
 		super_concat(&to_print, "\n");

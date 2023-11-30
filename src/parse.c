@@ -115,7 +115,6 @@ void	iterate(char *s, t_main *main)
 	//TODO : Chercher la bonne taille
 	lst = (char **) ft_calloc(count_occur(s, ';') + 1, sizeof(int) * 100);
 	lst = split_semicolon(s, lst);
-	log_input(s);
 	while (lst[i])
 	{
 		parse(lst[i], &main);

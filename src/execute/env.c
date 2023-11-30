@@ -60,8 +60,8 @@ void	ft_env(t_cmd *cmd, t_main *main)
 		{
 			if (!err_env(cmd, vars))
 				return ;
-			super_concat(&vars, "\n");
 			super_concat(&vars, cmd->tokens->str);
+			super_concat(&vars, "\n");
 			cmd->tokens = cmd->tokens->next;
 		}
 		print_io(cmd, vars, &main);

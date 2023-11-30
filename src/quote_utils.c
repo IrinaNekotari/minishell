@@ -12,39 +12,13 @@
 
 #include "minishell.h"
 
-char	*ft_concat(char *s1, char *s2)
-{
-	int		i;
-	int		j;
-	char	*res;
-
-	i = 0;
-	j = 0;
-	res = (char *) malloc(sizeof(char)
-			* (ft_strlen(s1) + ft_strlen(s2) + 2));
-	while (s1[i] != '\0')
-	{
-		res[i] = s1[i];
-		i++;
-	}
-	res[i++] = '\n';
-	while (s2[j] != '\0')
-	{
-		res[i] = s2[j];
-		i++;
-		j++;
-	}
-	res[i] = 0;
-	return (res);
-}
-
 char	*ft_append(char *str, char c)
 {
 	int		i;
 	char	*ret;
 
 	i = 0;
-	ret = (char*)ft_calloc(ft_strlen(str) + 2, sizeof(char));
+	ret = (char *)ft_calloc(ft_strlen(str) + 2, sizeof(char));
 	while (str[i])
 	{
 		ret[i] = str[i];

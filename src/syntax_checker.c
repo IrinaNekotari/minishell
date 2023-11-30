@@ -29,6 +29,20 @@ static int	is_chevrons(char *str, char quote)
 	return (0);
 }
 
+int	ft_empty(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!is_whitespace(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	insert_token(t_cmd **cmd, char *str, int q)
 {
 	t_word	*t;
@@ -48,7 +62,7 @@ static int	exception_de_merde(t_cmd **cmd)
 	if (!(*cmd)->tokens->next)
 		return (error_syntax(ERROR, "newline"));
 	else if (is_chevrons((*cmd)->tokens->next->str,
-		(*cmd)->tokens->next->quote))
+			(*cmd)->tokens->next->quote))
 		return (error_syntax(ERROR, (*cmd)->tokens->next->str));
 	free((*cmd)->tokens->str);
 	(*cmd)->tokens->str = ft_strdup("<");
@@ -56,7 +70,7 @@ static int	exception_de_merde(t_cmd **cmd)
 		(*cmd)->tokens->next->quote);
 	insert_token(cmd, ">", 0);
 	return (1);
-}		
+}
 
 int	check_chevrons(t_cmd **cmd)
 {
@@ -73,7 +87,7 @@ int	check_chevrons(t_cmd **cmd)
 			if (!(*cmd)->tokens->next->str)
 				return (error_syntax(ERROR, "newline"));
 			else if (is_chevrons((*cmd)->tokens->next->str,
-				(*cmd)->tokens->next->quote))
+					(*cmd)->tokens->next->quote))
 				return (error_syntax(ERROR, (*cmd)->tokens->next->str));
 		}
 		(*cmd)->tokens = (*cmd)->tokens->next;

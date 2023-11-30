@@ -14,43 +14,6 @@
 
 extern int	g_received_signal;
 
-int	chain_as_equals(t_cmd **cmd, char *cmp)
-{
-	while ((*cmd)->tokens->str)
-	{
-		ft_printf("Comparing %s and %s\n", (*cmd)->tokens->str, cmp);
-		if (ft_equals((*cmd)->tokens->str, cmp))
-		{
-			if (!(*cmd)->tokens->quote)
-			{
-				(*cmd)->tokens = (*cmd)->tokens->next;
-				return (1);
-			}
-		}
-		(*cmd)->tokens = (*cmd)->tokens->next;
-	}
-	rollback_tokens(cmd);
-	return (0);
-}
-
-int	ft_equals(char *s1, char *s2)
-{
-	int	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (0);
-	while (s1[i] && s2[i])
-	{
-		if (s1[i] != s2[i])
-			return (0);
-		i++;
-	}
-	if (s1[i] != s2[i])
-		return (0);
-	return (1);
-}
-
 void	get_orders(t_cmd *cmd, t_main **main)
 {
 	while (cmd)

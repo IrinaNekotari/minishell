@@ -81,7 +81,7 @@ int	parse_error(char *str)
 		}
 		else if (str[i] == '<')
 		{
-			j = i+1;
+			j = i + 1;
 			while (is_whitespace(str[j]))
 				j++;
 			if (j == (int)ft_strlen(str))
