@@ -131,6 +131,8 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	exit(ret);
 }
 
+//A changer : cd, export (avec des arguments), unset et exit ne
+//doivent PAS être executés dans le fork !!!!
 void	ft_exec(t_cmd *cmd, t_main **main)
 {
 	int	pid;
