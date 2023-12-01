@@ -31,28 +31,28 @@ void	update_env(t_env **env, char *name, char *newvalue)
 	rollback_env(env);
 }
 
-static	void	del_env(t_env *env)
+static	void	del_env(t_env **env)
 {
 	t_env	*element;
 
-	element = env;
+	element = (*env);
 	free(element->name);
 	free(element->value);
 	if (element->next)
 	{
-		env = env->next;
+		(*env) = (*env)->next;
 		if (element->previous)
 		{
-			env->previous = element->previous;
+			(*env)->previous = element->previous;
 			element->previous->next = element->next;
 		}
 		else
-			env->previous = NULL;
+			(*env)->previous = NULL;
 	}
 	else if (element->previous)
 	{
-		env = env->previous;
-		env->next = NULL;
+		(*env) = (*env)->previous;
+		(*env)->next = NULL;
 	}
 	free(element);
 }
@@ -63,11 +63,13 @@ void	del_from_env(t_env **env, char *name)
 	while ((*env))
 	{
 		if (ft_equals((*env)->name, name))
-			del_env((*env));
-		if ((*env)->next)
-			(*env) = (*env)->next;
-		else
+		{
+			del_env(env);
 			break ;
+		}
+		if (!(*env)->next)
+			break ;
+		(*env) = (*env)->next;
 	}
 	rollback_env(env);
 }

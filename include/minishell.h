@@ -51,6 +51,8 @@
 # define IN_PIPE 1
 
 # define IGNORE_NEW_LINE -8
+# define SIGNAL_QUIT -3
+# define SIGNAL_ABORT -5
 
 /*
 * Suhz-Mahbyt la norminette
@@ -149,10 +151,10 @@ typedef struct s_main
 {
 	int		last;
 	int		pipes[2];
+	int		backupfd[2];
 	int		mode;
 	int		state;
 	char	*initpwd;
-	char	*inpipe;
 	t_env	*env;
 }	t_main;
 
@@ -226,6 +228,7 @@ void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);
 void	super_concat(char **a, char *b);
+void	hyper_concat(char **base, ...);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
 void	error_print(int severerity, char *msg, char *add);

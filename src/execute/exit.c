@@ -14,7 +14,7 @@
 
 extern int	g_received_signal;
 
-static int	ft_isnum(const char *str)
+/*static int	ft_isnum(const char *str)
 {
 	int	i;
 
@@ -30,14 +30,14 @@ static int	ft_isnum(const char *str)
 		i++;
 	}
 	return (1);
-}
+}*/
 
 void	ft_exit(t_cmd *cmd, t_main *main)
 {
-	//void (cmd);
+	(void)cmd;
 	(void)main;
-	//g_received_signal = -3;
-	if (cmd->tokens->next->str && !ft_isnum(cmd->tokens->next->str))
+	g_received_signal = -3;
+	/*if (cmd->tokens->next->str && !ft_isnum(cmd->tokens->next->str))
 	{
 		ft_printf("minishell: exit: ");
 		ft_printf("%s", cmd->tokens->next->str);
@@ -52,5 +52,5 @@ void	ft_exit(t_cmd *cmd, t_main *main)
 			exit(ft_atoi(cmd->tokens->next->str));
 	}
 	else
-		exit(0);
+		exit(0);*/
 }

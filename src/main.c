@@ -103,12 +103,20 @@ int	main(int args, char *argv[], char *env[])
 	signal(SIGQUIT, SIG_IGN);
 	main.env = make_env(env);
 	main.last = 0;
-	main.inpipe = ft_calloc(1, sizeof(char));
+	main.backupfd[0] = dup(0);
+	main.backupfd[1] = dup(1);
 	main.initpwd = ft_getenv(main.env, "PWD");
 	while (1)
 	{
+		dup2(main.backupfd[0], 0);
+		dup2(main.backupfd[1], 1);
 		get_prompt(&main);
 		to_parse = readline(" minishell ~$ ");
+		/**
+		En gros, le flux d'entrée (STDIN) est
+		fermé, donc readline ne peut recevoir que
+		du vide, soit EOF - donc ça merde grave
+		*/
 		if (!to_parse && main.state != 1)
 			ft_eof(&main);
 		main.state = 0;
@@ -118,12 +126,10 @@ int	main(int args, char *argv[], char *env[])
 			ft_printf("\n");
 			continue ;
 		}
-		//if (!parse_error(to_parse))
-		//	continue ;
 		add_history(to_parse);
 		if (to_parse && !ft_empty(to_parse))
 			iterate(to_parse, &main);
-		if (g_received_signal == -3)
+		if (g_received_signal == SIGNAL_QUIT)
 			ft_eof(&main);
 		g_received_signal = -1;
 		free(to_parse);

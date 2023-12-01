@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 static char	*create_list(t_env *env)
 {
 	char	*a;
@@ -22,10 +24,13 @@ static char	*create_list(t_env *env)
 		super_concat(&a, env->name);
 		super_concat(&a, "=");
 		super_concat(&a, env->value);
-		if (env->next)
-			super_concat(&a, "\n");
+		super_concat(&a, "\n");
+		if (!env->next)
+			break;
 		env = env->next;
 	}
+	while (env->previous)
+		env = env->previous;
 	return (a);
 }
 

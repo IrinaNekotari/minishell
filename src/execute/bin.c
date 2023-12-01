@@ -57,12 +57,15 @@ static char	**create_args(t_cmd *cmd)
 void	fork_returns(t_cmd *cmd, t_main **main, int pid)
 {
 	waitpid(pid, &((*main)->last), 0);
+	(*main)->backupfd[0] = dup(0);
+	(*main)->backupfd[1] = dup(1);
 	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1
 		|| close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		return ;
 	}
+	(*main)->state = 1;
 }
 
 int	exec_builtin(t_cmd *cmd, t_main **main)
@@ -83,7 +86,7 @@ int	exec_builtin(t_cmd *cmd, t_main **main)
 		ft_unset(cmd, main);
 	else if (ft_equals(cmd->tokens->str, "cd"))
 		ft_cd(cmd, main);
-	if (g_received_signal == -3)
+	if (g_received_signal == SIGNAL_QUIT || g_received_signal == SIGNAL_ABORT)
 		return (-1);
 	return (0);
 }
@@ -96,7 +99,7 @@ int	is_system(t_cmd *cmd)
 		return (1);
 	else if (ft_equals(cmd->tokens->str, "unset"))
 		return (1);
-	else if (ft_equals(cmd->tokens->str, "export") && !cmd->tokens->next->str)
+	else if (ft_equals(cmd->tokens->str, "export") && cmd->tokens->next->str)
 		return (1);
 	return (0);
 }
@@ -137,14 +140,11 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	//int	codes[3];
 
 	ret = 0;
-	//codes[0] = dup2((*main)->pipes[1], STDOUT_FILENO);
 	if ((*main)->state != LAST_PIPE)
 	{
 		if (dup2((*main)->pipes[1], STDOUT_FILENO) < 0)
 			close((*main)->pipes[0]);
 	}
-	//codes[1] = close((*main)->pipes[0]);
-	//codes[2] = close((*main)->pipes[1]);
 	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
 		|| close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
 	{
@@ -163,7 +163,6 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 	int	pid;
 	int	i;
 
-	(*main)->state = 1;
 	if (!cmd->pipe)
 		(*main)->state = LAST_PIPE;
 	i = pipe((*main)->pipes);
@@ -174,17 +173,20 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 	}
 	if (is_system(cmd))
 		exec_builtin(cmd, main);
-	pid = fork();
-	if (pid < 0)
-	{
-		error_print(CRITICAL, "An error has occured while forking !", NULL);
-		return ;
-	}
-	if (pid == 0)
-		fork_core(cmd, main);
 	else
-		fork_returns(cmd, main, pid);
-	if (!cmd->pipe)
+	{
+		pid = fork();
+		if (pid < 0)
+		{
+			error_print(CRITICAL, "An error has occured while forking !", NULL);
+			return ;
+		}
+		if (pid == 0)
+			fork_core(cmd, main);
+		else
+			fork_returns(cmd, main, pid);
+	}
+	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT || g_received_signal == SIGNAL_ABORT)
 		return ;
 	cmd = cmd->pipe;
 	(*main)->state = IN_PIPE;

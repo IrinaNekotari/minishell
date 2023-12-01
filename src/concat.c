@@ -73,29 +73,19 @@ void	super_concat(char **a, char *b)
 	free(bck);
 }
 
-/**
-* Transforme un char** en char*
-*/
-char	*flatten(char **s)
+void	hyper_concat(char **base, ...)
 {
-	int		i;
-	char	*ret;
+	va_list	args;
+	char		*truc;
 
-	i = 1;
-	if (!s || !s[0])
-		return (NULL);
-	if (!s[1])
-		return (ft_strdup(s[0]));
-	else
+	va_start(args, *base);
+	truc = va_arg(args, char *);
+	while (truc)
 	{
-		ret = ft_strdup(s[0]);
-		while (s[i])
-		{
-			super_concat(&ret, s[i]);
-			i++;
-		}
+		super_concat(base, truc);
+		truc = va_arg(args, char *);
 	}
-	return (ret);
+	ft_printf("~~%d\n~~\n", *base);
 }
 
 int	ft_equals(char *s1, char *s2)
