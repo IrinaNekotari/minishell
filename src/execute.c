@@ -45,8 +45,12 @@ void	get_orders(t_cmd *cmd, t_main **main)
 
 void	execute(t_cmd *cmd, t_main **main)
 {
+	int	pid;
+
+	pid = fork();
 	(*main)->state = FIRST_PIPE;
 	(*main)->mode = 0;
-	//get_orders(cmd, main);
-	ft_exec(cmd, main);
+	if (!pid)
+		ft_exec(cmd, main);
+	waitpid(pid, NULL, 0);
 }

@@ -187,7 +187,7 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 			fork_returns(cmd, main, pid);
 	}
 	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT || g_received_signal == SIGNAL_ABORT)
-		return ;
+		exit(0) ;
 	cmd = cmd->pipe;
 	(*main)->state = IN_PIPE;
 	ft_exec(cmd, main);
