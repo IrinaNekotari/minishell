@@ -73,21 +73,6 @@ void	super_concat(char **a, char *b)
 	free(bck);
 }
 
-void	hyper_concat(char **base, ...)
-{
-	va_list	args;
-	char		*truc;
-
-	va_start(args, *base);
-	truc = va_arg(args, char *);
-	while (truc)
-	{
-		super_concat(base, truc);
-		truc = va_arg(args, char *);
-	}
-	ft_printf("~~%d\n~~\n", *base);
-}
-
 int	ft_equals(char *s1, char *s2)
 {
 	int	i;

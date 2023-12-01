@@ -60,7 +60,8 @@ void	fork_returns(t_cmd *cmd, t_main **main, int pid)
 	(*main)->backupfd[0] = dup(0);
 	(*main)->backupfd[1] = dup(1);
 	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1
-		|| close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
+			|| close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		return ;
@@ -146,7 +147,8 @@ void	fork_core(t_cmd *cmd, t_main **main)
 			close((*main)->pipes[0]);
 	}
 	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
-		|| close((*main)->pipes[0]) == -1 || close((*main)->pipes[1]) == -1))
+			|| close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		exit(-1);
@@ -172,7 +174,7 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 		return ;
 	}
 	if (is_system(cmd))
-		exec_builtin(cmd, main);
+		exit(-3);
 	else
 	{
 		pid = fork();
@@ -186,8 +188,9 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 		else
 			fork_returns(cmd, main, pid);
 	}
-	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT || g_received_signal == SIGNAL_ABORT)
-		exit(0) ;
+	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT
+		|| g_received_signal == SIGNAL_ABORT)
+		exit(0);
 	cmd = cmd->pipe;
 	(*main)->state = IN_PIPE;
 	ft_exec(cmd, main);

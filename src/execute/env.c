@@ -26,7 +26,7 @@ static char	*create_list(t_env *env)
 		super_concat(&a, env->value);
 		super_concat(&a, "\n");
 		if (!env->next)
-			break;
+			break ;
 		env = env->next;
 	}
 	while (env->previous)
