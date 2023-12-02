@@ -34,7 +34,7 @@ int	error_syntax(int severity, char *loc)
 		ft_printf("[\x1b[1m\x1b[31mHOLY SHIT\x1b[0m\x1b[37m]");
 	else
 		ft_printf("[DEBUG\x1b[37m]");
-	ft_printf("Syntax error near unexpected token \'%s\'\n", loc);
+	ft_printf(" Syntax error near unexpected token \'%s\'\n", loc);
 	return (0);
 }
 

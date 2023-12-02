@@ -53,6 +53,7 @@
 # define IGNORE_NEW_LINE -8
 # define SIGNAL_QUIT -3
 # define SIGNAL_ABORT -5
+# define IGNORE_PIPES -69
 
 /*
 * Suhz-Mahbyt la norminette
@@ -160,21 +161,22 @@ typedef struct s_main
 
 extern int	g_received_signal;
 
-int		is_whitespace(char c);
 int		parse_error(char *str);
-int		is_escapable(char c);
-int		is_escapable2(char c);
-int		is_blank(char *ptr, int j);
-int		is_blank(char *ptr, int j);
 int		str_env_len(char **env);
 int		ft_equals(char *s1, char *s2);
+int		ft_empty(char *str);
 int		handle_input(t_cmd *cmd);
+int		is_blank(char *ptr, int j);
+int		is_builtin(char *str);
+int		is_delim(char c);
+int		is_escapable(char c);
+int		is_escapable2(char c);
+int		is_system(t_cmd *cmd);
 int		is_usable(char c);
+int		is_whitespace(char c);
 int		error_syntax(int severity, char *loc);
 int		check_chevrons(t_cmd **cmd);
 int		exec_builtin(t_cmd *cmd, t_main **main);
-int		is_delim(char c);
-int		is_system(t_cmd *cmd);
 int		input_length(t_cmd *cmd);
 int		output_length(t_cmd *cmd);
 int		tokens_length(t_cmd *cmd);
@@ -184,7 +186,6 @@ int		output_depth(t_cmd *cmd);
 int		tokens_depth(t_cmd *cmd);
 int		env_depth(t_env *env);
 int		cmd_depth(t_cmd *cmd);
-int		ft_empty(char *str);
 
 /*
 *	Builtins et execution
@@ -243,6 +244,7 @@ char	*env_to_str(t_env *lst);
 char	*ft_append(char *str, char c);
 char	*ft_getenv(t_env *env, char *search);
 char	*ft_concat2(char *s1, char *s2);
+char	*check_pipes(char *s);
 
 char	**counter_split(char *s, char **to_ret);
 char	**split_semicolon(char *s, char **to_ret);

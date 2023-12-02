@@ -14,26 +14,6 @@
 
 extern int	g_received_signal;
 
-static int	is_builtin(char *str)
-{
-	if (ft_equals(str, "pwd"))
-		return (1);
-	else if (ft_equals(str, "env"))
-		return (1);
-	else if (ft_equals(str, "exit"))
-		return (1);
-	else if (ft_equals(str, "echo"))
-		return (1);
-	else if (ft_equals(str, "export"))
-		return (1);
-	else if (ft_equals(str, "unset"))
-		return (1);
-	else if (ft_equals(str, "cd"))
-		return (1);
-	else
-		return (0);
-}
-
 //TODO : Trouver la bonne taille pour le calloc
 static char	**create_args(t_cmd *cmd)
 {
@@ -52,57 +32,6 @@ static char	**create_args(t_cmd *cmd)
 		cmd->tokens = cmd->tokens->previous;
 	ret[i] = NULL;
 	return (ret);
-}
-
-void	fork_returns(t_cmd *cmd, t_main **main, int pid)
-{
-	waitpid(pid, &((*main)->last), 0);
-	(*main)->backupfd[0] = dup(0);
-	(*main)->backupfd[1] = dup(1);
-	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1
-			|| close((*main)->pipes[0]) == -1
-			|| close((*main)->pipes[1]) == -1))
-	{
-		error_print(CRITICAL, "An error has occured while piping !", NULL);
-		return ;
-	}
-	(*main)->state = 1;
-}
-
-int	exec_builtin(t_cmd *cmd, t_main **main)
-{
-	g_received_signal = IGNORE_NEW_LINE;
-	(*main)->mode = 1;
-	if (ft_equals(cmd->tokens->str, "pwd"))
-		ft_pwd(cmd, (*main));
-	else if (ft_equals(cmd->tokens->str, "env"))
-		ft_env(cmd, (*main));
-	else if (ft_equals(cmd->tokens->str, "exit"))
-		ft_exit(cmd, (*main));
-	else if (ft_equals(cmd->tokens->str, "echo"))
-		ft_echo(cmd, (*main));
-	else if (ft_equals(cmd->tokens->str, "export"))
-		ft_export(cmd, main);
-	else if (ft_equals(cmd->tokens->str, "unset"))
-		ft_unset(cmd, main);
-	else if (ft_equals(cmd->tokens->str, "cd"))
-		ft_cd(cmd, main);
-	if (g_received_signal == SIGNAL_QUIT || g_received_signal == SIGNAL_ABORT)
-		return (-1);
-	return (0);
-}
-
-int	is_system(t_cmd *cmd)
-{
-	if (ft_equals(cmd->tokens->str, "exit"))
-		return (1);
-	else if (ft_equals(cmd->tokens->str, "cd"))
-		return (1);
-	else if (ft_equals(cmd->tokens->str, "unset"))
-		return (1);
-	else if (ft_equals(cmd->tokens->str, "export") && cmd->tokens->next->str)
-		return (1);
-	return (0);
 }
 
 void	exec_general(t_cmd *cmd, t_main **main, int *ret)
@@ -133,19 +62,27 @@ void	exec_general(t_cmd *cmd, t_main **main, int *ret)
 	free_liste(envs);
 	free_liste(paths);
 	free_liste(args);
+	exit(errno);
+}
+
+void	fork_returns(t_cmd *cmd, t_main **main, int pid)
+{
+	waitpid(pid, &((*main)->last), 0);
+	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1
+			|| close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1))
+	{
+		error_print(CRITICAL, "An error has occured while piping !", NULL);
+		return ;
+	}
+	(*main)->state = 1;
 }
 
 void	fork_core(t_cmd *cmd, t_main **main)
 {
 	int	ret;
-	//int	codes[3];
 
 	ret = 0;
-	if ((*main)->state != LAST_PIPE)
-	{
-		if (dup2((*main)->pipes[1], STDOUT_FILENO) < 0)
-			close((*main)->pipes[0]);
-	}
 	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
 			|| close((*main)->pipes[0]) == -1
 			|| close((*main)->pipes[1]) == -1))
@@ -174,7 +111,10 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 		return ;
 	}
 	if (is_system(cmd))
-		exit(-3);
+	{
+		if (!cmd->pipe)
+			exit (0);
+	}
 	else
 	{
 		pid = fork();

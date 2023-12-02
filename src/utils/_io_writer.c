@@ -30,7 +30,6 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 	}
 	if (cmd->output->file)
 		handle_output(cmd, str);
-	if ((*main)->mode == 1)
-		ft_printf("%s", str);
+	ft_printf("%s", str);
 	(void)main;
 }

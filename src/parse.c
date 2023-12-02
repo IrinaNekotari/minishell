@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 int	count_occur(char *str, char c)
 {
 	int	i;
@@ -68,6 +70,8 @@ void	parse(char *s, t_main **main)
 	while (t[i])
 	{
 		add_command(&cmd, t[i]);
+		if (g_received_signal == IGNORE_PIPES)
+			break ;
 		i++;
 	}
 	if (check_chevrons(&cmd))
