@@ -40,6 +40,7 @@ int	is_valid_tokens(t_cmd *cmd)
 		if (!is_valid_input(cmd->tokens->str))
 		{
 			error_print(ERROR, "not a valid identifier", cmd->tokens->str);
+			g_received_signal = SIGNAL_ABORT;
 			return (0);
 		}
 		cmd->tokens = cmd->tokens->next;

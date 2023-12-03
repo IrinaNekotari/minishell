@@ -37,6 +37,7 @@ void	ft_unset(t_cmd *cmd, t_main **main)
 	if (!cmd->tokens->next->str)
 	{
 		error_print(ERROR, "not enough arguments !", NULL);
+		g_received_signal = SIGNAL_ABORT;
 		return ;
 	}
 	cmd->tokens = cmd->tokens->next;

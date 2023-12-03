@@ -197,7 +197,6 @@ void	ft_echo(t_cmd *cmd, t_main *main);
 void	ft_cd(t_cmd *cmd, t_main **main);
 void	ft_env(t_cmd *cmd, t_main *main);
 void	ft_exit(t_cmd *cmd, t_main *main);
-void	execute_general(t_cmd *cmd, t_main *main);
 void	ft_exec(t_cmd *cmd, t_main **main);
 
 void	parse(char *s, t_main **main);

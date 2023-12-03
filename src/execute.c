@@ -22,8 +22,8 @@ void	execute(t_cmd *cmd, t_main **main)
 	ret = 0;
 	(*main)->state = FIRST_PIPE;
 	(*main)->mode = 0;
-	if (is_system(cmd) && !cmd->pipe && !cmd->previous)
-		exec_builtin(cmd, main);
+	if (is_system(cmd) && !cmd->pipe)
+		ret = exec_builtin(cmd, main);
 	else
 	{
 		pid = fork();
@@ -32,11 +32,4 @@ void	execute(t_cmd *cmd, t_main **main)
 		waitpid(pid, &ret, 0);
 	}
 	(*main)->last = ret;
-	if (ret == -3)
-		return ;
-	if (cmd->pipe)
-		cmd = cmd->pipe;
-	else
-		return ;
-	execute(cmd, main);
 }

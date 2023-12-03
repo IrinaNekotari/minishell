@@ -102,6 +102,8 @@ void	parse_single(char *s, t_cmd **cmd)
 			quote = 0;
 			i++;
 		}
+		if (!s[i])
+			break ;
 		while (s[i] && is_whitespace(s[i]))
 			i++;
 		if ((s[i] == '>' || s[i] == '<') && quote == 0)

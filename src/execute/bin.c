@@ -90,7 +90,9 @@ void	fork_core(t_cmd *cmd, t_main **main)
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		exit(-1);
 	}
-	if (is_builtin(cmd->tokens->str))
+	if (is_system(cmd))
+		ft_printf("");
+	else if (is_builtin(cmd->tokens->str))
 		ret = exec_builtin(cmd, main);
 	else
 		exec_general(cmd, main, &ret);
@@ -101,7 +103,9 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 {
 	int	pid;
 	int	i;
+	int	ret;
 
+	ret = 0;
 	if (!cmd->pipe)
 		(*main)->state = LAST_PIPE;
 	i = pipe((*main)->pipes);
@@ -110,27 +114,20 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		return ;
 	}
-	if (is_system(cmd))
+	pid = fork();
+	if (pid < 0)
 	{
-		if (!cmd->pipe)
-			exit (0);
+		error_print(CRITICAL, "An error has occured while forking !", NULL);
+		return ;
 	}
+	if (pid == 0)
+		fork_core(cmd, main);
 	else
-	{
-		pid = fork();
-		if (pid < 0)
-		{
-			error_print(CRITICAL, "An error has occured while forking !", NULL);
-			return ;
-		}
-		if (pid == 0)
-			fork_core(cmd, main);
-		else
-			fork_returns(cmd, main, pid);
-	}
+		fork_returns(cmd, main, pid);
+	waitpid(pid, &ret, 0);
 	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT
 		|| g_received_signal == SIGNAL_ABORT)
-		exit(0);
+		exit(ret);
 	cmd = cmd->pipe;
 	(*main)->state = IN_PIPE;
 	ft_exec(cmd, main);

@@ -21,6 +21,7 @@ static void	exec_cd(t_cmd *cmd, t_main **main)
 	if (dd == -1)
 	{
 		error_exec(errno);
+		g_received_signal = SIGNAL_ABORT;
 		return ;
 	}
 	buffer = ft_calloc(250, sizeof(char));
@@ -37,6 +38,7 @@ void	ft_cd(t_cmd *cmd, t_main **main)
 		&& cmd->tokens->next->str && cmd->tokens->next->next->str)
 	{
 		error_print(ERROR, "Too many arguments", NULL);
+		g_received_signal = SIGNAL_ABORT;
 		return ;
 	}
 	else if (!cmd->tokens->next || !cmd->tokens->next->str)

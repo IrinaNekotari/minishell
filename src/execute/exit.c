@@ -20,5 +20,5 @@ void	ft_exit(t_cmd *cmd, t_main *main)
 	if (cmd->tokens->next->str)
 		ft_printf("minishell: exit: too many arguments\n");
 	else
-		g_received_signal = -3;
+		g_received_signal = SIGNAL_QUIT;
 }

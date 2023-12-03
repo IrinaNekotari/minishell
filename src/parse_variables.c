@@ -59,7 +59,7 @@ char	*get_variables(char *str, t_main *main)
 
 	i = 0;
 	j = 0;
-	ret = ft_calloc(ft_strlen(str) * 10000, sizeof(char));
+	ret = ft_calloc(ft_strlen(str) * 10, sizeof(char));
 	while (str[i])
 	{
 		if (str[i] == '$' && str[i + 1] == '?')
@@ -78,6 +78,8 @@ char	*get_variables(char *str, t_main *main)
 		}
 		else
 			ret[j] = str[i];
+		if (!str[i])
+			break ;
 		j++;
 		i++;
 	}
@@ -102,6 +104,8 @@ void	generate_variables(t_cmd **cmd, t_main **main)
 			(*cmd)->tokens->str = ft_strdup(search);
 			free(search);
 		}
+		if (!(*cmd)->tokens->next || !(*cmd)->tokens->next->str)
+			break ;
 		(*cmd)->tokens = (*cmd)->tokens->next;
 	}
 	if ((*cmd)->pipe)

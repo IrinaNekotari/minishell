@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 int	is_system(t_cmd *cmd)
 {
 	if (ft_equals(cmd->tokens->str, "exit"))
@@ -51,7 +53,9 @@ int	exec_builtin(t_cmd *cmd, t_main **main)
 		ft_unset(cmd, main);
 	else if (ft_equals(cmd->tokens->str, "cd"))
 		ft_cd(cmd, main);
-	if (g_received_signal == SIGNAL_QUIT || g_received_signal == SIGNAL_ABORT)
-		return (-1);
+	if (g_received_signal == SIGNAL_QUIT)
+		return (SIGNAL_QUIT);
+	if (g_received_signal == SIGNAL_ABORT)
+		return (1);
 	return (0);
 }

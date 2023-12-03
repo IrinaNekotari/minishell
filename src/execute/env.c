@@ -42,6 +42,7 @@ static int	err_env(t_cmd *cmd, char *vars)
 		error_print(ERROR, "No such file or directory",
 			cmd->tokens->str);
 		free(vars);
+		g_received_signal = SIGNAL_ABORT;
 		return (0);
 	}
 	return (1);

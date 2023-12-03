@@ -37,8 +37,12 @@ char	*add_quote(char *s, char quote)
 	else
 		str = readline("dquote> ");
 	if (!str)
+	{
+		free(s);
 		return (NULL);
-	s = ft_concat(s, str);
+	}
+	super_concat(&s, "\n");
+	super_concat(&s, str);
 	free(str);
 	return (s);
 }
