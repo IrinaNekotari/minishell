@@ -30,6 +30,47 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 	}
 	if (cmd->output->file)
 		handle_output(cmd, str);
-	ft_printf("%s", str);
+	else
+		ft_printf("%s", str);
 	(void)main;
+}
+
+static int	get_last_output(t_cmd *cmd)
+{
+	int	fd;
+
+	while (cmd->output->file)
+	{
+		if (!cmd->output->next || !cmd->output->next->file)
+			break;
+		cmd->output = cmd->output->next;
+	}
+	if (cmd->output->io == SINGLE_OUTPUT)
+		fd = open(cmd->output->file, O_CREAT
+				| O_RDWR | O_TRUNC, 0777);
+	else
+		fd = open(cmd->output->file, O_CREAT
+				| O_RDWR | O_APPEND, 0777);
+	return (fd);
+}
+
+void	io_pipe(t_cmd *cmd, t_main **main)
+{
+	int	fd;
+
+	handle_output_create(cmd);
+	if (cmd->input->file)
+	{
+		if (!handle_input(cmd))
+			exit (SIGNAL_ABORT);
+	}
+	fd = get_last_output(cmd);
+	ft_putstr_fd("", 1);
+	if (dup2(fd, 1) == -1 || (cmd->pipe && (close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1
+			|| close(fd == -1))))
+	{
+		error_print(CRITICAL, "An error has occured while piping !", NULL);
+		exit(-1);
+	}
 }

@@ -226,6 +226,7 @@ void	handle_output(t_cmd *cmd, char *str);
 void	handle_output_create(t_cmd *cmd);
 void	rollback_env(t_env **env);
 void	ft_eof(t_main *main);
+void	io_pipe(t_cmd *cmd, t_main **main);
 void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);

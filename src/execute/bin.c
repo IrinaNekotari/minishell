@@ -83,7 +83,9 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	int	ret;
 
 	ret = 0;
-	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
+	if (cmd->output->file)
+		io_pipe(cmd, main);
+	else if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
 			|| close((*main)->pipes[0]) == -1
 			|| close((*main)->pipes[1]) == -1))
 	{
