@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_pipes.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/04 15:19:28 by mjuette           #+#    #+#             */
+/*   Updated: 2023/12/04 15:19:31 by mjuette          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 extern int	g_received_signal;
@@ -36,9 +48,9 @@ static void	add_text_pipe(char **s)
 char	*check_pipes(char *s)
 {
 	int		quote;
-	char		quoted;
 	int		i;
 	int		u;
+	char		quoted;
 
 	i = 0;
 	u = 0;
@@ -59,7 +71,7 @@ char	*check_pipes(char *s)
 			quote = 0;
 		else if (s[u + i] == '|' && quote == 0)
 		{
-			if ((i == 0 && s[u + i + 1] == '|') 
+			if ((i == 0 && s[u + i + 1] == '|')
 				|| (s[u + i + 1] == '|' && s[u + i + 2] == '|' && s[u + i + 3] == '|'))
 			{
 				error_syntax(ERROR, "||");
@@ -85,7 +97,7 @@ char	*check_pipes(char *s)
 			if (emptiness(s, u + i + 1))
 				add_text_pipe(&s);
 			if (!s)
-				return (NULL);	
+				return (NULL);
 		}
 		i++;
 	}

@@ -32,7 +32,8 @@ void	welcome_message(void)
 	ft_printf("#  \x1b[34m|_|  |_|_____|_| \\_|_____");
 	ft_printf("|_____/|_|  |_|______|______|______|\x1b[37m  #\n");
 	ft_printf("#		  						  #\n");
-	ft_printf("#		😎️\x1b[31mPar Nolan MASCRIER et Martin JUETTE🤑️		  ");
+	ft_printf("#        😎️\x1b[31mPar Nolan MASC");
+	ft_printf("RIER et Martin JUETTE🤑️       		  ");
 	ft_printf("\x1b[37m#\n##########################################");
 	ft_printf("#########################\n\n");
 }
@@ -59,40 +60,6 @@ void	interrupt_sig(int sig)
 	}
 }
 
-void	ft_eof(t_main *main)
-{
-	(void)main;
-	rl_clear_history();
-	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n\x1b[0m ");
-	chdir(main->initpwd);
-	exit(0);
-}
-
-char	*get_prompt(t_main *main)
-{
-	char	*temp;
-	char	*prompt;
-
-	temp = ft_getenv(main->env, "PWD");
-	if (!temp)
-		prompt = ft_strdup("[\x1b[35m???\x1b[37m]");
-	else if (ft_equals(main->initpwd, temp))
-		prompt = ft_strdup("[\x1b[36mHome\x1b[37m]");
-	else
-	{
-		prompt = ft_calloc(1, sizeof(char));
-		super_concat(&prompt, "[\x1b[33m");
-		free(temp);
-		temp = ft_getenv(main->env, "PWD");
-		super_concat(&prompt, temp);
-		super_concat(&prompt, "\x1b[37m]");
-	}
-	if (temp)
-		free(temp);
-	super_concat(&prompt, " minishell :: ");
-	return (prompt);
-}
-
 int	main(int args, char *argv[], char *env[])
 {
 	char	*to_parse;
@@ -101,6 +68,8 @@ int	main(int args, char *argv[], char *env[])
 
 	(void) args;
 	(void) argv;
+	to_parse = NULL;
+	prompt = NULL;
 	welcome_message();
 	signal(SIGINT, interrupt_sig);
 	signal(SIGTSTP, interrupt_sig);
@@ -110,24 +79,5 @@ int	main(int args, char *argv[], char *env[])
 	main.backupfd[0] = dup(0);
 	main.backupfd[1] = dup(1);
 	main.initpwd = ft_getenv(main.env, "PWD");
-	while (1)
-	{
-		prompt = get_prompt(&main);
-		to_parse = readline(prompt);
-		free(prompt);
-		if (!to_parse && main.state != 1)
-			ft_eof(&main);
-		main.state = 0;
-		to_parse = check_quote(to_parse);
-		to_parse = check_pipes(to_parse);
-		if (!to_parse)
-			continue ;
-		add_history(to_parse);
-		if (to_parse && !ft_empty(to_parse))
-			iterate(to_parse, &main);
-		if (g_received_signal == SIGNAL_QUIT)
-			ft_eof(&main);
-		g_received_signal = -1;
-		free(to_parse);
-	}
+	run(to_parse, prompt, main);
 }

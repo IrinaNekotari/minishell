@@ -35,7 +35,10 @@ void	execute(t_cmd *cmd, t_main **main)
 			ft_exec(cmd, main);
 		else
 			waitpid(pid, &((*main)->last), 0);
+		
 	}
 	//Mais la, c'est plus le même code ?????????
-	ft_putstr_fd(ft_itoa((*main)->last), 2);
+	//printf("parent 1 get: %d of child\n", WEXITSTATUS((*main)->last));
+               
+	//ft_putstr_fd(ft_itoa((*main)->last), 2);
 }

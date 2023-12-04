@@ -53,92 +53,47 @@ int	str_env_len(char **env)
 	return (i);
 }
 
-char	*env_to_str(t_env *lst)
+void	sort_env(char **tab)
 {
-	char	*env;
-	int		i;
-	int		j;
+	int	sorted;
+	int	i;
+	char	*buffer;
 
-	env = malloc(sizeof(char) * 10 * size_env(lst) + 1);
-	if (!env)
-		return (NULL);
-	i = 0;
-	while (lst && lst->next != NULL)
+	sorted = 1;
+	i = 1;
+	while (tab[i])
 	{
-		if (lst->name != NULL)
+		if (ft_strcmp(tab[i], tab[i - 1]) < 0)
 		{
-			j = 0;
-			while (lst->name[j])
-			{
-				env[i] = lst->name[j];
-				i++;
-				j++;
-			}
+			buffer = ft_strdup(tab[i]);
+			free(tab[i]);
+			tab[i] = ft_strdup(tab[i - 1]);
+			free(tab[i - 1]);
+			tab[i - 1] = ft_strdup(buffer);
+			free(buffer);
+			sorted = 0;
 		}
-		env[i] = '=';
 		i++;
-		if (lst->value != NULL)
-		{
-			j = 0;
-			while (lst->value[j])
-			{
-				env[i] = lst->value[j];
-				i++;
-				j++;
-			}
-		}
-		if (lst->next->next != NULL)
-			env[i++] = '\n';
-		lst = lst->next;
 	}
-	env[i] = '\0';
-	return (env);
-}
-
-void	sort_env(char **tab, int env_len)
-{
-	char	*tmp;
-	int		ordered;
-	int		i;
-
-	ordered = 0;
-	while (tab && ordered == 0)
-	{
-		ordered = 1;
-		i = 0;
-		while (i < env_len - 1)
-		{
-			if (ft_strcmp(tab[i], tab[i + 1]) > 0)
-			{
-				tmp = tab[i];
-				tab[i] = tab[i + 1];
-				tab[i + 1] = tmp;
-				ordered = 0;
-			}
-			i++;
-		}
-		env_len--;
-	}
+	if (!sorted)
+	sort_env(tab);
 }
 
 char	*print_sorted_env(t_env *env)
 {
-	char		*str_env;
 	char		*to_print;
 	char		**tab;
 	int			i;
 
-	str_env = env_to_str(env);
-	tab = ft_split(str_env, '\n');
-	free(str_env);
-	sort_env(tab, str_env_len(tab));
+	//str_env = env_to_str(env);
+	tab = env_to_array(env);;
+	sort_env(tab);
 	to_print = ft_calloc(1, sizeof(char));
 	i = 0;
 	while (tab[i])
 	{
 		super_concat(&to_print, "declare -x ");
 		super_concat(&to_print, tab[i]);
-		super_concat(&to_print, "\n");
 		i++;
 	}
 	free_liste(tab);

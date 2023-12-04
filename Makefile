@@ -16,11 +16,11 @@ NAME = libftprintf.a
 
 SRC = src/main.c src/parse.c src/parse_error.c src/parse_single.c src/parse_single_2.c src/memory.c src/logger.c src/quote_utils.c \
 	 src/char_utils.c src/debug_exec.c src/execute.c src/countersplit.c \
-	 src/syntax_checker.c src/io.c \
+	 src/syntax_checker.c src/io.c src/display.c\
 	 src/concat.c src/execute/unset.c src/execute/export.c src/sort_env.c\
 	 src/execute/pwd.c src/execute/exit.c src/execute/env.c \
 	 src/utils/_io_writer.c src/utils/_io_input.c src/utils/_io_output.c \
-	 src/execute/_general.c src/links_rollbacks.c \
+	 src/links_rollbacks.c \
 	 src/utils/work_env.c src/execute/echo.c src/execute/cd.c \
 	 src/utils/work_env_func.c src/parse_variables.c src/errors.c \
 	 src/chains/depths.c \

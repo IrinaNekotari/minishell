@@ -42,7 +42,7 @@ static int	get_last_output(t_cmd *cmd)
 	while (cmd->output->file)
 	{
 		if (!cmd->output->next || !cmd->output->next->file)
-			break;
+			break ;
 		cmd->output = cmd->output->next;
 	}
 	if (cmd->output->io == SINGLE_OUTPUT)
@@ -67,8 +67,8 @@ void	io_pipe(t_cmd *cmd, t_main **main)
 	fd = get_last_output(cmd);
 	ft_putstr_fd("", 1);
 	if (dup2(fd, 1) == -1 || (cmd->pipe && (close((*main)->pipes[0]) == -1
-			|| close((*main)->pipes[1]) == -1
-			|| close(fd == -1))))
+				|| close((*main)->pipes[1]) == -1
+				|| close(fd == -1))))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		exit(-1);

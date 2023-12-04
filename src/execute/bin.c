@@ -34,6 +34,46 @@ static char	**create_args(t_cmd *cmd)
 	return (ret);
 }
 
+int	fork_returns(t_cmd *cmd, t_main **main, int pid)
+{
+	int	exit_val;
+	
+	exit_val = 0;
+	waitpid(pid, &exit_val, 0);
+	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1
+			|| close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1))
+	{
+		error_print(CRITICAL, "An error has occured while piping !", NULL);
+		return (exit_val);
+	}
+	(*main)->state = 1;
+	return (exit_val);
+}
+
+void	fork_core(t_cmd *cmd, t_main **main)
+{
+	int	ret;
+
+	ret = 0;
+	if (cmd->output->file || cmd->input->file)
+		io_pipe(cmd, main);
+	else if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
+			|| close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1))
+	{
+		error_print(CRITICAL, "An error has occured while piping !", NULL);
+		exit(-1);
+	}
+	if (is_system(cmd))
+		ft_printf("");
+	else if (is_builtin(cmd->tokens->str))
+		ret = exec_builtin(cmd, main);
+	else
+		ret = exec_general(cmd, main, &ret);
+	exit(ret);
+}
+
 int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 {
 	int		i;
@@ -65,47 +105,12 @@ int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 	return (ft_abs(*ret));
 }
 
-void	fork_returns(t_cmd *cmd, t_main **main, int pid)
-{
-	waitpid(pid, &((*main)->last), 0);
-	if (cmd->pipe && (dup2((*main)->pipes[0], 0) == -1
-			|| close((*main)->pipes[0]) == -1
-			|| close((*main)->pipes[1]) == -1))
-	{
-		error_print(CRITICAL, "An error has occured while piping !", NULL);
-		return ;
-	}
-	(*main)->state = 1;
-}
-
-void	fork_core(t_cmd *cmd, t_main **main)
-{
-	int	ret;
-
-	ret = 0;
-	if (cmd->output->file || cmd->input->file)
-		io_pipe(cmd, main);
-	else if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
-			|| close((*main)->pipes[0]) == -1
-			|| close((*main)->pipes[1]) == -1))
-	{
-		error_print(CRITICAL, "An error has occured while piping !", NULL);
-		exit(-1);
-	}
-	if (is_system(cmd))
-		ft_printf("");
-	else if (is_builtin(cmd->tokens->str))
-		ret = exec_builtin(cmd, main);
-	else
-		ret = exec_general(cmd, main, &ret);
-	exit(ret);
-}
-
 void	ft_exec(t_cmd *cmd, t_main **main)
 {
 	int	pid;
 	int	i;
-
+	int	exit_val;
+	
 	if (!cmd->pipe)
 		(*main)->state = LAST_PIPE;
 	i = pipe((*main)->pipes);
@@ -123,13 +128,15 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 	if (pid == 0)
 		fork_core(cmd, main);
 	else
-		fork_returns(cmd, main, pid);
+		exit_val = fork_returns(cmd, main, pid);
 	//Affiche le BON code ici, donc ça veut dire que l'info remonte bien jusque la
 	//Pourquoi l'exit n'envoie pas le bon code alors ?
-	ft_putstr_fd(ft_itoa((*main)->last), 2);
+	//ft_putstr_fd(ft_itoa((*main)->last), 2);
+	//printf("parent get: %d of child\n", WEXITSTATUS((*main)->last));
+	//ft_putstr_fd("\n", 2);
 	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT
 		|| g_received_signal == SIGNAL_ABORT)
-		exit((*main)->last);
+		exit(exit_val);
 	cmd = cmd->pipe;
 	(*main)->state = IN_PIPE;
 	ft_exec(cmd, main);
