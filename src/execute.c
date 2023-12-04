@@ -17,6 +17,7 @@ extern int	g_received_signal;
 void	execute(t_cmd *cmd, t_main **main)
 {
 	int	pid;
+	int	ret;
 
 	(*main)->state = FIRST_PIPE;
 	(*main)->mode = 0;
@@ -34,8 +35,8 @@ void	execute(t_cmd *cmd, t_main **main)
 		else if (!pid)
 			ft_exec(cmd, main);
 		else
-			waitpid(pid, &((*main)->last), 0);
-		
+			waitpid(pid, &ret, 0);
+		((*main)->last) = ret;
 	}
 	//Mais la, c'est plus le même code ?????????
 	//printf("parent 1 get: %d of child\n", WEXITSTATUS((*main)->last));

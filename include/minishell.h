@@ -234,6 +234,7 @@ void	rollback_env(t_env **env);
 void	ft_eof(t_main *main);
 void	run(char *to_parse, char *prompt, t_main main);
 void	io_pipe(t_cmd *cmd, t_main **main);
+void	io_pipe2(t_cmd *cmd, t_main **main);
 void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);

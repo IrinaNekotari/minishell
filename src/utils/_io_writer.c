@@ -26,7 +26,7 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 	if (cmd->input->file)
 	{
 		if (!handle_input(cmd))
-			return ;
+			exit (1);
 	}
 	if (cmd->output->file)
 		handle_output(cmd, str);
@@ -72,5 +72,21 @@ void	io_pipe(t_cmd *cmd, t_main **main)
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
 		exit(-1);
+	}
+}
+
+void	io_pipe2(t_cmd *cmd, t_main **main)
+{
+	if (cmd->input->file)
+	{
+		if (!handle_input(cmd))
+			exit (SIGNAL_ABORT);
+	}
+	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
+			|| close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1))
+	{
+		error_print(CRITICAL, "An error has occured while piping !", NULL);
+		exit(1);
 	}
 }

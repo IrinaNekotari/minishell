@@ -56,8 +56,12 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	int	ret;
 
 	ret = 0;
-	if (cmd->output->file || cmd->input->file)
+	//TODO : Ttrouver le bon signal ?
+	signal(SIGINT, SIG_DFL);
+	if (cmd->output->file)
 		io_pipe(cmd, main);
+	else if (cmd->input->file)
+		io_pipe2(cmd, main);
 	else if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
 			|| close((*main)->pipes[0]) == -1
 			|| close((*main)->pipes[1]) == -1))
@@ -82,27 +86,34 @@ int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 	char	**args;
 	char	*buff;
 
-	i = 0;
-	buff = ft_getenv((*main)->env, "PATH");
-	paths = ft_split(buff, ':');
-	free(buff);
 	envs = env_to_array((*main)->env);
 	args = create_args(cmd);
-	while (paths[i])
+	i = 0;
+	if (cmd->tokens->str[0] == '/')
 	{
-		buff = ft_calloc(1, sizeof(char));
-		super_concat(&buff, paths[i]);
-		super_concat(&buff, "/");
-		super_concat(&buff, cmd->tokens->str);
-		*ret = execve(buff, args, envs);
+		*ret = execve(cmd->tokens->str, args, envs);
+	}
+	else
+	{
+		buff = ft_getenv((*main)->env, "PATH");
+		paths = ft_split(buff, ':');
 		free(buff);
-		i++;
+		while (paths[i])
+		{
+			buff = ft_calloc(1, sizeof(char));
+			super_concat(&buff, paths[i]);
+			super_concat(&buff, "/");
+			super_concat(&buff, cmd->tokens->str);
+			*ret = execve(buff, args, envs);
+			free(buff);
+			i++;
+		}
+		free_liste(paths);
 	}
 	error_exec(errno);
 	free_liste(envs);
-	free_liste(paths);
 	free_liste(args);
-	return (ft_abs(*ret));
+	exit((*ret));
 }
 
 void	ft_exec(t_cmd *cmd, t_main **main)
@@ -131,7 +142,7 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 		exit_val = fork_returns(cmd, main, pid);
 	//Affiche le BON code ici, donc ça veut dire que l'info remonte bien jusque la
 	//Pourquoi l'exit n'envoie pas le bon code alors ?
-	//ft_putstr_fd(ft_itoa((*main)->last), 2);
+	//ft_putstr_fd(ft_itoa(exit_val), 2);
 	//printf("parent get: %d of child\n", WEXITSTATUS((*main)->last));
 	//ft_putstr_fd("\n", 2);
 	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT
