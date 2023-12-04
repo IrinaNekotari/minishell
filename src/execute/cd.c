@@ -26,7 +26,7 @@ static void	exec_cd(t_cmd *cmd, t_main **main)
 	}
 	buffer = ft_calloc(250, sizeof(char));
 	getcwd(buffer, 250);
-	update_env(&((*main)->env), "PWD", buffer);
+	add_to_env(&((*main)->env), "PWD", buffer);
 	free(buffer);
 }
 
@@ -44,7 +44,7 @@ void	ft_cd(t_cmd *cmd, t_main **main)
 	else if (!cmd->tokens->next || !cmd->tokens->next->str)
 	{
 		buffer = ft_strdup((*main)->initpwd);
-		update_env(&((*main)->env), "PWD", buffer);
+		add_to_env(&((*main)->env), "PWD", buffer);
 		chdir(buffer);
 		free(buffer);
 	}

@@ -17,6 +17,7 @@
 # include <stdbool.h>
 # include <stdint.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <signal.h>
 # include <string.h>
 # include <readline/readline.h>
@@ -186,6 +187,7 @@ int		output_depth(t_cmd *cmd);
 int		tokens_depth(t_cmd *cmd);
 int		env_depth(t_env *env);
 int		cmd_depth(t_cmd *cmd);
+int		is_system_env(char *s);
 
 /*
 *	Builtins et execution
@@ -235,6 +237,7 @@ void	hyper_concat(char **base, ...);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
 void	error_print(int severerity, char *msg, char *add);
+void	error_env(void);
 
 char	*check_quote(char *s);
 char	*ft_concat(char *s1, char *s2);

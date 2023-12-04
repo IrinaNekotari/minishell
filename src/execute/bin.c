@@ -34,7 +34,7 @@ static char	**create_args(t_cmd *cmd)
 	return (ret);
 }
 
-void	exec_general(t_cmd *cmd, t_main **main, int *ret)
+int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 {
 	int		i;
 	char	**paths;
@@ -54,7 +54,7 @@ void	exec_general(t_cmd *cmd, t_main **main, int *ret)
 		super_concat(&buff, paths[i]);
 		super_concat(&buff, "/");
 		super_concat(&buff, cmd->tokens->str);
-		(*ret) = execve(buff, args, envs);
+		*ret = execve(buff, args, envs);
 		free(buff);
 		i++;
 	}
@@ -62,7 +62,7 @@ void	exec_general(t_cmd *cmd, t_main **main, int *ret)
 	free_liste(envs);
 	free_liste(paths);
 	free_liste(args);
-	exit(errno);
+	return (ft_abs(*ret));
 }
 
 void	fork_returns(t_cmd *cmd, t_main **main, int pid)
@@ -83,7 +83,7 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	int	ret;
 
 	ret = 0;
-	if (cmd->output->file)
+	if (cmd->output->file || cmd->input->file)
 		io_pipe(cmd, main);
 	else if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
 			|| close((*main)->pipes[0]) == -1
@@ -97,7 +97,7 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	else if (is_builtin(cmd->tokens->str))
 		ret = exec_builtin(cmd, main);
 	else
-		exec_general(cmd, main, &ret);
+		ret = exec_general(cmd, main, &ret);
 	exit(ret);
 }
 
@@ -105,9 +105,7 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 {
 	int	pid;
 	int	i;
-	int	ret;
 
-	ret = 0;
 	if (!cmd->pipe)
 		(*main)->state = LAST_PIPE;
 	i = pipe((*main)->pipes);
@@ -126,10 +124,12 @@ void	ft_exec(t_cmd *cmd, t_main **main)
 		fork_core(cmd, main);
 	else
 		fork_returns(cmd, main, pid);
-	waitpid(pid, &ret, 0);
+	//Affiche le BON code ici, donc ça veut dire que l'info remonte bien jusque la
+	//Pourquoi l'exit n'envoie pas le bon code alors ?
+	ft_putstr_fd(ft_itoa((*main)->last), 2);
 	if (!cmd->pipe || g_received_signal == SIGNAL_QUIT
 		|| g_received_signal == SIGNAL_ABORT)
-		exit(ret);
+		exit((*main)->last);
 	cmd = cmd->pipe;
 	(*main)->state = IN_PIPE;
 	ft_exec(cmd, main);

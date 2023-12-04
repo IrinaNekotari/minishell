@@ -68,11 +68,15 @@ void	ft_export(t_cmd *cmd, t_main **main)
 	while (cmd->tokens->str)
 	{
 		generate_env(cmd->tokens->str, &name, &value);
+		if (name && is_system_env(name))
+			error_env();
 		if (value && value[0])
 			add_to_env(&(*(main))->env, name, value);
-		cmd->tokens = cmd->tokens->next;
+		if (ft_equals(name, "PWD"))
+			chdir(value);
 		free(name);
 		if (value)
 			free(value);
+		cmd->tokens = cmd->tokens->next;
 	}
 }
