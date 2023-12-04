@@ -31,9 +31,10 @@ void	execute(t_cmd *cmd, t_main **main)
 			(*main)->last = -1;
 			return ;
 		}
-		if (!pid)
+		else if (!pid)
 			ft_exec(cmd, main);
-		waitpid(pid, &((*main)->last), 0);
+		else
+			waitpid(pid, &((*main)->last), 0);
 	}
 	//Mais la, c'est plus le même code ?????????
 	ft_putstr_fd(ft_itoa((*main)->last), 2);
