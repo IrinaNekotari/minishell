@@ -14,11 +14,8 @@ FLAG = -Wall -Wextra -Werror -g3
 
 NAME = libftprintf.a
 
-SRC = src/main.c src/parse.c src/parse_utils.c src/parse_single.c \
-	src/memory.c src/logger.c src/quote_utils.c \
 
-SRC = src/main.c src/parse.c src/parse_single.c src/parse_utils.c\
-	 src/memory.c src/logger.c src/quote_utils.c \
+SRC = src/main.c src/parse.c src/parse_single.c src/memory.c src/logger.c src/quote_utils.c \
 	 src/char_utils.c src/debug_exec.c src/execute.c src/countersplit.c \
 	 src/syntax_checker.c src/io.c src/display.c\
 	 src/concat.c src/execute/unset.c src/execute/export.c src/sort_env.c\
@@ -30,7 +27,10 @@ SRC = src/main.c src/parse.c src/parse_single.c src/parse_utils.c\
 	 src/chains/depths.c \
 	 src/chains/lengths.c src/execute/bin.c src/builtin.c src/check_pipes.c \
 	 src/execute/bin_forks.c \
-	 src/check_pipes2.c
+	 src/check_pipes2.c \
+	 src/parse_single_utils.c \
+	 src/parse_utils.c \
+	 src/countersplit_utils.c
 
 OBJ  = $(SRC:.c=.o)
 

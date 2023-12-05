@@ -191,6 +191,7 @@ int		env_depth(t_env *env);
 int		cmd_depth(t_cmd *cmd);
 int		is_system_env(char *s);
 int		fork_returns(t_cmd *cmd, t_main **main, int pid);
+int		delimm(char *str, int *i);
 
 /*
 *	Builtins et execution
@@ -213,6 +214,7 @@ void	parse_single(char *s, t_cmd **cmd);
 void	parse_single_2(char *s, t_word *c);
 void	parse_with_pipes(char **t, t_cmd **c);
 void	ft_trimword(t_word *c);
+void	part1_counter(int *i, char *s, char *quote, int *quoted);
 void	free_command(t_cmd *c);
 void	free_liste(char **lst);
 void	log_input(char	*str);
@@ -223,7 +225,6 @@ void	debug_show_command(t_word *t);
 void	debug_show_all(t_cmd *c);
 void	execute(t_cmd *cmd, t_main **main);
 void	sort_env(char **tab);
-char	*print_sorted_env(t_env *env);
 void	generate_io(t_cmd **cmd);
 void	update_env(t_env **env, char *name, char *newvalue);
 void	rollback_tokens(t_cmd **cmd);
@@ -246,7 +247,10 @@ void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
 int		error_print(int severerity, char *msg, char *add);
 void	error_env(void);
+void	add_word(t_cmd **cmd, char *str, char quote);
 
+char	*print_sorted_env(t_env *env);
+char	*get_next_word(char *str, int *i, char delim);
 char	*check_quote(char *s);
 char	*ft_concat(char *s1, char *s2);
 char	*add_quote(char *s, char quote);

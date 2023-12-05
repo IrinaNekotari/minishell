@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
+/*   countersplit_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmascrie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/24 14:00:58 by nmascrie          #+#    #+#             */
-/*   Updated: 2023/10/24 14:00:59 by nmascrie         ###   ########.fr       */
+/*   Created: 2023/12/05 15:52:58 by nmascrie          #+#    #+#             */
+/*   Updated: 2023/12/05 15:52:59 by nmascrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern int	g_received_signal;
-
-void	execute(t_cmd *cmd, t_main **main)
+void	part1_counter(int *i, char *s, char *quote, int *quoted)
 {
-	int	ret;
-
-	(*main)->state = FIRST_PIPE;
-	(*main)->mode = 0;
-	ret = 0;
-	if (!cmd || !cmd->tokens || !cmd->tokens->str)
-		return ;
-	if (is_system(cmd) && !cmd->pipe)
-		(*main)->last = exec_builtin(cmd, main);
-	else
+	if ((s[(*i)] == '\"' || s[(*i)] == '\'') && (*quoted) == 0)
 	{
-		ret = ft_exec(cmd, main);
-		((*main)->last) = ret;
+		if ((s[(*i) - 1] != '\\') || (*i) == 0)
+		{
+			(*quoted) = 1;
+			(*quote) = s[(*i)];
+		}
 	}
+	else if (s[(*i)] == (*quote) && (*quoted) == 1
+		&& ((s[(*i) - 1] != '\\') || (*i) == 0))
+		(*quoted) = 0;
 }

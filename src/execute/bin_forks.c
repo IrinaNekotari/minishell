@@ -68,13 +68,9 @@ int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 	envs = env_to_array((*main)->env);
 	args = create_args(cmd);
 	if (cmd->tokens->str[0] == '/')
-	{
 		(*ret) = execve(cmd->tokens->str, args, envs);
-	}
 	else
-	{
 		ft_execve(main, envs, args, ret);
-	}
 	error_exec(errno);
 	free_liste(envs);
 	free_liste(args);
@@ -121,5 +117,6 @@ void	fork_core(t_cmd *cmd, t_main **main)
 		ret = exec_builtin(cmd, main);
 	else
 		ret = exec_general(cmd, main, &ret);
+	free_command(cmd);
 	exit(ret);
 }
