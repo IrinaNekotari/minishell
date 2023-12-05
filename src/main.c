@@ -38,8 +38,32 @@ void	welcome_message(void)
 	ft_printf("#########################\n\n");
 }
 
+void	get_prompt(t_main *main)
+{
+	char	*temp;
+	char	*prompt;
+
+	temp = ft_getenv(main->env, "PWD");
+	if (ft_equals(main->initpwd, temp))
+		ft_printf("[\x1b[36mHome\x1b[37m]");
+	else
+	{
+		prompt = ft_calloc(1, sizeof(char));
+		super_concat(&prompt, "[\x1b[33m");
+		free(temp);
+		temp = ft_getenv(main->env, "PWD");
+		super_concat(&prompt, temp);
+		super_concat(&prompt, "\x1b[37m]");
+		ft_printf("%s", prompt);
+		free(prompt);
+	}
+	free(temp);
+}
+
 void	interrupt_sig(int sig)
 {
+	char	*p;
+
 	if (sig == SIGINT)
 	{
 		ft_printf("\n");
@@ -51,13 +75,7 @@ void	interrupt_sig(int sig)
 	else if (sig == SIGSEGV)
 		error_print(FUBAR, "Dump this core 🔪️", NULL);
 	else
-	{
-		ft_printf("\n");
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
 		g_received_signal = -3;
-	}
 }
 
 void	ft_eof(t_main *main)
@@ -82,28 +100,6 @@ int	ft_empty(char *str)
 		i++;
 	}
 	return (1);
-}
-
-void	get_prompt(t_main *main)
-{
-	char	*temp;
-	char	*prompt;
-
-	temp = ft_getenv(main->env, "PWD");
-	if (ft_equals(main->initpwd, temp))
-		ft_printf("[\x1b[36mHome\x1b[37m]");
-	else
-	{
-		prompt = ft_calloc(1, sizeof(char));
-		super_concat(&prompt, "[\x1b[33m");
-		free(temp);
-		temp = ft_getenv(main->env, "PWD");
-		super_concat(&prompt, temp);
-		super_concat(&prompt, "\x1b[37m]");
-		ft_printf("%s", prompt);
-		free(prompt);
-	}
-	free(temp);
 }
 
 int	main(int args, char *argv[], char *env[])
