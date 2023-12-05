@@ -214,6 +214,7 @@ void	parse_single(char *s, t_cmd **cmd);
 void	parse_single_2(char *s, t_word *c);
 void	parse_with_pipes(char **t, t_cmd **c);
 void	ft_trimword(t_word *c);
+void	part1_counter(int *i, char *s, char *quote, int *quoted);
 void	free_command(t_cmd *c);
 void	free_liste(char **lst);
 void	log_input(char	*str);

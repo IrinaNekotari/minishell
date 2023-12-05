@@ -12,128 +12,99 @@
 
 #include "minishell.h"
 
-char	**split_semi(char *s, char **to_ret)
+typedef struct s_triplet
 {
-	int		i;
-	int		quoted;
-	char	quote;
+	int	i;
+	int	j;
+	int	k;
+}	t_triplet;
 
-	i = 0;
-	quote = 0;
-	while(s[i])
+void	init_trips(t_triplet *t, int *a, char *b)
+{
+	t->i = 0;
+	t->j = 0;
+	t->k = 0;
+	(*a) = 0;
+	(*b) = 0;
+}
+
+void	check_semi(t_triplet *t, char *s, int *quoted, char ***to_ret)
+{
+	if (s[t->i] == ';' && (*quoted) == 0)
 	{
-		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
+		if ((s[t->i - 1] != '\\') || t->i == 0)
 		{
-			quoted = 1;
-			quote = s[i];
+			t->j = 0;
+			t->k += 1;
+			t->i += 1;
+			(*to_ret)[t->k] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
 		}
 	}
-	return (to_ret);
+}
+
+void	check_pippe(t_triplet *t, char *s, int *quoted, char ***to_ret)
+{
+	if (s[t->i] == '|' && (*quoted) == 0)
+	{
+		if ((s[t->i - 1] != '\\') || t->i == 0)
+		{
+			t->j = 0;
+			t->k += 1;
+			t->i += 1;
+			(*to_ret)[t->k] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
+		}
+	}
 }
 
 //TODO : Norminer tout ca
 char	**split_semicolon(char *s, char **to_ret)
 {
-	int		i;
-	int		j;
-	int		k;
-	int		quoted;
-	char	quote;
+	t_triplet	trip;
+	int			quoted;
+	char		quote;
 
 	to_ret[0] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
-	i = 0;
-	j = 0;
-	quoted = 0;
-	quote = 0;
-	k = 0;
-	while (s[i])
+	init_trips(&trip, &quoted, &quote);
+	while (s[trip.i])
 	{
-		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
+		part1_counter(&trip.i, s, &quote, &quoted);
+		check_semi(&trip, s, &quoted, &to_ret);
+		if (!s[trip.i])
+			break ;
+		if (is_whitespace(s[trip.i]) && quoted == 0)
 		{
-			if ((s[i - 1] != '\\') || i == 0)
-			{
-				quoted = 1;
-				quote = s[i];
-			}
-		}
-		else if (s[i] == quote && quoted == 1 && ((s[i - 1] != '\\') || i == 0))
-			quoted = 0;
-		if (s[i] == ';' && quoted == 0)
-		{
-			if ((s[i - 1] != '\\') || i == 0)
-			{
-				j = 0;
-				k++;
-				i++;
-				to_ret[k] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
-			}
-		}
-		if (is_whitespace(s[i]) && quoted == 0)
-		{
-			to_ret[k][j++] = s[i++];
-			while (is_whitespace(s[i]))
-				i++;
+			to_ret[trip.k][trip.j++] = s[trip.i++];
+			while (is_whitespace(s[trip.i]))
+				trip.i++;
 		}
 		else
-			to_ret[k][j++] = s[i++];
+			to_ret[trip.k][trip.j++] = s[trip.i++];
 	}
-	to_ret[k][j] = 0;
+	to_ret[trip.k][trip.j] = 0;
 	return (to_ret);
 }
 
-//TODO : Norminer tout ca
 char	**counter_split(char *s, char **to_ret)
 {
-	int		i;
-	int		j;
-	int		k;
-	int		quoted;
-	char	quote;
+	t_triplet	trip;
+	int			quoted;
+	char		quote;
 
 	to_ret[0] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
-	i = 0;
-	j = 0;
-	quoted = 0;
-	k = 0;
-	quote = 0;
-	while (s[i])
+	init_trips(&trip, &quoted, &quote);
+	while (s[trip.i])
 	{
-		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
+		part1_counter(&(trip.i), s, &quote, &quoted);
+		check_pippe(&trip, s, &quoted, &to_ret);
+		if (is_whitespace(s[trip.i]) && quoted == 0)
 		{
-			if ((s[i - 1] != '\\') || i == 0)
-			{
-				quoted = 1;
-				quote = s[i];
-			}
-		}
-		else if (s[i] == quote && quoted == 1 && ((s[i - 1] != '\\') || i == 0))
-			quoted = 0;
-		if (s[i] == '|' && quoted == 0)
-		{
-			if ((s[i - 1] != '\\') || i == 0)
-			{
-				j = 0;
-				k++;
-				to_ret[k] = ft_calloc(ft_strlen(s) + 1, sizeof(char));
-				i++;
-				while (is_whitespace(s[i]))
-					i++;
-			}
-		}
-		if (is_whitespace(s[i]) && quoted == 0)
-		{
-			to_ret[k][j++] = s[i++];
-			while (is_whitespace(s[i]))
-				i++;
-			if (!s[i])
-			{
-				to_ret[k][j - 1] = 0;
-				break ;
-			}
+			to_ret[trip.k][trip.j++] = s[trip.i++];
+			while (is_whitespace(s[trip.i]))
+				trip.i++;
 		}
 		else
-			to_ret[k][j++] = s[i++];
+			to_ret[trip.k][trip.j++] = s[trip.i++];
 	}
-	to_ret[k][j] = 0;
+	to_ret[trip.k][trip.j] = 0;
 	return (to_ret);
 }
