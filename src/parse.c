@@ -55,12 +55,7 @@ void	iterate(char *s, t_main *main)
 	int		i;
 
 	i = 0;
-<<<<<<< HEAD
-	lst = (char **) ft_calloc(count_occur(s, ';') + 1, sizeof(int) * 100);
-=======
-	//TODO : Chercher la bonne taille
 	lst = (char **) ft_calloc(count_occur(s, ';') + 2, sizeof(int) * 100);
->>>>>>> 171fe31eaec8b348c11b20f6a79b6eee93669817
 	lst = split_semicolon(s, lst);
 	while (lst[i])
 	{
