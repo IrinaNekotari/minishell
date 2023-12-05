@@ -189,6 +189,7 @@ int		tokens_depth(t_cmd *cmd);
 int		env_depth(t_env *env);
 int		cmd_depth(t_cmd *cmd);
 int		is_system_env(char *s);
+int		fork_returns(t_cmd *cmd, t_main **main, int pid);
 
 /*
 *	Builtins et execution
@@ -203,6 +204,7 @@ void	ft_exit(t_cmd *cmd, t_main *main);
 int		ft_exec(t_cmd *cmd, t_main **main);
 
 void	fork_core(t_cmd *cmd, t_main **main);
+void	checks2(int i, int u, char *s);
 void	parse(char *s, t_main **main);
 void	iterate(char *s, t_main *main);
 void	parse_single(char *s, t_cmd **cmd);
@@ -237,10 +239,10 @@ void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);
 void	super_concat(char **a, char *b);
-void	hyper_concat(char **base, ...);
+void	ultra_concat(char **a, char *b, char *c, char *d);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
-void	error_print(int severerity, char *msg, char *add);
+int		error_print(int severerity, char *msg, char *add);
 void	error_env(void);
 
 char	*check_quote(char *s);

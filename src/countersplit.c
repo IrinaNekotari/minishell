@@ -12,6 +12,25 @@
 
 #include "minishell.h"
 
+char	**split_semi(char *s, char **to_ret)
+{
+	int		i;
+	int		quoted;
+	char	quote;
+
+	i = 0;
+	quote = 0;
+	while(s[i])
+	{
+		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
+		{
+			quoted = 1;
+			quote = s[i];
+		}
+	}
+	return (to_ret);
+}
+
 //TODO : Norminer tout ca
 char	**split_semicolon(char *s, char **to_ret)
 {

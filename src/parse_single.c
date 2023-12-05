@@ -106,7 +106,7 @@ void	parse_single(char *s, t_cmd **cmd)
 			break ;
 		while (s[i] && is_whitespace(s[i]))
 			i++;
-		if ((s[i] == '>' || s[i] == '<') && quote == 0)
+		if ((s[i] == '>' || s[i] == '<') && quote == 0 && (i == 0 || s[i - 1] != '\\'))
 			handle_chevrons(cmd, s, &i);
 		else
 		{

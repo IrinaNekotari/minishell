@@ -57,7 +57,7 @@ int	error_syntax(int severity, char *loc)
 	return (0);
 }
 
-void	error_print(int severity, char *msg, char *add)
+int	error_print(int severity, char *msg, char *add)
 {
 	error_level(severity);
 	ft_putstr_fd(msg, 2);
@@ -67,4 +67,5 @@ void	error_print(int severity, char *msg, char *add)
 		ft_putstr_fd(add, 2);
 	}
 	ft_putstr_fd("\n", 2);
+	return (-1);
 }
