@@ -73,6 +73,16 @@ void	super_concat(char **a, char *b)
 	free(bck);
 }
 
+void	ultra_concat(char **a, char *b, char *c, char *d)
+{
+	if (b)
+		super_concat(a, b);
+	if (c)
+		super_concat(a, c);
+	if (d)
+		super_concat(a, d);
+}
+
 int	ft_equals(char *s1, char *s2)
 {
 	int	i;

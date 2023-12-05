@@ -12,6 +12,25 @@
 
 #include "minishell.h"
 
+char	**split_semi(char *s, char **to_ret)
+{
+	int		i;
+	int		quoted;
+	char	quote;
+
+	i = 0;
+	quote = 0;
+	while(s[i])
+	{
+		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
+		{
+			quoted = 1;
+			quote = s[i];
+		}
+	}
+	return (to_ret);
+}
+
 //TODO : Norminer tout ca
 char	**split_semicolon(char *s, char **to_ret)
 {
@@ -29,24 +48,19 @@ char	**split_semicolon(char *s, char **to_ret)
 	k = 0;
 	while (s[i])
 	{
-		if (s[i] == '\\')
-		{
-			if (is_escapable2(s[i + 1]))
-				i++;
-		}
 		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
 		{
-			if ((i >= 1 && s[i - 1] != '\\') || i == 0)
+			if ((s[i - 1] != '\\') || i == 0)
 			{
 				quoted = 1;
 				quote = s[i];
 			}
 		}
-		else if (s[i] == quote && quoted == 1)
+		else if (s[i] == quote && quoted == 1 && ((s[i - 1] != '\\') || i == 0))
 			quoted = 0;
 		if (s[i] == ';' && quoted == 0)
 		{
-			if ((i >= 1 && s[i - 1] != '\\') || i == 0)
+			if ((s[i - 1] != '\\') || i == 0)
 			{
 				j = 0;
 				k++;
@@ -63,6 +77,7 @@ char	**split_semicolon(char *s, char **to_ret)
 		else
 			to_ret[k][j++] = s[i++];
 	}
+	to_ret[k][j] = 0;
 	return (to_ret);
 }
 
@@ -83,24 +98,19 @@ char	**counter_split(char *s, char **to_ret)
 	quote = 0;
 	while (s[i])
 	{
-		if (s[i] == '\\' && !quoted)
-		{
-			if (is_escapable2(s[i + 1]))
-				i++;
-		}
 		if ((s[i] == '\"' || s[i] == '\'') && quoted == 0)
 		{
-			if ((i >= 1 && s[i - 1] != '\\') || i == 0)
+			if ((s[i - 1] != '\\') || i == 0)
 			{
 				quoted = 1;
 				quote = s[i];
 			}
 		}
-		else if (s[i] == quote && quoted == 1)
+		else if (s[i] == quote && quoted == 1 && ((s[i - 1] != '\\') || i == 0))
 			quoted = 0;
 		if (s[i] == '|' && quoted == 0)
 		{
-			if ((i >= 1 && s[i - 1] != '\\') || i == 0)
+			if ((s[i - 1] != '\\') || i == 0)
 			{
 				j = 0;
 				k++;
@@ -124,5 +134,6 @@ char	**counter_split(char *s, char **to_ret)
 		else
 			to_ret[k][j++] = s[i++];
 	}
+	to_ret[k][j] = 0;
 	return (to_ret);
 }
