@@ -46,6 +46,11 @@ void	ft_execve(t_main **main, char **envs, char **args, int *ret)
 
 	i = 0;
 	buff = ft_getenv((*main)->env, "PATH");
+	if (!buff)
+	{
+		error_print(ERROR, "PATH not found !", NULL);
+		exit(-1);
+	}
 	paths = ft_split(buff, ':');
 	free(buff);
 	while (paths[i])

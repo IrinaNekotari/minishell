@@ -62,7 +62,6 @@ void	run(char *to_parse, char *prompt, t_main main)
 		to_parse = check_pipes(to_parse);
 		if (!to_parse)
 			continue ;
-		add_history(to_parse);
 		if (to_parse && !ft_empty(to_parse))
 			iterate(to_parse, &main);
 		if (g_received_signal == SIGNAL_QUIT)
