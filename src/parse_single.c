@@ -17,7 +17,10 @@ void	init_tokens(t_cmd **cmd, char *str, char quote)
 	(*cmd)->tokens = ft_calloc(1, sizeof(t_word));
 	(*cmd)->tokens->next = NULL;
 	(*cmd)->tokens->previous = NULL;
-	(*cmd)->tokens->str = ft_strdup(str);
+	if (str)
+		(*cmd)->tokens->str = ft_strdup(str);
+	else
+		(*cmd)->tokens->str = NULL;
 	(*cmd)->tokens->quote = quote;
 }
 
@@ -39,6 +42,18 @@ void	add_word(t_cmd **cmd, char *str, char quote)
 	}
 }
 
+int	delimm(char *str, int *i)
+{
+	if (is_whitespace(str[*i]))
+		return (1);
+	if (*i == 0 || str[(*i) - 1] != '\\')
+	{
+		if (is_delim(str[*i]))
+			return (1);
+	}
+	return (0);
+}
+
 char	*get_next_word(char *str, int *i, char delim)
 {
 	int		j;
@@ -48,7 +63,7 @@ char	*get_next_word(char *str, int *i, char delim)
 	ret = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	while (str[*i])
 	{
-		if (delim == 0 && (is_whitespace(str[*i]) || is_delim(str[*i])))
+		if (delim == 0 && delimm(str, i))
 			break ;
 		else if (str[*i] == delim)
 			break ;
@@ -90,17 +105,25 @@ void	parse_single(char *s, t_cmd **cmd)
 	quote = 0;
 	while (s[i])
 	{
+		if (s[i] == '\\' && (i == 0 || s[i - 1] != '\\'))
+			i++;
 		if ((s[i] == '"' || s[i] == '\'') && quote == 0)
 		{
-			quote = s[i++];
-			temp = get_next_word(s, &i, quote);
-			add_word(cmd, temp, quote);
-			free(temp);
+			if (i == 0 || s[i - 1] != '\\')
+			{
+				quote = s[i++];
+				temp = get_next_word(s, &i, quote);
+				add_word(cmd, temp, quote);
+				free(temp);
+			}
 		}
 		if ((s[i] == '"' || s[i] == '\'') && quote != 0)
 		{
-			quote = 0;
-			i++;
+			if (i == 0 || s[i - 1] != '\\')
+			{
+				quote = 0;
+				i++;
+			}
 		}
 		if (!s[i])
 			break ;
