@@ -14,12 +14,11 @@ FLAG = -Wall -Wextra -Werror -g3
 
 NAME = libftprintf.a
 
-<<<<<<< HEAD
 SRC = src/main.c src/parse.c src/parse_utils.c src/parse_single.c \
 	src/memory.c src/logger.c src/quote_utils.c \
-=======
-SRC = src/main.c src/parse.c src/parse_single.c src/memory.c src/logger.c src/quote_utils.c \
->>>>>>> 171fe31eaec8b348c11b20f6a79b6eee93669817
+
+SRC = src/main.c src/parse.c src/parse_single.c src/parse_utils.c\
+	 src/memory.c src/logger.c src/quote_utils.c \
 	 src/char_utils.c src/debug_exec.c src/execute.c src/countersplit.c \
 	 src/syntax_checker.c src/io.c src/display.c\
 	 src/concat.c src/execute/unset.c src/execute/export.c src/sort_env.c\
