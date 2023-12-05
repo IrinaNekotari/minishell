@@ -26,7 +26,8 @@ SRC = src/main.c src/parse.c src/parse_single.c src/memory.c src/logger.c src/qu
 	 src/chains/depths.c \
 	 src/chains/lengths.c src/execute/bin.c src/builtin.c src/check_pipes.c \
 	 src/execute/bin_forks.c \
-	 src/check_pipes2.c
+	 src/check_pipes2.c \
+	 src/parse_single_utils.c
 
 OBJ  = $(SRC:.c=.o)
 
