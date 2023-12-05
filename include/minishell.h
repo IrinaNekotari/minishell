@@ -164,6 +164,7 @@ extern int	g_received_signal;
 
 int		parse_error(char *str);
 int		str_env_len(char **env);
+int		count_occur(char *str, char c);
 int		ft_equals(char *s1, char *s2);
 int		ft_empty(char *str);
 int		handle_input(t_cmd *cmd);
@@ -207,6 +208,7 @@ int		ft_exec(t_cmd *cmd, t_main **main);
 void	fork_core(t_cmd *cmd, t_main **main);
 void	checks2(int i, int u, char *s);
 void	parse(char *s, t_main **main);
+void	add_command(t_cmd **cmd, char *line);
 void	iterate(char *s, t_main *main);
 void	parse_single(char *s, t_cmd **cmd);
 void	parse_single_2(char *s, t_word *c);

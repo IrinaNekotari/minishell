@@ -14,46 +14,16 @@
 
 extern int	g_received_signal;
 
-int	count_occur(char *str, char c)
+static void	if_check_chevrons(t_cmd *cmd, t_main **main)
 {
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str[i])
+	if (check_chevrons(&cmd))
 	{
-		if (str[i] == c)
-		{
-			if ((i >= 1 && str[i - 1] != '\\') || i == 0)
-				count++;
-		}
-		i++;
-	}
-	return (count);
-}
-
-void	init_command(t_cmd **cmd, char *line)
-{
-	(*cmd) = ft_calloc(1, sizeof(t_cmd));
-	(*cmd)->pipe = NULL;
-	(*cmd)->previous = NULL;
-	(*cmd)->pipes = ft_calloc(2, sizeof(int));
-	parse_single(line, cmd);
-}
-
-void	add_command(t_cmd **cmd, char *line)
-{
-	if (!(*cmd))
-		init_command(cmd, line);
-	else
-	{
-		(*cmd)->pipe = ft_calloc(1, sizeof(t_cmd));
-		(*cmd)->pipe->previous = (*cmd);
-		(*cmd) = (*cmd)->pipe;
-		(*cmd)->pipe = NULL;
-		(*cmd)->pipes = ft_calloc(2, sizeof(int));
-		parse_single(line, cmd);
+		rollback_cmd(&cmd);
+		generate_variables(&cmd, main);
+		rollback_cmd(&cmd);
+		generate_io(&cmd);
+		rollback_cmd(&cmd);
+		execute(cmd, main);
 	}
 }
 
@@ -74,40 +44,9 @@ void	parse(char *s, t_main **main)
 			break ;
 		i++;
 	}
-	if (check_chevrons(&cmd))
-	{
-		rollback_cmd(&cmd);
-		generate_variables(&cmd, main);
-		rollback_cmd(&cmd);
-		generate_io(&cmd);
-		rollback_cmd(&cmd);
-		execute(cmd, main);
-	}
+	if_check_chevrons(cmd, main);
 	free_liste(t);
 	free_command(cmd);
-}
-
-void	parse_with_pipes(char **t, t_cmd **c)
-{
-	int		i;
-
-	i = 0;
-	while (t[i])
-	{
-		parse_single(t[i], c);
-		rollback_io(c);
-		rollback_tokens(c);
-		if (t[i + 1])
-		{
-			(*c)->pipe = ft_calloc(1, sizeof(t_cmd));
-			(*c)->pipe->previous = (*c);
-			(*c) = (*c)->pipe;
-		}
-		else
-			(*c)->pipe = NULL;
-		i++;
-	}
-	rollback_cmd(c);
 }
 
 void	iterate(char *s, t_main *main)
@@ -116,8 +55,12 @@ void	iterate(char *s, t_main *main)
 	int		i;
 
 	i = 0;
+<<<<<<< HEAD
+	lst = (char **) ft_calloc(count_occur(s, ';') + 1, sizeof(int) * 100);
+=======
 	//TODO : Chercher la bonne taille
 	lst = (char **) ft_calloc(count_occur(s, ';') + 2, sizeof(int) * 100);
+>>>>>>> 171fe31eaec8b348c11b20f6a79b6eee93669817
 	lst = split_semicolon(s, lst);
 	while (lst[i])
 	{

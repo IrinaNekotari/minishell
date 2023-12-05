@@ -13,7 +13,9 @@
 #include "minishell.h"
 
 /**
-On a pas besoin de ce fichier : Size env existe déjà dans chains/length ou depths, strcmp existe déjà (et utilise mon ft_equals ...)
+On a pas besoin de ce fichier : Size env 
+existe déjà dans chains/length ou depths, 
+strcmp existe déjà (et utilise mon ft_equals ...)
 Essaye de tout mettre dans export
 */
 static int	ft_strcmp(char *s1, char *s2)
@@ -55,8 +57,8 @@ int	str_env_len(char **env)
 
 void	sort_env(char **tab)
 {
-	int	sorted;
-	int	i;
+	int		sorted;
+	int		i;
 	char	*buffer;
 
 	sorted = 1;
@@ -76,7 +78,7 @@ void	sort_env(char **tab)
 		i++;
 	}
 	if (!sorted)
-	sort_env(tab);
+		sort_env(tab);
 }
 
 char	*print_sorted_env(t_env *env)
@@ -85,8 +87,7 @@ char	*print_sorted_env(t_env *env)
 	char		**tab;
 	int			i;
 
-	//str_env = env_to_str(env);
-	tab = env_to_array(env);;
+	tab = env_to_array(env);
 	sort_env(tab);
 	to_print = ft_calloc(1, sizeof(char));
 	i = 0;
