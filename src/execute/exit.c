@@ -16,7 +16,9 @@ extern int	g_received_signal;
 
 void	ft_exit(t_cmd *cmd, t_main *main)
 {
-	(void)cmd;
 	(void)main;
-	g_received_signal = -3;
+	if (cmd->tokens->next->str)
+		ft_printf("minishell: exit: too many arguments\n");
+	else
+		g_received_signal = SIGNAL_QUIT;
 }

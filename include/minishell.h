@@ -17,6 +17,7 @@
 # include <stdbool.h>
 # include <stdint.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <signal.h>
 # include <string.h>
 # include <readline/readline.h>
@@ -46,7 +47,14 @@
 # define CRITICAL 3
 # define FUBAR 4
 
+# define FIRST_PIPE 0
+# define LAST_PIPE 2
+# define IN_PIPE 1
+
 # define IGNORE_NEW_LINE -8
+# define SIGNAL_QUIT -3
+# define SIGNAL_ABORT -5
+# define IGNORE_PIPES -69
 
 /*
 * Suhz-Mahbyt la norminette
@@ -95,22 +103,22 @@ typedef struct s_io
 /*
 * Stocke un "mot" et stocke s'il est quote par des '' "" ou \
 */
-typedef struct	s_word
+typedef struct s_word
 {
 	char			quote;
-	char		*str;
+	char			*str;
 	struct s_word	*next;
 	struct s_word	*previous;
 }	t_word;
 /*
 * Stocke les valeurs d'environnement
 */
-typedef struct	s_env
+typedef struct s_env
 {
-	char		*name;
-	char		*value;
-	struct s_env	*next;
-	struct s_env	*previous;
+	struct s_env		*next;
+	struct s_env		*previous;
+	char				*name;
+	char				*value;
 }	t_env;
 
 /**
@@ -118,7 +126,7 @@ typedef struct	s_env
 */
 typedef struct s_pile
 {
-	char		*str;
+	char			*str;
 	struct s_pile	*next;
 	struct s_pile	*previous;
 }	t_pile;
@@ -128,45 +136,49 @@ typedef struct s_pile
 */
 typedef struct s_cmd
 {
+	struct s_io		*input;
+	struct s_io		*output;
 	struct s_word	*tokens;
-	struct s_io	*input;
-	struct s_io	*output;
 	struct s_cmd	*pipe;
 	struct s_cmd	*previous;
-	int		*pipes;
+	int				*pipes;
 }	t_cmd;
 
 /*
-*	Structure principale pour ballader les valeurs d'env, de val, et la derniere commande
+*	Structure principale pour ballader les valeurs d'env, 
+*	de val, et la derniere commande
 *	enregistree
 */
-typedef struct	s_main
+typedef struct s_main
 {
 	int		last;
+	int		pipes[2];
+	int		fd[2];
+	int		mode;
+	int		state;
 	char	*initpwd;
-	char	*inpipe;
-	int	*pipes;
-	int	*pipes2;
-	int	state;
 	t_env	*env;
 }	t_main;
 
 extern int	g_received_signal;
 
-int		is_whitespace(char c);
 int		parse_error(char *str);
+int		str_env_len(char **env);
+int		ft_equals(char *s1, char *s2);
+int		ft_empty(char *str);
+int		handle_input(t_cmd *cmd);
+int		is_blank(char *ptr, int j);
+int		is_builtin(char *str);
+int		is_delim(char c);
 int		is_escapable(char c);
 int		is_escapable2(char c);
-int		is_blank(char *ptr, int j);
-int		is_blank(char *ptr, int j);
-int		str_env_len(char **env);
-int		chain_as_equals(t_cmd **cmd, char *cmp);
-int		ft_equals(char *s1, char *s2);
-int		handle_input(t_cmd *cmd);
+int		is_system(t_cmd *cmd);
 int		is_usable(char c);
+int		is_whitespace(char c);
 int		error_syntax(int severity, char *loc);
 int		check_chevrons(t_cmd **cmd);
-int		is_delim(char c);
+int		exec_builtin(t_cmd *cmd, t_main **main);
+int		exec_general(t_cmd *cmd, t_main **main, int *ret);
 int		input_length(t_cmd *cmd);
 int		output_length(t_cmd *cmd);
 int		tokens_length(t_cmd *cmd);
@@ -176,6 +188,7 @@ int		output_depth(t_cmd *cmd);
 int		tokens_depth(t_cmd *cmd);
 int		env_depth(t_env *env);
 int		cmd_depth(t_cmd *cmd);
+int		is_system_env(char *s);
 
 /*
 *	Builtins et execution
@@ -187,8 +200,9 @@ void	ft_echo(t_cmd *cmd, t_main *main);
 void	ft_cd(t_cmd *cmd, t_main **main);
 void	ft_env(t_cmd *cmd, t_main *main);
 void	ft_exit(t_cmd *cmd, t_main *main);
-void	execute_general(t_cmd *cmd, t_main *main);
+int		ft_exec(t_cmd *cmd, t_main **main);
 
+void	fork_core(t_cmd *cmd, t_main **main);
 void	parse(char *s, t_main **main);
 void	iterate(char *s, t_main *main);
 void	parse_single(char *s, t_cmd **cmd);
@@ -204,7 +218,7 @@ void	log_open_exit(int i);
 void	debug_show_command(t_word *t);
 void	debug_show_all(t_cmd *c);
 void	execute(t_cmd *cmd, t_main **main);
-void	sort_env(char **tab, int env_len);
+void	sort_env(char **tab);
 char	*print_sorted_env(t_env *env);
 void	generate_io(t_cmd **cmd);
 void	update_env(t_env **env, char *name, char *newvalue);
@@ -215,13 +229,19 @@ void	print_io(t_cmd *cmd, char *str, t_main **main);
 void	handle_output(t_cmd *cmd, char *str);
 void	handle_output_create(t_cmd *cmd);
 void	rollback_env(t_env **env);
+void	ft_eof(t_main *main);
+void	run(char *to_parse, char *prompt, t_main main);
+void	io_pipe(t_cmd *cmd, t_main **main);
+void	io_pipe2(t_cmd *cmd, t_main **main);
 void	add_to_env(t_env **env, char *name, char *value);
 void	del_from_env(t_env **env, char *name);
 void	free_env(t_env *env);
 void	super_concat(char **a, char *b);
+void	hyper_concat(char **base, ...);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
 void	error_print(int severerity, char *msg, char *add);
+void	error_env(void);
 
 char	*check_quote(char *s);
 char	*ft_concat(char *s1, char *s2);
@@ -231,6 +251,7 @@ char	*env_to_str(t_env *lst);
 char	*ft_append(char *str, char c);
 char	*ft_getenv(t_env *env, char *search);
 char	*ft_concat2(char *s1, char *s2);
+char	*check_pipes(char *s);
 
 char	**counter_split(char *s, char **to_ret);
 char	**split_semicolon(char *s, char **to_ret);

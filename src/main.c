@@ -16,7 +16,6 @@ int	g_received_signal = -1;
 
 void	welcome_message(void)
 {
-	log_open_exit(1);
 	ft_printf("\x1b[37m###########################################");
 	ft_printf("########################\n");
 	ft_printf("#				  				  #\n");
@@ -33,37 +32,14 @@ void	welcome_message(void)
 	ft_printf("#  \x1b[34m|_|  |_|_____|_| \\_|_____");
 	ft_printf("|_____/|_|  |_|______|______|______|\x1b[37m  #\n");
 	ft_printf("#		  						  #\n");
-	ft_printf("#		😎️\x1b[31mPar Nolan MASCRIER et Martin JUETTE🤑️		  ");
+	ft_printf("#        😎️\x1b[31mPar Nolan MASC");
+	ft_printf("RIER et Martin JUETTE🤑️       		  ");
 	ft_printf("\x1b[37m#\n##########################################");
 	ft_printf("#########################\n\n");
 }
 
-void	get_prompt(t_main *main)
-{
-	char	*temp;
-	char	*prompt;
-
-	temp = ft_getenv(main->env, "PWD");
-	if (ft_equals(main->initpwd, temp))
-		ft_printf("[\x1b[36mHome\x1b[37m]");
-	else
-	{
-		prompt = ft_calloc(1, sizeof(char));
-		super_concat(&prompt, "[\x1b[33m");
-		free(temp);
-		temp = ft_getenv(main->env, "PWD");
-		super_concat(&prompt, temp);
-		super_concat(&prompt, "\x1b[37m]");
-		ft_printf("%s", prompt);
-		free(prompt);
-	}
-	free(temp);
-}
-
 void	interrupt_sig(int sig)
 {
-	char	*p;
-
 	if (sig == SIGINT)
 	{
 		ft_printf("\n");
@@ -75,68 +51,27 @@ void	interrupt_sig(int sig)
 	else if (sig == SIGSEGV)
 		error_print(FUBAR, "Dump this core 🔪️", NULL);
 	else
-		g_received_signal = -3;
-}
-
-void	ft_eof(t_main *main)
-{
-	(void)main;
-	rl_clear_history();
-	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\n\x1b[0m ");
-	log_open_exit(0);
-	chdir(main->initpwd);
-	exit(0);
-}
-
-int	ft_empty(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (!is_whitespace(str[i]))
-			return (0);
-		i++;
-	}
-	return (1);
+		g_received_signal = -1;
 }
 
 int	main(int args, char *argv[], char *env[])
 {
 	char	*to_parse;
+	char	*prompt;
 	t_main	main;
 
 	(void) args;
 	(void) argv;
+	to_parse = NULL;
+	prompt = NULL;
 	welcome_message();
 	signal(SIGINT, interrupt_sig);
 	signal(SIGTSTP, interrupt_sig);
 	signal(SIGQUIT, SIG_IGN);
 	main.env = make_env(env);
 	main.last = 0;
-	main.inpipe = ft_calloc(1, sizeof(char));
+	main.fd[0] = dup(0);
+	main.fd[1] = dup(1);
 	main.initpwd = ft_getenv(main.env, "PWD");
-	while (1)
-	{
-		get_prompt(&main);
-		to_parse = readline(" minishell ~$ ");
-		if (!to_parse)
-			ft_eof(&main);
-		to_parse = check_quote(to_parse);
-		if (!to_parse)
-		{
-			ft_printf("\n");
-			continue ;
-		}
-		//if (!parse_error(to_parse))
-		//	continue ;
-		add_history(to_parse);
-		if (to_parse && !ft_empty(to_parse))
-			iterate(to_parse, &main);
-		if (g_received_signal == -3)
-			ft_eof(&main);
-		g_received_signal = -1;
-		free(to_parse);
-	}
+	run(to_parse, prompt, main);
 }

@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 static char	*create_list(t_env *env)
 {
 	char	*a;
@@ -22,10 +24,13 @@ static char	*create_list(t_env *env)
 		super_concat(&a, env->name);
 		super_concat(&a, "=");
 		super_concat(&a, env->value);
-		if (env->next)
-			super_concat(&a, "\n");
+		super_concat(&a, "\n");
+		if (!env->next)
+			break ;
 		env = env->next;
 	}
+	while (env->previous)
+		env = env->previous;
 	return (a);
 }
 
@@ -37,6 +42,7 @@ static int	err_env(t_cmd *cmd, char *vars)
 		error_print(ERROR, "No such file or directory",
 			cmd->tokens->str);
 		free(vars);
+		g_received_signal = SIGNAL_ABORT;
 		return (0);
 	}
 	return (1);
@@ -60,8 +66,8 @@ void	ft_env(t_cmd *cmd, t_main *main)
 		{
 			if (!err_env(cmd, vars))
 				return ;
-			super_concat(&vars, "\n");
 			super_concat(&vars, cmd->tokens->str);
+			super_concat(&vars, "\n");
 			cmd->tokens = cmd->tokens->next;
 		}
 		print_io(cmd, vars, &main);

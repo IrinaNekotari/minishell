@@ -36,6 +36,8 @@ static void	loop_rl(t_cmd *cmd, char *sortie)
 	sortie = readline("> ");
 	while (!ft_equals(sortie, cmd->input->file))
 	{
+		if (!sortie)
+			exit (-1);
 		free(sortie);
 		sortie = readline("> ");
 	}

@@ -22,7 +22,7 @@ void	ft_echo(t_cmd *cmd, t_main *main)
 	cmd->tokens = cmd->tokens->next;
 	if (ft_equals(cmd->tokens->str, "-n"))
 	{
-		g_received_signal = IGNORE_NEW_LINE;
+		g_received_signal = 0;
 		cmd->tokens = cmd->tokens->next;
 	}
 	while (cmd->tokens->str)
@@ -32,6 +32,8 @@ void	ft_echo(t_cmd *cmd, t_main *main)
 			super_concat(&str, " ");
 		cmd->tokens = cmd->tokens->next;
 	}
+	if (g_received_signal == IGNORE_NEW_LINE)
+		super_concat(&str, "\n");
 	print_io(cmd, str, &main);
 	free(str);
 }

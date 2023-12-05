@@ -82,9 +82,9 @@ void	handle_chevrons(t_cmd **cmd, char *s, int *i)
 
 void	parse_single(char *s, t_cmd **cmd)
 {
-	int		i;
 	char		quote;
 	char		*temp;
+	int			i;
 
 	i = 0;
 	quote = 0;
@@ -102,6 +102,8 @@ void	parse_single(char *s, t_cmd **cmd)
 			quote = 0;
 			i++;
 		}
+		if (!s[i])
+			break ;
 		while (s[i] && is_whitespace(s[i]))
 			i++;
 		if ((s[i] == '>' || s[i] == '<') && quote == 0)

@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+extern int	g_received_signal;
+
 int	count_occur(char *str, char c)
 {
 	int	i;
@@ -68,6 +70,8 @@ void	parse(char *s, t_main **main)
 	while (t[i])
 	{
 		add_command(&cmd, t[i]);
+		if (g_received_signal == IGNORE_PIPES)
+			break ;
 		i++;
 	}
 	if (check_chevrons(&cmd))
@@ -115,7 +119,6 @@ void	iterate(char *s, t_main *main)
 	//TODO : Chercher la bonne taille
 	lst = (char **) ft_calloc(count_occur(s, ';') + 1, sizeof(int) * 100);
 	lst = split_semicolon(s, lst);
-	log_input(s);
 	while (lst[i])
 	{
 		parse(lst[i], &main);

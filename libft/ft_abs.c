@@ -1,26 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_abs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mjuette <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: nmascrie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/28 14:20:29 by mjuette           #+#    #+#             */
-/*   Updated: 2023/11/28 14:20:31 by mjuette          ###   ########.fr       */
+/*   Created: 2023/12/05 11:20:26 by nmascrie          #+#    #+#             */
+/*   Updated: 2023/12/05 11:20:28 by nmascrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_cmd *cmd, t_main *main)
+int	ft_abs(int a)
 {
-	char	*dir;
-
-	dir = ft_getenv(main->env, "PWD");
-	if (!dir)
-		dir = ft_strdup("No PWD found !\n");
+	if (a < 0)
+		return (a * -1);
 	else
-		super_concat(&dir, "\n");
-	print_io(cmd, dir, &main);
-	free(dir);
+		return (a);
 }

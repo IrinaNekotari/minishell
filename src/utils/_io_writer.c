@@ -26,20 +26,67 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 	if (cmd->input->file)
 	{
 		if (!handle_input(cmd))
-			return ;
+			exit (1);
 	}
 	if (cmd->output->file)
 		handle_output(cmd, str);
-	else if (!cmd->pipe && g_received_signal == IGNORE_NEW_LINE)
+	else
 		ft_printf("%s", str);
-	else if (!cmd->pipe)
-		ft_printf("%s\n", str);
-	ft_putstr_fd(str, (*main)->pipes[0]);
-	//if (cmd->pipe)
-	//	ft_putstr_fd(str, cmd->pipes[0]);
-	//(void)main;
-	//ft_putstr_fd(str, (*main)->pipes[(*main)->state][0]);
-	if ((*main)->inpipe)
-		free((*main)->inpipe);
-	(*main)->inpipe = ft_strdup(str);
+	(void)main;
+}
+
+static int	get_last_output(t_cmd *cmd)
+{
+	int	fd;
+
+	while (cmd->output->file)
+	{
+		if (!cmd->output->next || !cmd->output->next->file)
+			break ;
+		cmd->output = cmd->output->next;
+	}
+	if (cmd->output->io == SINGLE_OUTPUT)
+		fd = open(cmd->output->file, O_CREAT
+				| O_RDWR | O_TRUNC, 0777);
+	else
+		fd = open(cmd->output->file, O_CREAT
+				| O_RDWR | O_APPEND, 0777);
+	return (fd);
+}
+
+void	io_pipe(t_cmd *cmd, t_main **main)
+{
+	int	fd;
+
+	handle_output_create(cmd);
+	if (cmd->input->file)
+	{
+		if (!handle_input(cmd))
+			exit (SIGNAL_ABORT);
+	}
+	fd = get_last_output(cmd);
+	ft_putstr_fd("", 1);
+	if (dup2(fd, 1) == -1 || (cmd->pipe && (close((*main)->pipes[0]) == -1
+				|| close((*main)->pipes[1]) == -1
+				|| close(fd == -1))))
+	{
+		error_print(CRITICAL, "An error has occured while piping !", NULL);
+		exit(-1);
+	}
+}
+
+void	io_pipe2(t_cmd *cmd, t_main **main)
+{
+	if (cmd->input->file)
+	{
+		if (!handle_input(cmd))
+			exit (SIGNAL_ABORT);
+	}
+	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
+			|| close((*main)->pipes[0]) == -1
+			|| close((*main)->pipes[1]) == -1))
+	{
+		error_print(CRITICAL, "An error has occured while piping !", NULL);
+		exit(1);
+	}
 }

@@ -18,7 +18,6 @@
 # include <unistd.h>
 # include <stdint.h>
 # include <stdarg.h>
-# include <sys/wait.h>
 
 typedef struct s_list
 {
@@ -104,6 +103,8 @@ void	clean_stash(t_list2 **stash);
 void	free_stash(t_list2 *stash);
 size_t	ft_strlen(const char *str);
 int		found_newline(t_list2 *stash);
+
+int		ft_abs(int a);
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 64

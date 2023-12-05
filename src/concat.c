@@ -12,6 +12,32 @@
 
 #include "minishell.h"
 
+char	*ft_concat(char *s1, char *s2)
+{
+	int		i;
+	int		j;
+	char	*res;
+
+	i = 0;
+	j = 0;
+	res = (char *) malloc(sizeof(char)
+			* (ft_strlen(s1) + ft_strlen(s2) + 2));
+	while (s1[i] != '\0')
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	res[i++] = '\n';
+	while (s2[j] != '\0')
+	{
+		res[i] = s2[j];
+		i++;
+		j++;
+	}
+	res[i] = 0;
+	return (res);
+}
+
 char	*ft_concat2(char *s1, char *s2)
 {
 	int		i;
@@ -47,27 +73,20 @@ void	super_concat(char **a, char *b)
 	free(bck);
 }
 
-/**
-* Transforme un char** en char*
-*/
-char	*flatten(char **s)
+int	ft_equals(char *s1, char *s2)
 {
-	int		i;
-	char	*ret;
+	int	i;
 
-	i = 1;
-	if (!s || !s[0])
-		return (NULL);
-	if (!s[1])
-		return (ft_strdup(s[0]));
-	else
+	i = 0;
+	if (!s1 || !s2)
+		return (0);
+	while (s1[i] && s2[i])
 	{
-		ret = ft_strdup(s[0]);
-		while (s[i])
-		{
-			super_concat(&ret, s[i]);
-			i++;
-		}
+		if (s1[i] != s2[i])
+			return (0);
+		i++;
 	}
-	return (ret);
+	if (s1[i] != s2[i])
+		return (0);
+	return (1);
 }
