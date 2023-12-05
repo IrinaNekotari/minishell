@@ -46,6 +46,7 @@ void	parse(char *s, t_main **main)
 	}
 	if_check_chevrons(cmd, main);
 	free_liste(t);
+	rollback_cmd(&cmd);
 	free_command(cmd);
 }
 
