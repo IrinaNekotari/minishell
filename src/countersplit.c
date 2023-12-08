@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-typedef struct s_triplet
-{
-	int	i;
-	int	j;
-	int	k;
-}	t_triplet;
-
 void	init_trips(t_triplet *t, int *a, char *b)
 {
 	t->i = 0;

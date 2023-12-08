@@ -160,6 +160,23 @@ typedef struct s_main
 	t_env	*env;
 }	t_main;
 
+typedef struct s_strings
+{
+	char				*ret;
+	char				*str;
+	char				*val;
+	char				*get;
+	int					i;
+	int					j;
+}	t_strings;
+
+typedef struct s_triplet
+{
+	int	i;
+	int	j;
+	int	k;
+}	t_triplet;
+
 extern int	g_received_signal;
 
 int		parse_error(char *str);

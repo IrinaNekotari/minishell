@@ -12,16 +12,6 @@
 
 #include "minishell.h"
 
-typedef struct s_strings
-{
-	char				*ret;
-	char				*str;
-	char				*val;
-	char				*get;
-	int					i;
-	int					j;
-}	t_strings;
-
 static char	*find_the_flame(int *i, char *str)
 {
 	int		a;
@@ -85,7 +75,8 @@ char	*get_variables(char *str, t_main *main)
 
 	strings.i = 0;
 	strings.j = 0;
-	strings.ret = ft_calloc(ft_strlen(str) * 10, sizeof(char));
+	strings.ret = ft_calloc(ft_strlen(str)
+			+ env_length(main->env), sizeof(char));
 	while (str[strings.i])
 	{
 		check_dollar(main, &strings, str);

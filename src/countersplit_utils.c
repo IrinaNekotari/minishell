@@ -16,7 +16,7 @@ void	part1_counter(int *i, char *s, char *quote, int *quoted)
 {
 	if ((s[(*i)] == '\"' || s[(*i)] == '\'') && (*quoted) == 0)
 	{
-		if ((s[(*i) - 1] != '\\') || (*i) == 0)
+		if ((*i) == 0 || (s[(*i) - 1] != '\\'))
 		{
 			(*quoted) = 1;
 			(*quote) = s[(*i)];
