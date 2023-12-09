@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	init_tokens(t_cmd **cmd, char *str, char quote)
+void	init_tokens(t_cmd **cmd, char *str, char quote, char next)
 {
 	(*cmd)->tokens = ft_calloc(1, sizeof(t_word));
 	(*cmd)->tokens->next = NULL;
@@ -22,12 +22,16 @@ void	init_tokens(t_cmd **cmd, char *str, char quote)
 	else
 		(*cmd)->tokens->str = NULL;
 	(*cmd)->tokens->quote = quote;
+	if (is_whitespace(next))
+		(*cmd)->tokens->has_space = 1;
+	else
+		(*cmd)->tokens->has_space = 0;
 }
 
-void	add_word(t_cmd **cmd, char *str, char quote)
+void	add_word(t_cmd **cmd, char *str, char quote, char next)
 {
 	if (!(*cmd)->tokens)
-		init_tokens(cmd, str, quote);
+		init_tokens(cmd, str, quote, next);
 	else
 	{
 		(*cmd)->tokens->next = ft_calloc(1, sizeof(t_word));
@@ -39,6 +43,10 @@ void	add_word(t_cmd **cmd, char *str, char quote)
 			(*cmd)->tokens->str = NULL;
 		(*cmd)->tokens->quote = quote;
 		(*cmd)->tokens->next = NULL;
+		if (is_whitespace(next))
+			(*cmd)->tokens->has_space = 1;
+		else
+			(*cmd)->tokens->has_space = 0;
 	}
 }
 

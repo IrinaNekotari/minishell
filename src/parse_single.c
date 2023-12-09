@@ -29,7 +29,7 @@ void	handle_chevrons(t_cmd **cmd, char *s, int *i)
 		t[1] = s[*i];
 		(*i) += 1;
 	}
-	add_word(cmd, t, 0);
+	add_word(cmd, t, 0, s[*i]);
 	free(t);
 }
 
@@ -42,7 +42,7 @@ void	part1(int *i, char *s, t_cmd **cmd, char *quote)
 		(*quote) = s[(*i)];
 		(*i) += 1;
 		temp = get_next_word(s, i, (*quote));
-		add_word(cmd, temp, (*quote));
+		add_word(cmd, temp, (*quote), s[*i + 1]);
 		free(temp);
 	}
 }
@@ -66,7 +66,7 @@ void	part3(int *i, char *s, char *quote, t_cmd **cmd)
 	else
 	{
 		temp = get_next_word(s, i, 0);
-		add_word(cmd, temp, (*quote));
+		add_word(cmd, temp, (*quote), s[*i]);
 		free(temp);
 	}
 }
@@ -78,6 +78,7 @@ void	parse_single(char *s, t_cmd **cmd)
 
 	i = 0;
 	quote = 0;
+	ft_printf("GOT #%s\n", s);
 	while (s[i])
 	{
 		if (s[i] == '\\' && (i == 0 || s[i - 1] != '\\'))
@@ -94,6 +95,6 @@ void	parse_single(char *s, t_cmd **cmd)
 		while (s[i] && is_whitespace(s[i]))
 			i++;
 	}
-	add_word(cmd, NULL, 0);
+	add_word(cmd, NULL, 0, 0);
 	rollback_tokens(cmd);
 }

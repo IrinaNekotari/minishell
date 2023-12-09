@@ -28,7 +28,7 @@ void	ft_echo(t_cmd *cmd, t_main *main)
 	while (cmd->tokens->str)
 	{
 		super_concat(&str, cmd->tokens->str);
-		if (cmd->tokens->next->str)
+		if (cmd->tokens->next->str && cmd->tokens->has_space)
 			super_concat(&str, " ");
 		cmd->tokens = cmd->tokens->next;
 	}

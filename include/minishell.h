@@ -107,6 +107,7 @@ typedef struct s_word
 {
 	char			quote;
 	char			*str;
+	int			has_space;
 	struct s_word	*next;
 	struct s_word	*previous;
 }	t_word;
@@ -264,7 +265,7 @@ void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
 int		error_print(int severerity, char *msg, char *add);
 void	error_env(void);
-void	add_word(t_cmd **cmd, char *str, char quote);
+void	add_word(t_cmd **cmd, char *str, char quote, char next);
 
 char	*print_sorted_env(t_env *env);
 char	*get_next_word(char *str, int *i, char delim);
