@@ -56,14 +56,10 @@ void	interrupt_sig(int sig)
 
 int	main(int args, char *argv[], char *env[])
 {
-	char	*to_parse;
-	char	*prompt;
 	t_main	main;
 
 	(void) args;
 	(void) argv;
-	to_parse = NULL;
-	prompt = NULL;
 	welcome_message();
 	signal(SIGINT, interrupt_sig);
 	signal(SIGTSTP, interrupt_sig);
@@ -73,5 +69,5 @@ int	main(int args, char *argv[], char *env[])
 	main.fd[0] = dup(0);
 	main.fd[1] = dup(1);
 	main.initpwd = ft_getenv(main.env, "PWD");
-	run(to_parse, prompt, main);
+	run(main);
 }

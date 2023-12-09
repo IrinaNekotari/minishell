@@ -14,7 +14,7 @@
 
 extern int	g_received_signal;
 
-static char	**create_args(t_cmd *cmd)
+static char	**create_args(t_cmd *cmd, t_main **main)
 {
 	char	**ret;
 	int		i;
@@ -24,7 +24,7 @@ static char	**create_args(t_cmd *cmd)
 	if (!ret)
 	{
 		error_print(CRITICAL, "An error has occured while allocating !", NULL);
-		exit(SIGNAL_ABORT);
+		ft_eof2((*main), SIGNAL_ABORT);
 	}
 	while (cmd->tokens->str)
 	{
@@ -49,7 +49,7 @@ void	ft_execve(t_main **main, char **envs, char **args, int *ret)
 	if (!buff)
 	{
 		error_print(ERROR, "PATH not found !", NULL);
-		exit(-1);
+		ft_eof2((*main), -1);
 	}
 	paths = ft_split(buff, ':');
 	free(buff);
@@ -71,7 +71,7 @@ int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 
 	signal(SIGINT, SIG_DFL);
 	envs = env_to_array((*main)->env);
-	args = create_args(cmd);
+	args = create_args(cmd, main);
 	if (cmd->tokens->str[0] == '/')
 		(*ret) = execve(cmd->tokens->str, args, envs);
 	else
@@ -114,7 +114,7 @@ void	fork_core(t_cmd *cmd, t_main **main)
 			|| close((*main)->pipes[1]) == -1))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
-		exit(-1);
+		ft_eof2((*main), -1);
 	}
 	if (is_system(cmd))
 		ft_printf("");
@@ -123,5 +123,5 @@ void	fork_core(t_cmd *cmd, t_main **main)
 	else
 		ret = exec_general(cmd, main, &ret);
 	free_command(cmd);
-	exit(ret);
+	ft_eof2((*main), ret);
 }

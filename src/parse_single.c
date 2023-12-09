@@ -12,27 +12,6 @@
 
 #include "minishell.h"
 
-void	handle_chevrons(t_cmd **cmd, char *s, int *i)
-{
-	char	*t;
-
-	t = ft_calloc(3, sizeof(char));
-	t[0] = s[*i];
-	(*i) += 1;
-	if (t[0] == '<' && s[*i] == '>')
-	{
-		t[1] = '>';
-		(*i) += 1;
-	}
-	else if (s[*i] == t[0])
-	{
-		t[1] = s[*i];
-		(*i) += 1;
-	}
-	add_word(cmd, t, 0, s[*i]);
-	free(t);
-}
-
 void	part1(int *i, char *s, t_cmd **cmd, char *quote)
 {
 	char	*temp;
@@ -60,8 +39,7 @@ void	part3(int *i, char *s, char *quote, t_cmd **cmd)
 {
 	char	*temp;
 
-	if ((s[(*i)] == '>' || s[(*i)] == '<') && (*quote) == 0
-		&& ((*i) == 0 || s[(*i) - 1] != '\\'))
+	if ((s[(*i)] == '>' || s[(*i)] == '<') && (*quote) == 0)
 		handle_chevrons(cmd, s, i);
 	else
 	{
@@ -71,6 +49,14 @@ void	part3(int *i, char *s, char *quote, t_cmd **cmd)
 	}
 }
 
+void	part0(int *i, char *s)
+{
+	if (s[(*i) + 1] == '\\')
+		(*i) += 1;
+	else if (!is_escapable2(s[(*i) + 1]))
+		(*i) += 1;
+}
+
 void	parse_single(char *s, t_cmd **cmd)
 {
 	char		quote;
@@ -78,11 +64,10 @@ void	parse_single(char *s, t_cmd **cmd)
 
 	i = 0;
 	quote = 0;
-	ft_printf("GOT #%s\n", s);
 	while (s[i])
 	{
-		if (s[i] == '\\' && (i == 0 || s[i - 1] != '\\'))
-			i++;
+		if (s[i] == '\\')
+			part0(&i, s);
 		if ((s[i] == '"' || s[i] == '\'') && quote == 0)
 			part1(&i, s, cmd, &quote);
 		if ((s[i] == '"' || s[i] == '\'') && quote != 0)

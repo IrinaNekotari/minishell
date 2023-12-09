@@ -12,6 +12,30 @@
 
 #include "minishell.h"
 
+void	init_block_env(t_env **env, char *name, char *value)
+{
+	(*env) = ft_calloc(1, sizeof(t_env));
+	(*env)->previous = NULL;
+	(*env)->next = NULL;
+	(*env)->name = ft_strdup(name);
+	(*env)->value = ft_strdup(value);
+}
+
+void	add_env_block(t_env **env, char *name, char *value)
+{
+	if (!env || !(*env))
+		init_block_env(env, name, value);
+	else
+	{
+		(*env)->next = ft_calloc(1, sizeof(t_env));
+		(*env)->next->previous = (*env);
+		(*env) = (*env)->next;
+		(*env)->next = NULL;
+		(*env)->name = ft_strdup(name);
+		(*env)->value = ft_strdup(value);
+	}
+}
+
 /**
 * Crée un array a partir des variables d'environnement
 */
@@ -68,18 +92,17 @@ t_env	*make_env(char **env)
 {
 	int		i;
 	t_env	*ret;
+	char	*name;
+	char	*value;
 
-	i = 1;
-	ret = ft_calloc(1, sizeof(t_env));
-	ret->previous = NULL;
-	generate_env(env[0], &ret->name, &ret->value);
+	i = 0;
+	ret = NULL;
 	while (env[i])
 	{
-		ret->next = ft_calloc(1, sizeof(t_env));
-		ret->next->previous = ret;
-		ret = ret->next;
-		generate_env(env[i], &ret->name, &ret->value);
-		ret->next = NULL;
+		generate_env(env[i], &name, &value);
+		add_env_block(&ret, name, value);
+		free(name);
+		free(value);
 		i++;
 	}
 	while (ret->previous)

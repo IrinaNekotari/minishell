@@ -71,6 +71,10 @@ char	*get_next_word(char *str, int *i, char delim)
 	ret = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	while (str[*i])
 	{
+		if (str[*i] == '\\' && (i == 0 || str[*i - 1] != '\\'))
+			(*i) += 1;
+		if (!str[*i])
+			break ;
 		if (delim == 0 && delimm(str, i))
 			break ;
 		else if (str[*i] == delim)
@@ -80,4 +84,37 @@ char	*get_next_word(char *str, int *i, char delim)
 		(*i) += 1;
 	}
 	return (ret);
+}
+
+void	handle_chevrons(t_cmd **cmd, char *s, int *i)
+{
+	char	*t;
+	int		j;
+
+	t = ft_calloc(4, sizeof(char));
+	if ((*i) > 0 && s[(*i) - 1] == '\\')
+	{
+		t[0] = '\\';
+		t[1] = s[*i];
+		(*i) += 1;
+		add_word(cmd, t, 0, s[*i]);
+		free(t);
+		return ;
+	}
+	else
+		j = 0;
+	t[j] = s[*i];
+	(*i) += 1;
+	if (t[j] == '<' && s[*i] == '>')
+	{
+		t[j + 1] = '>';
+		(*i) += 1;
+	}
+	else if (s[*i] == t[j])
+	{
+		t[j + 1] = s[*i];
+		(*i) += 1;
+	}
+	add_word(cmd, t, 0, s[*i]);
+	free(t);
 }

@@ -12,12 +12,29 @@
 
 #include "minishell.h"
 
+/*
+	char	**iterate_liste;
+	char	**pipe_liste;
+*/
+void	ft_eof2(t_main *main, int code)
+{
+	rl_clear_history();
+	free(main->initpwd);
+	free_env(main->env);
+	free(main->to_parse);
+	free_liste(main->iterate_liste);
+	free_liste(main->pipe_liste);
+	exit(code);
+}
+
 void	ft_eof(t_main *main)
 {
-	(void)main;
 	rl_clear_history();
 	ft_printf("\x1b[31m\n\nGoodbye 💀️💀️💀️\x1b[0m");
 	chdir(main->initpwd);
+	free(main->initpwd);
+	free_env(main->env);
+	free(main->to_parse);
 	exit(0);
 }
 
@@ -46,29 +63,27 @@ char	*get_prompt(t_main *main)
 	return (prompt);
 }
 
-void	run(char *to_parse, char *prompt, t_main main)
+void	run(t_main main)
 {
 	while (1)
 	{
 		dup2(main.fd[0], 0);
-		prompt = get_prompt(&main);
-		to_parse = readline(prompt);
+		main.prompt = get_prompt(&main);
+		main.to_parse = readline(main.prompt);
 		main.state = 0;
-		free(prompt);
-		if (!to_parse && main.state != 1)
+		free(main.prompt);
+		if (!main.to_parse && main.state != 1)
 			ft_eof(&main);
 		main.state = 0;
-		to_parse = check_quote(to_parse);
-		to_parse = check_pipes(to_parse);
-		if (!to_parse)
+		main.to_parse = check_quote(main.to_parse);
+		main.to_parse = check_pipes(main.to_parse);
+		if (!main.to_parse)
 			continue ;
-		if (to_parse && !ft_empty(to_parse))
-			iterate(to_parse, &main);
+		if (main.to_parse && !ft_empty(main.to_parse))
+			iterate(main.to_parse, &main);
 		if (g_received_signal == SIGNAL_QUIT)
 			ft_eof(&main);
 		g_received_signal = -1;
-		free(to_parse);
-		if (main.state == LAST_PIPE)
-			exit(0);
+		free(main.to_parse);
 	}
 }

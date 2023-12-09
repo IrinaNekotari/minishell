@@ -157,7 +157,11 @@ typedef struct s_main
 	int		fd[2];
 	int		mode;
 	int		state;
+	char	*to_parse;
+	char	*prompt;
 	char	*initpwd;
+	char	**iterate_liste;
+	char	**pipe_liste;
 	t_env	*env;
 }	t_main;
 
@@ -210,6 +214,7 @@ int		cmd_depth(t_cmd *cmd);
 int		is_system_env(char *s);
 int		fork_returns(t_cmd *cmd, t_main **main, int pid);
 int		delimm(char *str, int *i);
+int		error_print(int severerity, char *msg, char *add);
 
 /*
 *	Builtins et execution
@@ -253,7 +258,8 @@ void	handle_output(t_cmd *cmd, char *str);
 void	handle_output_create(t_cmd *cmd);
 void	rollback_env(t_env **env);
 void	ft_eof(t_main *main);
-void	run(char *to_parse, char *prompt, t_main main);
+void	ft_eof2(t_main *main, int code);
+void	run(t_main main);
 void	io_pipe(t_cmd *cmd, t_main **main);
 void	io_pipe2(t_cmd *cmd, t_main **main);
 void	add_to_env(t_env **env, char *name, char *value);
@@ -263,9 +269,9 @@ void	super_concat(char **a, char *b);
 void	ultra_concat(char **a, char *b, char *c, char *d);
 void	generate_env(char *env, char **name, char **value);
 void	error_exec(int err);
-int		error_print(int severerity, char *msg, char *add);
 void	error_env(void);
 void	add_word(t_cmd **cmd, char *str, char quote, char next);
+void	handle_chevrons(t_cmd **cmd, char *s, int *i);
 
 char	*print_sorted_env(t_env *env);
 char	*get_next_word(char *str, int *i, char delim);

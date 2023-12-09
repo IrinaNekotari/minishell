@@ -54,7 +54,7 @@ void	free_env(t_env *env)
 	if (env->value)
 		free(env->value);
 	if (env->next)
-		free(env->next);
+		free_env(env->next);
 	free(env);
 }
 

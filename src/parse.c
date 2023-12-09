@@ -30,39 +30,41 @@ static void	if_check_chevrons(t_cmd *cmd, t_main **main)
 void	parse(char *s, t_main **main)
 {
 	t_cmd	*cmd;
-	char	**t;
 	int		i;
 
 	cmd = NULL;
-	t = (char **) ft_calloc(count_occur(s, '|') + 1, sizeof(int) * 100);
-	t = counter_split(s, t);
+	//FREE
+	(*main)->pipe_liste = (char **) ft_calloc(count_occur(s, '|') + 1,
+				sizeof(int) * 100);
+	(*main)->pipe_liste = counter_split(s, (*main)->pipe_liste);
 	i = 0;
-	while (t[i])
+	while ((*main)->pipe_liste[i])
 	{
-		add_command(&cmd, t[i]);
+		add_command(&cmd, (*main)->pipe_liste[i]);
 		if (g_received_signal == IGNORE_PIPES)
 			break ;
 		i++;
 	}
 	if_check_chevrons(cmd, main);
-	free_liste(t);
+	free_liste((*main)->pipe_liste);
 	rollback_cmd(&cmd);
 	free_command(cmd);
 }
 
 void	iterate(char *s, t_main *main)
 {
-	char	**lst;
 	int		i;
 
 	add_history(s);
 	i = 0;
-	lst = (char **) ft_calloc(count_occur(s, ';') + 2, sizeof(int) * 100);
-	lst = split_semicolon(s, lst);
-	while (lst[i])
+	//FREE
+	main->iterate_liste = (char **) ft_calloc(count_occur(s, ';') + 2,
+				sizeof(int) * 100);
+	main->iterate_liste = split_semicolon(s, main->iterate_liste);
+	while (main->iterate_liste[i])
 	{
-		parse(lst[i], &main);
+		parse(main->iterate_liste[i], &main);
 		i++;
 	}
-	free_liste(lst);
+	free_liste(main->iterate_liste);
 }

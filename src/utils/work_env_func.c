@@ -57,7 +57,6 @@ static	void	del_env(t_env **env)
 	free(element);
 }
 
-//TODO : A norminer
 void	del_from_env(t_env **env, char *name)
 {
 	while ((*env))

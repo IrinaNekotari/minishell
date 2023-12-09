@@ -12,16 +12,33 @@
 
 #include "minishell.h"
 
-int	is_io(char *s)
+int	mod_str(char **s)
 {
-	if (ft_equals(s, ">"))
+	if (ft_equals(*s, "\\>"))
+	{
+		free(*s);
+		(*s) = ft_strdup(">");
+	}
+	else if (ft_equals(*s, "\\<"))
+	{
+		free(*s);
+		(*s) = ft_strdup("<");
+	}
+	return (0);
+}
+
+int	is_io(char **s)
+{
+	if (ft_equals(*s, ">"))
 		return (SINGLE_OUTPUT);
-	else if (ft_equals(s, ">>"))
+	else if (ft_equals(*s, ">>"))
 		return (DOUBLE_OUTPUT);
-	else if (ft_equals(s, "<"))
+	else if (ft_equals(*s, "<"))
 		return (SINGLE_INPUT);
-	else if (ft_equals(s, "<<"))
+	else if (ft_equals(*s, "<<"))
 		return (DOUBLE_INPUT);
+	else if (ft_equals(*s, "\\>") || ft_equals(*s, "\\<"))
+		return (mod_str(s));
 	else
 		return (0);
 }
@@ -43,7 +60,7 @@ void	slash_tokens(t_cmd **cmd)
 
 static void	gestion_io(t_cmd **cmd, int i)
 {
-	i = is_io((*cmd)->tokens->str);
+	i = is_io(&((*cmd)->tokens->str));
 	slash_tokens(cmd);
 	if (i == SINGLE_OUTPUT || i == DOUBLE_OUTPUT)
 	{
@@ -79,7 +96,7 @@ void	generate_io(t_cmd **cmd)
 	(*cmd)->output->previous = NULL;
 	while ((*cmd)->tokens->str)
 	{
-		if (is_io((*cmd)->tokens->str) && !(*cmd)->tokens->quote)
+		if (is_io(&((*cmd)->tokens->str)) && !(*cmd)->tokens->quote)
 		{
 			gestion_io(cmd, i);
 		}
