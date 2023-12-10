@@ -190,7 +190,7 @@ int		str_env_len(char **env);
 int		count_occur(char *str, char c);
 int		ft_equals(char *s1, char *s2);
 int		ft_empty(char *str);
-int		handle_input(t_cmd *cmd);
+int		handle_input(t_cmd *cmd, t_main *main);
 int		is_blank(char *ptr, int j);
 int		is_builtin(char *str);
 int		is_delim(char c);

@@ -25,8 +25,11 @@ void	print_io(t_cmd *cmd, char *str, t_main **main)
 	handle_output_create(cmd);
 	if (cmd->input->file)
 	{
-		if (!handle_input(cmd))
-			exit (1);
+		if (!handle_input(cmd, *main))
+		{
+			free_command(cmd);
+			ft_eof2(*main, 130);
+		}
 	}
 	if (cmd->output->file)
 		handle_output(cmd, str);
@@ -61,8 +64,11 @@ void	io_pipe(t_cmd *cmd, t_main **main)
 	handle_output_create(cmd);
 	if (cmd->input->file)
 	{
-		if (!handle_input(cmd))
-			exit (SIGNAL_ABORT);
+		if (!handle_input(cmd, *main))
+		{
+			free_command(cmd);
+			ft_eof2(*main, 130);
+		}
 	}
 	fd = get_last_output(cmd);
 	ft_putstr_fd("", 1);
@@ -71,7 +77,8 @@ void	io_pipe(t_cmd *cmd, t_main **main)
 				|| close(fd == -1))))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
-		exit(-1);
+		free_command(cmd);
+		ft_eof2(*main, 1);
 	}
 }
 
@@ -79,14 +86,18 @@ void	io_pipe2(t_cmd *cmd, t_main **main)
 {
 	if (cmd->input->file)
 	{
-		if (!handle_input(cmd))
-			exit (SIGNAL_ABORT);
+		if (!handle_input(cmd, *main))
+		{
+			free_command(cmd);
+			ft_eof2(*main, 130);
+		}
 	}
 	if (cmd->pipe && (dup2((*main)->pipes[1], 1) == -1
 			|| close((*main)->pipes[0]) == -1
 			|| close((*main)->pipes[1]) == -1))
 	{
 		error_print(CRITICAL, "An error has occured while piping !", NULL);
-		exit(1);
+		free_command(cmd);
+		ft_eof2(*main, 1);
 	}
 }

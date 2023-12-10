@@ -31,20 +31,23 @@ static int	search_for_double(t_cmd *cmd)
 	return (ret);
 }
 
-static void	loop_rl(t_cmd *cmd, char *sortie)
+static void	loop_rl(t_cmd *cmd, char *sortie, t_main *main)
 {
 	sortie = readline("> ");
 	while (!ft_equals(sortie, cmd->input->file))
 	{
 		if (!sortie)
-			exit (-1);
+		{
+			free_command(cmd);
+			ft_eof2(main, 130);
+		}
 		free(sortie);
 		sortie = readline("> ");
 	}
 	free(sortie);
 }
 
-static void	handle_double_input(t_cmd *cmd)
+static void	handle_double_input(t_cmd *cmd, t_main *main)
 {
 	char	*sortie;
 
@@ -54,7 +57,7 @@ static void	handle_double_input(t_cmd *cmd)
 	while (cmd->input)
 	{
 		if (cmd->input->io == DOUBLE_INPUT)
-			loop_rl(cmd, sortie);
+			loop_rl(cmd, sortie, main);
 		if (!cmd->input->previous)
 			break ;
 		cmd->input = cmd->input->previous;
@@ -63,19 +66,19 @@ static void	handle_double_input(t_cmd *cmd)
 	while (cmd->input->file)
 	{
 		if (cmd->input->io == DOUBLE_INPUT)
-			loop_rl(cmd, sortie);
+			loop_rl(cmd, sortie, main);
 		cmd->input = cmd->input->next;
 	}
 	while (cmd->input->previous)
 		cmd->input = cmd->input->previous;
 }
 
-int	handle_input(t_cmd *cmd)
+int	handle_input(t_cmd *cmd, t_main *main)
 {
 	int	fd;
 
 	if (search_for_double(cmd))
-		handle_double_input(cmd);
+		handle_double_input(cmd, main);
 	while (cmd->input->file)
 	{
 		fd = open(cmd->input->file, O_RDONLY);
