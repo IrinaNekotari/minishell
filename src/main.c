@@ -68,6 +68,7 @@ int	main(int args, char *argv[], char *env[])
 	main.last = 0;
 	main.fd[0] = dup(0);
 	main.fd[1] = dup(1);
+	main.code_exit = 0;
 	main.initpwd = ft_getenv(main.env, "PWD");
 	run(main);
 }

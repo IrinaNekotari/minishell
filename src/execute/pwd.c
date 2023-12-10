@@ -16,6 +16,11 @@ void	ft_pwd(t_cmd *cmd, t_main *main)
 {
 	char	*dir;
 
+	if (cmd->tokens->next->str)
+	{
+		error_print(ERROR, "Too many arguments", NULL);
+		return ;
+	}
 	dir = ft_getenv(main->env, "PWD");
 	if (!dir)
 		dir = ft_strdup("No PWD found !\n");

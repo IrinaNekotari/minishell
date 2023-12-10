@@ -35,7 +35,7 @@ void	ft_eof(t_main *main)
 	free(main->initpwd);
 	free_env(main->env);
 	free(main->to_parse);
-	exit(0);
+	exit(main->code_exit);
 }
 
 char	*get_prompt(t_main *main)

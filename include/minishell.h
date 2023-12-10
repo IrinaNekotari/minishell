@@ -157,6 +157,7 @@ typedef struct s_main
 	int		fd[2];
 	int		mode;
 	int		state;
+	int		code_exit;
 	char	*to_parse;
 	char	*prompt;
 	char	*initpwd;
