@@ -80,7 +80,6 @@ int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 	error_exec(errno);
 	free_liste(envs);
 	free_liste(args);
-	//return ((*ret));
 	return (errno);
 }
 

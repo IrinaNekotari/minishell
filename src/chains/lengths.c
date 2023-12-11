@@ -78,7 +78,6 @@ int	env_length(t_env *env)
 	size_t	cmp;
 
 	len = 0;
-	//return 100000;
 	while (env)
 	{
 		cmp = ft_strlen(env->name) + ft_strlen(env->value) + 1;
