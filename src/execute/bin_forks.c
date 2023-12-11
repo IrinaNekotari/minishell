@@ -61,7 +61,7 @@ void	ft_execve(t_main **main, char **envs, char **args, int *ret)
 		free(buff);
 		i++;
 	}
-	execve(args[0], args, envs);
+	(*ret) = execve(args[0], args, envs);
 	free_liste(paths);
 }
 
@@ -80,7 +80,8 @@ int	exec_general(t_cmd *cmd, t_main **main, int *ret)
 	error_exec(errno);
 	free_liste(envs);
 	free_liste(args);
-	return ((*ret));
+	//return ((*ret));
+	return (errno);
 }
 
 int	fork_returns(t_cmd *cmd, t_main **main, int pid)
