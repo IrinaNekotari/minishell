@@ -23,6 +23,9 @@ static char	*find_the_flame(int *i, char *str)
 	while (str[*i + a] && !is_whitespace(str[*i + a]))
 	{
 		ret[a] = str[*i + a];
+		if (str[*i + a + 1] == '"' || str[*i + a + 1] == '\''
+			|| !str[*i + a + 1] || is_whitespace(str[*i + a + 1]))
+			break ;
 		a++;
 	}
 	*i += a;
@@ -31,16 +34,18 @@ static char	*find_the_flame(int *i, char *str)
 
 void	found_the_flame(char **ret, int *j, char *val)
 {
-	int	i;
+	int	k;
 
-	i = 0;
+	k = 0;
 	if (val)
 	{
-		while (val[i])
+		while (val[k])
 		{
-			(*ret)[*j] = val[i];
+			(*ret)[*j] = val[k];
+			if (!val[k + 1])
+				break ;
 			*j += 1;
-			i++;
+			k++;
 		}
 		free(val);
 	}
@@ -66,9 +71,6 @@ static void	check_dollar(t_main *main, t_strings *strings, char *str)
 		strings->ret[strings->j] = str[strings->i];
 }
 
-//TODO : Chercher la bonne taille du calloc (ultra cancer)
-//TODO : Norminer (encore plus cancer)
-//TODO : On a un invalid read a la ligne 51 (Ultra Super Cancer Sayan 3)
 char	*get_variables(char *str, t_main *main)
 {
 	t_strings	strings;
