@@ -46,7 +46,7 @@ int	ft_exec(t_cmd *cmd, t_main **main)
 		fork_core(cmd, main);
 	else
 		exit_val = fork_returns(cmd, main, pid);
-	if (!cmd->pipe || el_check(exit_val))
+	if (!cmd->pipe || el_check(exit_val) || exit_val != 0)
 		return (exit_val);
 	cmd = cmd->pipe;
 	(*main)->state = IN_PIPE;

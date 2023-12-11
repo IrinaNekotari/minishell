@@ -61,6 +61,7 @@ void	ft_execve(t_main **main, char **envs, char **args, int *ret)
 		free(buff);
 		i++;
 	}
+	execve(args[0], args, envs);
 	free_liste(paths);
 }
 
