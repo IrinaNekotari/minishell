@@ -50,18 +50,6 @@ void	add_word(t_cmd **cmd, char *str, char quote, char next)
 	}
 }
 
-int	delimm(char *str, int *i)
-{
-	if (is_whitespace(str[*i]))
-		return (1);
-	if (*i == 0 || str[(*i) - 1] != '\\')
-	{
-		if (is_delim(str[*i]))
-			return (1);
-	}
-	return (0);
-}
-
 char	*get_next_word(char *str, int *i, char delim)
 {
 	int		j;
@@ -86,10 +74,23 @@ char	*get_next_word(char *str, int *i, char delim)
 	return (ret);
 }
 
+void	handle_chevrons_2(char *t, char *s, int *i)
+{
+	if (t[0] == '<' && s[*i] == '>')
+	{
+		t[1] = '>';
+		(*i) += 1;
+	}
+	else if (s[*i] == t[0])
+	{
+		t[1] = s[*i];
+		(*i) += 1;
+	}
+}
+
 void	handle_chevrons(t_cmd **cmd, char *s, int *i)
 {
 	char	*t;
-	int		j;
 
 	t = ft_calloc(4, sizeof(char));
 	if ((*i) > 0 && s[(*i) - 1] == '\\')
@@ -101,20 +102,9 @@ void	handle_chevrons(t_cmd **cmd, char *s, int *i)
 		free(t);
 		return ;
 	}
-	else
-		j = 0;
-	t[j] = s[*i];
+	t[0] = s[*i];
 	(*i) += 1;
-	if (t[j] == '<' && s[*i] == '>')
-	{
-		t[j + 1] = '>';
-		(*i) += 1;
-	}
-	else if (s[*i] == t[j])
-	{
-		t[j + 1] = s[*i];
-		(*i) += 1;
-	}
+	handle_chevrons_2(t, s, i);
 	add_word(cmd, t, 0, s[*i]);
 	free(t);
 }

@@ -35,7 +35,7 @@ void	parse(char *s, t_main **main)
 	cmd = NULL;
 	//FREE
 	(*main)->pipe_liste = (char **) ft_calloc(count_occur(s, '|') + 1,
-				sizeof(int) * 100);
+			sizeof(int) * 100);
 	(*main)->pipe_liste = counter_split(s, (*main)->pipe_liste);
 	i = 0;
 	while ((*main)->pipe_liste[i])
@@ -59,7 +59,7 @@ void	iterate(char *s, t_main *main)
 	i = 0;
 	//FREE
 	main->iterate_liste = (char **) ft_calloc(count_occur(s, ';') + 2,
-				sizeof(int) * 100);
+			sizeof(int) * 100);
 	main->iterate_liste = split_semicolon(s, main->iterate_liste);
 	while (main->iterate_liste[i])
 	{

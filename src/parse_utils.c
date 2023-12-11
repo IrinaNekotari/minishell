@@ -31,6 +31,18 @@ int	count_occur(char *str, char c)
 	return (count);
 }
 
+int	delimm(char *str, int *i)
+{
+	if (is_whitespace(str[*i]))
+		return (1);
+	if (*i == 0 || str[(*i) - 1] != '\\')
+	{
+		if (is_delim(str[*i]))
+			return (1);
+	}
+	return (0);
+}
+
 void	init_command(t_cmd **cmd, char *line)
 {
 	(*cmd) = ft_calloc(1, sizeof(t_cmd));

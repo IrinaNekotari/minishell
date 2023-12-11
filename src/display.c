@@ -40,10 +40,18 @@ void	close_message(void)
 {
 	ft_printf("\x1b[37m###########################################");
 	ft_printf("########################\n");
-	ft_printf("#\x1b[1m\x1b[44m                     __  __  __  __  __     __                   \x1b[0m\x1b[37m#\n");
-	ft_printf("#\x1b[1m\x1b[44m                    / _ /  \\/  \\|  \\|__)\\_/|_       o/    o/     \x1b[0m\x1b[37m#\n");
-	ft_printf("#\x1b[1m\x1b[44m                    \\__)\\__/\\__/|__/|__) | |__    /(.)   /|      \x1b[0m\x1b[37m#\n");
-	ft_printf("#\x1b[1m\x1b[44m                                                   / \\    /\\     \x1b[0m\x1b[37m#\n");
+	ft_printf("#\x1b[1m\x1b[44m         ");
+	ft_printf(" 	      __  __  __  __  __     __                   ");
+	ft_printf("\x1b[0m\x1b[37m#\n");
+	ft_printf("#\x1b[1m\x1b[44m                    ");
+	ft_printf("/ _ /  \\/  \\|  \\|__)\\_/|_       ");
+	ft_printf("o/    o/     \x1b[0m\x1b[37m#\n");
+	ft_printf("#\x1b[1m\x1b[44m                    ");
+	ft_printf("\\__)\\__/\\__/|__/|__) | |__    ");
+	ft_printf("/(.)   /|      \x1b[0m\x1b[37m#\n");
+	ft_printf("#\x1b[1m\x1b[44m                   ");
+	ft_printf("                               ");
+	ft_printf(" / \\    /\\     \x1b[0m\x1b[37m#\n");
 	ft_printf("\x1b[37m###########################################");
 	ft_printf("########################\n\x1b[0m");
 }
