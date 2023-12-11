@@ -14,28 +14,26 @@
 
 int	g_received_signal = -1;
 
-void	welcome_message(void)
+void	ft_eof2(t_main *main, int code)
 {
-	ft_printf("\x1b[37m###########################################");
-	ft_printf("########################\n");
-	ft_printf("#				  				  #\n");
-	ft_printf("#   \x1b[34m__  __ _____ _   _ _____  ");
-	ft_printf("_____ _    _ ______ _      _      \x1b[37m  #\n");
-	ft_printf("#  \x1b[34m|  \\/  |_   _| \\ | |_   _|");
-	ft_printf("/ ____| |  | |  ____| |    | |     \x1b[37m  #\n");
-	ft_printf("#  \x1b[34m| \\  / | | | |  \\| | | ");
-	ft_printf("| | (___ | |__| | |__  | |    | |     \x1b[37m  #\n");
-	ft_printf("#  \x1b[34m| |\\/| | | | | . ` | | |  \\_");
-	ft_printf("__ \\|  __  |  __| | |    | |     \x1b[37m  #\n");
-	ft_printf("#  \x1b[34m| |  | |_| |_| |\\  |_| |_");
-	ft_printf(" ____) | |  | | |____| |____| |___  \x1b[37m  #\n");
-	ft_printf("#  \x1b[34m|_|  |_|_____|_| \\_|_____");
-	ft_printf("|_____/|_|  |_|______|______|______|\x1b[37m  #\n");
-	ft_printf("#		  						  #\n");
-	ft_printf("#        😎️\x1b[31mPar Nolan MASC");
-	ft_printf("RIER et Martin JUETTE🤑️       		  ");
-	ft_printf("\x1b[37m#\n##########################################");
-	ft_printf("#########################\n\n");
+	rl_clear_history();
+	free(main->initpwd);
+	free_env(main->env);
+	free(main->to_parse);
+	free_liste(main->iterate_liste);
+	free_liste(main->pipe_liste);
+	exit(code);
+}
+
+void	ft_eof(t_main *main)
+{
+	rl_clear_history();
+	close_message();
+	chdir(main->initpwd);
+	free(main->initpwd);
+	free_env(main->env);
+	free(main->to_parse);
+	exit(main->code_exit);
 }
 
 void	interrupt_sig(int sig)
