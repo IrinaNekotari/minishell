@@ -23,34 +23,21 @@ static int	emptiness(char *s, int i)
 	return (1);
 }
 
-static void	add_text_pipe(char **s)
+int	checks2(int i, int u, char *s)
 {
-	char	*str;
-
-	super_concat(s, " ");
-	str = readline("> ");
-	while (str && emptiness(str, 0))
-	{
-		free(str);
-		str = readline("> ");
-	}
-	if (!str)
-	{
-		free((*s));
-		(*s) = NULL;
-		return ;
-	}
-	super_concat(s, str);
-	free(str);
-}
-
-void	checks2(int i, int u, char *s)
-{
-	if (s[u + i + 1] == '|' && emptiness(s, u + i + 2))
+	if (s[u + i + 1] == '|' && emptiness(s, u + i + 2)
+		&& (i == 0 || s[i - 1] != '\\'))
 	{
 		g_received_signal = IGNORE_PIPES;
-		add_text_pipe(&s);
+		error_syntax(ERROR, "||");
+		free(s);
+		return (0);
 	}
-	if (emptiness(s, u + i + 1))
-		add_text_pipe(&s);
+	if (emptiness(s, u + i + 1) && (i == 0 || s[i - 1] != '\\'))
+	{
+		error_syntax(ERROR, "|");
+		free(s);
+		return (0);
+	}
+	return (1);
 }

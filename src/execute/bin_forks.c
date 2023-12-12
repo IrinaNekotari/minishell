@@ -38,13 +38,13 @@ static char	**create_args(t_cmd *cmd, t_main **main)
 	return (ret);
 }
 
+//ft_printf("Path = %s\n", paths[i]);
 void	ft_execve(t_main **main, char **envs, char **args, int *ret)
 {
 	char	*buff;
 	char	**paths;
 	int		i;
 
-	i = 0;
 	buff = ft_getenv((*main)->env, "PATH");
 	if (!buff)
 	{
@@ -52,14 +52,15 @@ void	ft_execve(t_main **main, char **envs, char **args, int *ret)
 		ft_eof2((*main), -1);
 	}
 	paths = ft_split(buff, ':');
+	i = array_depth(paths);
 	free(buff);
-	while (paths[i])
+	while (i >= 0)
 	{
 		buff = ft_calloc(1, sizeof(char));
 		ultra_concat(&buff, paths[i], "/", args[0]);
 		(*ret) = execve(buff, args, envs);
 		free(buff);
-		i++;
+		i--;
 	}
 	(*ret) = execve(args[0], args, envs);
 	free_liste(paths);

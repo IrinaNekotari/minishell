@@ -19,7 +19,8 @@ void	ft_eof2(t_main *main, int code)
 	rl_clear_history();
 	free(main->initpwd);
 	free_env(main->env);
-	free(main->to_parse);
+	if (main->to_parse)
+		free(main->to_parse);
 	free_liste(main->iterate_liste);
 	free_liste(main->pipe_liste);
 	exit(code);

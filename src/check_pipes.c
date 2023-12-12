@@ -42,7 +42,8 @@ static int	checks3(int i, int u, char *s)
 {
 	if (!checks(i, u, s))
 		return (0);
-	checks2(i, u, s);
+	if (!checks2(i, u, s))
+		return (0);
 	if (!s)
 		return (0);
 	return (1);

@@ -232,7 +232,7 @@ int		ft_exec(t_cmd *cmd, t_main **main);
 void	close_message(void);
 void	welcome_message(void);
 void	fork_core(t_cmd *cmd, t_main **main);
-void	checks2(int i, int u, char *s);
+int		checks2(int i, int u, char *s);
 void	parse(char *s, t_main **main);
 void	add_command(t_cmd **cmd, char *line);
 void	iterate(char *s, t_main *main);

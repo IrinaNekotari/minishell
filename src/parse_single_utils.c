@@ -59,13 +59,14 @@ char	*get_next_word(char *str, int *i, char delim)
 	ret = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	while (str[*i])
 	{
-		if (str[*i] == '\\' && (i == 0 || str[*i - 1] != '\\'))
+		if (str[*i] == '\\' && (i == 0 || str[*i - 1] != '\\')
+			&& delim != '\'' && str[*i + 1] != '$')
 			(*i) += 1;
 		if (!str[*i])
 			break ;
 		if (delim == 0 && delimm(str, i))
 			break ;
-		else if (str[*i] == delim)
+		else if (str[*i] == delim && (i == 0 || str[*i - 1] != '\\'))
 			break ;
 		ret[j] = str[*i];
 		j++;

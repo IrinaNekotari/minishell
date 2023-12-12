@@ -53,13 +53,15 @@ void	found_the_flame(char **ret, int *j, char *val)
 
 static void	check_dollar(t_main *main, t_strings *strings, char *str)
 {
-	if (str[strings->i] == '$' && str[strings->i + 1] == '?')
+	if (str[strings->i] == '$' && str[strings->i + 1] == '?'
+		&& (strings->i == 0 || str[strings->i - 1] != '\\'))
 	{
 		strings->val = ft_itoa(main->last);
 		strings->i += 2;
 		found_the_flame(&strings->ret, &strings->j, strings->val);
 	}
-	else if (str[strings->i] == '$' && is_usable(str[strings->i + 1]))
+	else if (str[strings->i] == '$' && is_usable(str[strings->i + 1])
+		&& (strings->i == 0 || str[strings->i - 1] != '\\'))
 	{
 		strings->get = find_the_flame(&strings->i, str);
 		strings->val = ft_getenv(main->env, strings->get);
