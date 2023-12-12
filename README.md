@@ -27,8 +27,10 @@ Cependant, ce n'est pas encore suffisant avant l'execution : il est d'abord nece
 * Chaque " ouvrant doit avoir un " fermant, sauf s'il est entre deux ' ' ou precede d'un \
 * Chaque ' ouvrant doit avoir un ' fermant, sauf s'il est entre deux " " ou precede d'un |
 * Un | ne peut pas etre en fin ou debut de chaine (les espaces ne comptent pas)
-* Pas plus de deux || peuvent se suivre            
+* Pas plus de deux || peuvent se suivre
+  
 Le principe n'est pas complexe : on defini un int comme booleene (variable n'ayant que pour valeur possibles un FAUX (0) ou VRAI (1)), est un char de sauvegarde.
+
 * Lorsque vous rencontrez un " ou un ', vous enregistrez ce dernier dans le char de sauvegarde, et mettez le booleen sur vrai.
 * Lorsque vous rencontrez un charactere egal au caractere de sauvegarde, vous remettez la boolenne a 0.
 * Si, a la fin de la chaine, la boolenne vaut vrai, ca veut dire qu'un " ou un ' n'est pas ferme. Donc, renvoyez une erreur ...
