@@ -19,7 +19,12 @@ int  main(void)
   }
 }
 ```
-
+Contrairement a ce qu'on pourrait penser, CTRL+D n'est pas un signal : il est un caractere unique indiquant la fin de fichier, le EOF - End of File. Tapper CTRL + D dans un buffer vide enverra alors EOF dans notre execution. Cela risque peut etre de mener a des comportements indetermines ...
+Cependant, ce n'est pas encore suffisant avant l'execution : il est d'abord necessaire de s'assurer que notre buffer est "ferme", a savoir
+* Chaque " ouvrant doit avoir un " fermant, sauf s'il est entre deux ' ' ou precede d'un \
+* Chaque ' ouvrant doit avoir un ' fermant, sauf s'il est entre deux " " ou precede d'un |
+* Un | ne peut pas etre en fin ou debut de chaine (les espaces ne comptent pas)
+* Pas plus de deux || peuvent se suivre
 ## Decomposition (Parsing)
 
 ## Execution
