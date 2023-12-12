@@ -39,9 +39,9 @@ Le principe n'est pas complexe : on defini un int comme booleene (variable n'aya
 
 Pour le cas des pipes
 * Si vous rencontrez un |, regardez les deux caracteres d'apres, en vous assurant de ne pas depasser la taille du buffer !
-* * Si plus de 3 pipes se suivent, renvoyez une erreur.
+  * Si plus de 3 pipes se suivent, renvoyez une erreur.
 * Si ce n'est pas le cas, regardez le caractere suivant.
-* * Si c'est un espace, regardez celui d'apres.
+  * Si c'est un espace, regardez celui d'apres.
   * Si vous arrivez a la fin de la chaine, renvoyez une erreur, car la chaine est finie par une |
   * Sinon, tout va bien - Vous pouvez continuer la verification.
 > [!CAUTION]
@@ -51,6 +51,33 @@ Pour le cas des pipes
 > Bien que le sujet ne le demande pas, au lieu de renvoyez une erreur, vous pouvez renvoyer le prompt, et ajouter le resultat a votre chaine, tout comme dans bash.
 > Attention aux fuites memoires !
 
+La verification est finie, mais c'est encore trop tot pour passer a l'etape suivante, car il reste un cas a traiter, celui du ;. On pourrait penser a faire simple, et faire un split sur votre buffer ...
+Cependant, ce split aura un defaut fatal : il ne prends pas en compte les " et ' !. Il faut alors recoder un split qui coupe la chaine en rencontrant un ;, mais que si ce dernier n'est pas encadre par des " ou '.
+> [!CAUTION]
+> \ est votre ennemi, ne l'oubliez pas !
+
+On obtient donc le pseudocode suivant :
+```C
+int  main(void)
+{
+  char  *buffer;
+  char  **tab;
+  int  i;
+  while (1)
+  {
+      i = 0;
+      buffer = readline("minishell > ");
+      if (ctrl_d)
+        break ;
+      if (!verif_quote || !verif_pipe)
+        continue ;
+      tab = split_semicolon(buffer);
+      while (tab[i])
+        execution(tab[i++]);
+      free(buffer);
+  }
+}
+```
 ## Decomposition (Parsing)
 
 ## Execution
