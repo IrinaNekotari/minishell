@@ -37,6 +37,20 @@ Le principe n'est pas complexe : on defini un int comme booleene (variable n'aya
 > [!CAUTION]
 > Un " ou un ' precede d'un \ ne compte pas !
 
+Pour le cas des pipes
+* Si vous rencontrez un |, regardez les deux caracteres d'apres, en vous assurant de ne pas depasser la taille du buffer !
+* * Si plus de 3 pipes se suivent, renvoyez une erreur.
+* Si ce n'est pas le cas, regardez le caractere suivant.
+* * Si c'est un espace, regardez celui d'apres.
+  * Si vous arrivez a la fin de la chaine, renvoyez une erreur, car la chaine est finie par une |
+  * Sinon, tout va bien - Vous pouvez continuer la verification.
+> [!CAUTION]
+> Tout comme au dessus, un | precede d'un \ ne compte pas !
+
+> [!TIP]
+> Bien que le sujet ne le demande pas, au lieu de renvoyez une erreur, vous pouvez renvoyer le prompt, et ajouter le resultat a votre chaine, tout comme dans bash.
+> Attention aux fuites memoires !
+
 ## Decomposition (Parsing)
 
 ## Execution
