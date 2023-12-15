@@ -140,14 +140,49 @@ En soit, la réalisation du tokenizer n'est pas différent de celui de ft_split.
 
 Cette fonction est sans aucun doute la plus dure a écrire dans minishell. Nous obtenons le pseudocode suivant 
 ```C
-void  add_token_to_list(char *str, char quote, int has_space)
+void  add_token_to_list(t_word *liste, char *str, char quote, int has_space)
 {
-
+    if (!liste)
+      initialisez la liste;
+    else
+    {
+        allouez de la mémoire pour le pointeur suivant de la liste;
+        réglez le pointeur sur le précedant du suivant a l'élément de liste en cours;
+        déplacez l'élement en cours de la liste sur son suivant;
+        initialisez l'élement suivant a NULL;
+        dupliquez str dans liste->str;
+        copiez quote et has_space dans leurs valeurs respective de la liste;
+    }
 }
 
 char *get_word(char *str, int *i)
 {
+    char *word;
+    char  quote;
+    int j;
 
+    Allouez de la mémoire a word;
+    j = 0;
+    if (str[*i] est un " ou un ')
+    {
+        quote = str[*i];
+        (*i) += 1;
+    }
+    else
+        quote = 0;
+    while (str[*i])
+    {
+        if (quote == 0 && str[*i] est un whitespace OU un caractere special tel que >)
+          break ;
+        else if (str[*i] == quote)
+        {
+              (*i) += 1;
+              break ;
+        }
+        word[j] = str[*i];
+        j++;
+        (*i) += 1;
+    }
 }
 
 t_word  parse(char *str)
@@ -164,7 +199,7 @@ t_word  parse(char *str)
       while (str[i] est un whitespace)
           i++;
       add = get_word(str, &i);
-      add_token_to_list
+      add_token_to_list(...);
       i++;
   }
   
