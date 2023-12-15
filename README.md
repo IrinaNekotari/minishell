@@ -47,6 +47,9 @@ Pour le cas des pipes
 > [!CAUTION]
 > Tout comme au dessus, un | precede d'un \ ne compte pas !
 
+> [!CAUTION]
+> Je ne mentionne que les espaces dans ce tutoriel, mais vous devez prendre en compte tous les whitespaces, comme les tabulations !
+
 > [!TIP]
 > Bien que le sujet ne le demande pas, au lieu de renvoyez une erreur, vous pouvez renvoyer le prompt, et ajouter le resultat a votre chaine, tout comme dans bash.
 > Attention aux fuites memoires !
@@ -56,6 +59,8 @@ Cependant, ce split aura un defaut fatal : il ne prends pas en compte les " et '
 > [!CAUTION]
 > \ est votre ennemi, ne l'oubliez pas !
 
+> [!TIP]
+> Pour vous aider pour la suite, durant vos vérifications, vous pouvez implémenter une fonction qui transforme, en dehors des zones fermées par des " ou des ', une suite d'espace de whitespace en un seul et unique espace, ce qui vous simplifiera la vie pour la suite.
 On obtient donc le pseudocode suivant :
 ```C
 int  main(void)
@@ -79,7 +84,92 @@ int  main(void)
 }
 ```
 ## Decomposition (Parsing)
+Avant de commencer la décomposition, ils faut vous demander - comment décomposer ?       
+Lors de son éxecution, shell prends 3 élements en compte :
+* La commande
+* Ses arguments
+* Possiblement une | qui s'ensuit sur une nouvelle commande
 
+Pour simplifier les explications, chaque morceau a décomposer sera nommé token. Ainsi, si on prends l'exemple suivant
+
+```echo -n bonjour les amis | cat ```
+
+On aura la liste de tokens suivants :
+* echo
+* -n
+* bonjour
+* les
+* amis
+* |
+* cat
+
+Une première implémentation simpliste serait de split au niveaux des espaces. Mais, prenez en compte la commande suivante :
+
+```echo bonjour "les                        amis"                 ça 'vaaaaa' ```
+
+utiliser un split au niveau des espaces séparera "les" de "amis", qui ne sont pourtant qu'un seul et unique bloc. De plus,
+
+```echo "bon"'jour'```
+
+Un split ici ne séparera pas "bon" et "jour", qui sont pourtant deux blocs différents. Il va falloir faire autrement, créer un tokenizer, une fonction qui va découper notre buffer en une liste utilisable. Et, pour gérer une liste, quoi de mieux qu'une liste chainée ?
+
+Considérons la liste chainée suivante : 
+```C
+typedef struct s_word
+{
+  char  *str;
+  char  quote;
+  int  has_space;
+  struct s_word  *next;
+  struct s_word  *previous;
+}	t_word;
+```
+Cette liste chainée contient ce qu'on aura besoin pour notre tokenizer.
+* str est le bloc en question.
+* quote est un caractère de sauvegarde pour savoir si notre bloc est entouré de "/' ou non.
+* has_space est un boolean, indiquant si le bloc est suivi d'un espace ou non, permettant de différencier les cas tels que ```"bon""jour"``` et ```"bon" "jour"```
+* next et previous sont respectivement des pointeurs vers l'élément suivant et précédant de la liste, permettant un parcours efficace.
+
+En soit, la réalisation du tokenizer n'est pas différent de celui de ft_split. Par contre, vous avez plus de données a prendre en compte :
+* Un whitespace, en dehors d'une zone délimitée par des "/', signifie la fin du block courant et le début d'un nouveau
+* lors de la création d'un bloc, vous devez ajouter a la liste par quel charactère le bloc est entouré (", ', ou 0 sinon)
+* Il existe des blocs spéciaux pour les redirections : >, >>, <, <<.
+* Pour l'instant, nous allons ignorer l'existence de |.
+> [!CAUTION]
+> Si vous oubliez \, il viendra hanter vos nuits
+
+Cette fonction est sans aucun doute la plus dure a écrire dans minishell. Nous obtenons le pseudocode suivant 
+```C
+void  add_token_to_list(char *str, char quote, int has_space)
+{
+
+}
+
+char *get_word(char *str, int *i)
+{
+
+}
+
+t_word  parse(char *str)
+{
+  int  i;
+  int boolean;
+  char *add;
+  t_word *liste;
+
+  i = 0;
+  boolean = 0;
+  while (str[i])
+  {
+      while (str[i] est un whitespace)
+          i++;
+      add = get_word(str, &i);
+      add_token_to_list
+      i++;
+  }
+  
+}
+```
 ## Execution
 
 ## Details
