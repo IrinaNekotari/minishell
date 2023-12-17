@@ -55,7 +55,7 @@ Pour le cas des pipes
 > Attention aux fuites memoires !
 
 La verification est finie, mais c'est encore trop tot pour passer a l'etape suivante, car il reste un cas a traiter, celui du ;. On pourrait penser a faire simple, et faire un split sur votre buffer ...
-Cependant, ce split aura un defaut fatal : il ne prends pas en compte les " et ' !. Il faut alors recoder un split qui coupe la chaine en rencontrant un ;, mais que si ce dernier n'est pas encadre par des " ou '.
+Cependant, ce split aura un defaut fatal : il ne prends pas en compte les " et ' !. Il faut alors recoder un split qui coupe la chaine en rencontrant un ;, mais que si ce dernier n'est pas encadre par des " ou '. N'oubliez pas que ce genre de liste doit être terminée par un NULL.
 > [!CAUTION]
 > \ est votre ennemi, ne l'oubliez pas !
 
@@ -185,7 +185,7 @@ char *get_word(char *str, int *i)
     }
 }
 
-t_word  parse(char *str)
+t_word  tokenizer(char *str)
 {
   int  i;
   int boolean;
@@ -196,7 +196,7 @@ t_word  parse(char *str)
   boolean = 0;
   while (str[i])
   {
-      while (str[i] est un whitespace)
+      while (str[i] est un whitespace)  
           i++;
       add = get_word(str, &i);
       add_token_to_list(...);
@@ -205,6 +205,144 @@ t_word  parse(char *str)
   
 }
 ```
+Malheureusement, trouver un compromis entre pseudocode et simplement copier nos fonction est compliqué ...     
+Quoi qu'il en soit, vous avez maintenant un tokenizer basique. Il transforme la commande 
+
+```echo -n "bonjour"> 'file.txt'```
+
+En une liste chainée qu'on pourrait représenter ainsi
+
+![Dessin sans titre(1)](https://github.com/Nolan-du76/minishell/assets/8365167/860874c3-9c3e-4134-aece-2e69c494a803)
+
+Cependant, ce n'est pas encore suffisant. Et vous vous doutez de la première chose qu'on va devoir faire, puisque je vous ai demandé de l'ignorer temporairement - le cas du |.
+
+Dans cette situation, nous allons crée une nouvelle liste chainée pour gérer les pipes. On en profite pour mettre quelques variables en plus qui nous serrons utiles plus tard ...
+```C
+typedef struct s_cmd
+{
+	struct s_io		*input;
+	struct s_io		*output;
+	struct s_word	*tokens;
+	struct s_cmd	*pipe;
+	struct s_cmd	*previous;
+}	t_cmd;
+```
+Ignorons ce qu'est s_io pour l'instant, nous y viendrons juste après. Dans cette liste chainée, nous avons :
+* un pointeur vers la liste de tokens
+* un pointeur vers la commande suivante - celle située après le |
+* un pointeur vers la commande précédente
+
+L'initialisation de cette chaine est similaire a celle des tokens. Mais maintenant, comment la remplir ?
+
+Vous vous souvenez sans aucun doute du split_semicolon plus haut; vous devez faire le même pour les |. Vous obtiendrez alors un tableau de char *, séparés par les | : vous n'aurez plus qu'a appeller votre tokenizer sur la ligne courante du tableau, déplacer l'élement courant de la liste sur son suivant, incrémentez la ligne courante du tableau, et recommencer jusqu'a la fin. 
+
+Ce qui nous donne le pseudocode suivant : 
+```C
+t_cmd  *parse(char *line)
+{
+  char **splitz;
+  t_cmd *cmd;
+  int    i;
+
+  i = 0;
+  splitz = split_pipes(line);
+  allouez de la mémoire a cmd;
+  while (splitz[i])
+  {
+      appelez le tokenizer sur splitz[i];
+      ajoutez son résultat dans cmd; inspirez vous de add_token_to_list;
+      i++;
+  }
+  return (cmd);
+}
+```
+Et voila - notre jolie commande est prête. Enfin, presque prête ... Qui sont ces "s_io" ? Et oui, encore une liste chainée, vous vous en doutez ...
+```C
+# define SINGLE_OUTPUT 1
+# define DOUBLE_OUTPUT 2
+# define SINGLE_INPUT 3
+# define DOUBLE_INPUT 4
+
+typedef struct s_io
+{
+	int			io;
+	char		*file;
+	struct s_io	*next;
+	struct s_io	*previous;
+}	t_io;
+```
+Vous commencez a avoir l'habitude, depuis le temps.
+* io sert a stocker le type de redirection, définis par `SINGLE_OUTPUT`, `DOUBLE_OUTPUT`, `SINGLE_INPUT`, `DOUBLE_INPUT`, correspondant respectivement a >, >>, < et <<. Les valeurs sont purement arbitraires.
+* file est le nom du fichier.
+* Je passe next et previous, vous savez a quoi ils servent.
+
+Comment les remplirs ? Nous allons parcourir notre belle liste chainée.
+* Si le token est précisément égal a >, >>, <, << ou <> (une exception bien bizzare, elle n'est pas demandé d'être gérée donc vous pouvez l'ignorer), vous retirez le token courant de la liste, et regardez le token suivant. En fonction de sa valeur, vous allez rendre un int de sauvegarde égal a `SINGLE_OUTPUT`, `DOUBLE_OUTPUT`, `SINGLE_INPUT`, ou `DOUBLE_INPUT`.
+* S'il n'y pas de token suivant, ou que ce dernier est précisément égal a >, >>, <, << ou <>, renvoyez une erreur, et quittez le traitement en cours.
+* Sinon, il s'agit d'une redirection valable.
+  * Si votre int de sauvegarde est `SINGLE_OUTPUT` ou `DOUBLE_OUTPUT`, vous ajouterez dans la liste chainée output de votre cmd.
+  * Sinon, vous l'ajouterez dans la liste chainée input.
+* Le token courant est le file que vous devrez plus tard ouvrir ou lire. Dupliquez le dans le char *file de votre liste chainée respective.
+* Rendez égal io a votre int de sauvegarde.
+* Supprimez le chainon courant
+* Comme pour les listes chainées précedentes, passez au chainon suivant et recommencez.
+
+> [!CAUTION]
+> Attention ! '>' et \> (entre autres) ne sont PAS des redirections !
+
+Supprimer un chainon peut etre assez complexe, alors voici le pseudocode :
+```C
+/*
+* Cette fonction assume que c pointe vers le chainon que vous voulez supprimer.
+*/
+void  delete_token(liste chainée c)
+{
+    on crée une copie de c;
+    le pointeur previous du chainon suivant doit être mis égal au pointeur previous du chainon courant;
+    le pointeur next du chainon précédant doit être mis égal au pointeur next du chainon courant;
+    déplacez la chaine a son chainon suivant;
+    faites un free sur toutes les valeurs a free de la copie;
+    faites un free sur la copie;
+}
+```
+La solution pour les deux lignes qui font peur :
+```C
+c->next->previous = c->previous;
+c->previous->next = c->next;
+```
+Vous avez donc transformé la commande suivante
+
+`echo bonjour les "amis" > file.txt | ls -la | cat`
+
+en (pas de joli schéma cette fois)
+
+```
+cmd1 :
+  tokens : echo->bonjour->les->"amis"
+  output : file.txt (SINGLE_OUTPUT)
+  previous : NULL;
+  pipe : cmd2
+cmd2 :
+  tokens : ls->-la
+  previous : cmd1
+  pipe : cmd3
+cmd3 :
+  tokens : cat
+  previous : cmd2
+  pipe : NULL
+```
+Et voila le travail ! 
+
+A moins que ...
+
+![image](https://github.com/Nolan-du76/minishell/assets/8365167/f51927f6-33ce-4887-99c3-488a41531601)
+
+Bien sûr - Vous avez encore du boulot !
+
+L'une des fonctions de votre minishell demandée est de traiter les variables d'environement. Celles là même que vous pouvez tester dans shell :
+`export $USER=test; echo Je suis $USER` et qui devra vous afficher `Je suis test`. Et pour ça, il va falloir revenir tout au début de votre code, dans le main ...
+## Les variables d'environnement
+
 ## Execution
 
 ## Details
