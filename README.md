@@ -875,6 +875,16 @@ Votre minishell est terminee ! Vous n'avez plus qu'a chasser les fuites memoires
 ## Details
 Quelques petites astuces !
 * Utilisez `ft_calloc` plutot que `malloc`.
+  * En utilisant `ft_calloc`, vous n'avez pas besoin d'avoir la taille exacte pour allouer. Tant qu'il y a assez d'espace, il n'y aura pas de soucis.
+  * Si vous avez un doute, essayez de mettre un petit `*2` ou `*10` a la taille de l'allocation ...
+  * Mais n'exagerez pas non plus, vous risquez de manquer de memoire. Restez au plus proche possible de la "bonne" taille. 
+* `readline` alloue enormement de memoire sans la free. Cella generera des nombres assez eleves dans le `Still Reachable` de Valgrind.
+  * `Still Reachable` ne sont pas des leaks en soit. Vous pouvez donc les ignorer.
+  * Cependant, cela ne vaut que pour les `Still Reachable` genere par `readline` ! Votre code doit etre proprement quitte, meme dans les forks.
+  * Le buffer de readline, les commandes, les tokens, les io - tous doivent etre proprement free apres une commande.
+  * Dans le fork, ces derniers ET l'environnement doivent etre free avant de exit !
+  * Le nombre de `Still Reachable` ne devrait pas varier, peut importe le nombre de commande que vous faite.
+  * Il peut cependant tres legerement varier apres la premiere commande, a cause de l'historique de `readline`.
 * Si vous n'avez pas fait Minitalk, jetez-y un oeil - il vous explique comment gerer les signaux.
 * Le manuel de `readline` a tout ce qu'il faut pour gerer l'historique et le CTRL+C.
 * Ajoutez des couleurs ! Non seulement c'est joli, mais en plus ca vous aidera a vous reperez dans votre minishell.
