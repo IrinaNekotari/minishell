@@ -24,16 +24,16 @@ int  main(void)
 ```
 Contrairement a ce qu'on pourrait penser, CTRL+D n'est pas un signal : il est un caractere unique indiquant la fin de fichier, le EOF - End of File. Tapper CTRL + D dans un buffer vide enverra alors EOF dans notre execution. Cela risque peut etre de mener a des comportements indetermines ...
 Cependant, ce n'est pas encore suffisant avant l'execution : il est d'abord necessaire de s'assurer que notre buffer est "ferme", a savoir
-* Chaque " ouvrant doit avoir un " fermant, sauf s'il est entre deux ' ' ou precede d'un \
-* Chaque ' ouvrant doit avoir un ' fermant, sauf s'il est entre deux " " ou precede d'un |
-* Un | ne peut pas etre en fin ou debut de chaine (les espaces ne comptent pas)
-* Pas plus de deux || peuvent se suivre
+* Chaque `"` ouvrant doit avoir un `"` fermant, sauf s'il est entre deux `' '` ou precede d'un `\`
+* Chaque `'` ouvrant doit avoir un `'` fermant, sauf s'il est entre deux `" "` ou precede d'un `|`
+* Un `|` ne peut pas etre en fin ou debut de chaine (les espaces ne comptent pas)
+* Pas plus de deux `||` peuvent se suivre
   
 Le principe n'est pas complexe : on defini un int comme booleene (variable n'ayant que pour valeur possibles un FAUX (0) ou VRAI (1)), est un char de sauvegarde.
 
-* Lorsque vous rencontrez un " ou un ', vous enregistrez ce dernier dans le char de sauvegarde, et mettez le booleen sur vrai.
+* Lorsque vous rencontrez un `"` ou un `'`, vous enregistrez ce dernier dans le char de sauvegarde, et mettez le booleen sur vrai.
 * Lorsque vous rencontrez un charactere egal au caractere de sauvegarde, vous remettez la boolenne a 0.
-* Si, a la fin de la chaine, la boolenne vaut vrai, ca veut dire qu'un " ou un ' n'est pas ferme. Donc, renvoyez une erreur ...
+* Si, a la fin de la chaine, la boolenne vaut vrai, ca veut dire qu'un `"` ou un `'` n'est pas ferme. Donc, renvoyez une erreur ...
 > [!CAUTION]
 > Un `"` ou un `'` precede d'un `\` ne compte pas !
 
@@ -41,14 +41,14 @@ Le principe n'est pas complexe : on defini un int comme booleene (variable n'aya
 > Double attention ! `\` "annule" `\`, donc `\\"` compte !
 
 Pour le cas des pipes
-* Si vous rencontrez un |, regardez les deux caracteres d'apres, en vous assurant de ne pas depasser la taille du buffer !
+* Si vous rencontrez un `|`, regardez les deux caracteres d'apres, en vous assurant de ne pas depasser la taille du buffer !
   * Si plus de 3 pipes se suivent, renvoyez une erreur.
 * Si ce n'est pas le cas, regardez le caractere suivant.
   * Si c'est un espace, regardez celui d'apres.
-  * Si vous arrivez a la fin de la chaine, renvoyez une erreur, car la chaine est finie par une |
+  * Si vous arrivez a la fin de la chaine, renvoyez une erreur, car la chaine est finie par un `|`
   * Sinon, tout va bien - Vous pouvez continuer la verification.
 > [!CAUTION]
-> Tout comme au dessus, un | precede d'un \ ne compte pas !
+> Tout comme au dessus, un `|` precede d'un `\` ne compte pas !
 
 > [!CAUTION]
 > Je ne mentionne que les espaces dans ce tutoriel, mais vous devez prendre en compte tous les whitespaces, comme les tabulations !
@@ -58,12 +58,12 @@ Pour le cas des pipes
 > Attention aux fuites memoires !
 
 La verification est finie, mais c'est encore trop tot pour passer a l'etape suivante, car il reste un cas a traiter, celui du ;. On pourrait penser a faire simple, et faire un split sur votre buffer ...
-Cependant, ce split aura un defaut fatal : il ne prends pas en compte les " et ' !. Il faut alors recoder un split qui coupe la chaine en rencontrant un ;, mais que si ce dernier n'est pas encadre par des " ou '. N'oubliez pas que ce genre de liste doit être terminée par un NULL.
+Cependant, ce split aura un defaut fatal : il ne prends pas en compte les `"` et `'` ! Il faut alors recoder un split qui coupe la chaine en rencontrant un `;`, mais que si ce dernier n'est pas encadre par des `"` ou `'`. N'oubliez pas que ce genre de liste doit être terminée par un NULL.
 > [!CAUTION]
-> \ est votre ennemi, ne l'oubliez pas !
+> `\` est votre ennemi, ne l'oubliez pas !
 
 > [!TIP]
-> Pour vous aider pour la suite, durant vos vérifications, vous pouvez implémenter une fonction qui transforme, en dehors des zones fermées par des " ou des ', une suite d'espace de whitespace en un seul et unique espace, ce qui vous simplifiera la vie pour la suite.
+> Pour vous aider pour la suite, durant vos vérifications, vous pouvez implémenter une fonction qui transforme, en dehors des zones fermées par des `"` ou des `'`, une suite d'espace de whitespace en un seul et unique espace, ce qui vous simplifiera la vie pour la suite.
 On obtient donc le pseudocode suivant :
 ```C
 int  main(void)
@@ -91,7 +91,7 @@ Avant de commencer la décomposition, ils faut vous demander - comment décompos
 Lors de son éxecution, shell prends 3 élements en compte :
 * La commande
 * Ses arguments
-* Possiblement une | qui s'ensuit sur une nouvelle commande
+* Possiblement une `|` qui s'ensuit sur une nouvelle commande
 
 Pour simplifier les explications, chaque morceau a décomposer sera nommé token. Ainsi, si on prends l'exemple suivant
 
@@ -134,12 +134,12 @@ Cette liste chainée contient ce qu'on aura besoin pour notre tokenizer.
 * next et previous sont respectivement des pointeurs vers l'élément suivant et précédant de la liste, permettant un parcours efficace.
 
 En soit, la réalisation du tokenizer n'est pas différent de celui de ft_split. Par contre, vous avez plus de données a prendre en compte :
-* Un whitespace, en dehors d'une zone délimitée par des "/', signifie la fin du block courant et le début d'un nouveau
-* lors de la création d'un bloc, vous devez ajouter a la liste par quel charactère le bloc est entouré (", ', ou 0 sinon)
-* Il existe des blocs spéciaux pour les redirections : >, >>, <, <<.
-* Pour l'instant, nous allons ignorer l'existence de |.
+* Un whitespace, en dehors d'une zone délimitée par des `'` ou `"`, signifie la fin du block courant et le début d'un nouveau
+* lors de la création d'un bloc, vous devez ajouter a la liste par quel charactère le bloc est entouré (`"`, `'`, ou `0` sinon)
+* Il existe des blocs spéciaux pour les redirections : `>`, `>>`, `<`, `<<`.
+* Pour l'instant, nous allons ignorer l'existence de `|`.
 > [!CAUTION]
-> Si vous oubliez \, il viendra hanter vos nuits
+> Si vous oubliez `\`, il viendra hanter vos nuits
 
 Cette fonction est sans aucun doute la plus dure a écrire dans minishell. Nous obtenons le pseudocode suivant 
 ```C
@@ -217,7 +217,7 @@ En une liste chainée qu'on pourrait représenter ainsi
 
 ![Dessin sans titre(1)](https://github.com/Nolan-du76/minishell/assets/8365167/860874c3-9c3e-4134-aece-2e69c494a803)
 
-Cependant, ce n'est pas encore suffisant. Et vous vous doutez de la première chose qu'on va devoir faire, puisque je vous ai demandé de l'ignorer temporairement - le cas du |.
+Cependant, ce n'est pas encore suffisant. Et vous vous doutez de la première chose qu'on va devoir faire, puisque je vous ai demandé de l'ignorer temporairement - le cas du `|`.
 
 Dans cette situation, nous allons crée une nouvelle liste chainée pour gérer les pipes. On en profite pour mettre quelques variables en plus qui nous serrons utiles plus tard ...
 ```C
@@ -232,12 +232,12 @@ typedef struct s_cmd
 ```
 Ignorons ce qu'est s_io pour l'instant, nous y viendrons juste après. Dans cette liste chainée, nous avons :
 * un pointeur vers la liste de tokens
-* un pointeur vers la commande suivante - celle située après le |
+* un pointeur vers la commande suivante - celle située après le `|`
 * un pointeur vers la commande précédente
 
 L'initialisation de cette chaine est similaire a celle des tokens. Mais maintenant, comment la remplir ?
 
-Vous vous souvenez sans aucun doute du split_semicolon plus haut; vous devez faire le même pour les |. Vous obtiendrez alors un tableau de char *, séparés par les | : vous n'aurez plus qu'a appeller votre tokenizer sur la ligne courante du tableau, déplacer l'élement courant de la liste sur son suivant, incrémentez la ligne courante du tableau, et recommencer jusqu'a la fin. 
+Vous vous souvenez sans aucun doute du split_semicolon plus haut; vous devez faire le même pour les `|`. Vous obtiendrez alors un tableau de `char *`, séparés par les `|` : vous n'aurez plus qu'a appeller votre tokenizer sur la ligne courante du tableau, déplacer l'élement courant de la liste sur son suivant, incrémentez la ligne courante du tableau, et recommencer jusqu'a la fin. 
 
 Ce qui nous donne le pseudocode suivant : 
 ```C
@@ -259,7 +259,7 @@ t_cmd  *parse(char *line)
   return (cmd);
 }
 ```
-Et voila - notre jolie commande est prête. Enfin, presque prête ... Qui sont ces "s_io" ? Et oui, encore une liste chainée, vous vous en doutez ...
+Et voila - notre jolie commande est prête. Enfin, presque prête ... Qui sont ces `s_io` ? Et oui, encore une liste chainée, vous vous en doutez ...
 ```C
 # define SINGLE_OUTPUT 1
 # define DOUBLE_OUTPUT 2
@@ -275,13 +275,13 @@ typedef struct s_io
 }	t_io;
 ```
 Vous commencez a avoir l'habitude, depuis le temps.
-* io sert a stocker le type de redirection, définis par `SINGLE_OUTPUT`, `DOUBLE_OUTPUT`, `SINGLE_INPUT`, `DOUBLE_INPUT`, correspondant respectivement a >, >>, < et <<. Les valeurs sont purement arbitraires.
+* io sert a stocker le type de redirection, définis par `SINGLE_OUTPUT`, `DOUBLE_OUTPUT`, `SINGLE_INPUT`, `DOUBLE_INPUT`, correspondant respectivement a `>`, `>>`, `<` et `<<`. Les valeurs sont purement arbitraires.
 * file est le nom du fichier.
 * Je passe next et previous, vous savez a quoi ils servent.
 
 Comment les remplirs ? Nous allons parcourir notre belle liste chainée.
-* Si le token est précisément égal a >, >>, <, << ou <> (une exception bien bizzare, elle n'est pas demandé d'être gérée donc vous pouvez l'ignorer), vous retirez le token courant de la liste, et regardez le token suivant. En fonction de sa valeur, vous allez rendre un int de sauvegarde égal a `SINGLE_OUTPUT`, `DOUBLE_OUTPUT`, `SINGLE_INPUT`, ou `DOUBLE_INPUT`.
-* S'il n'y pas de token suivant, ou que ce dernier est précisément égal a >, >>, <, << ou <>, renvoyez une erreur, et quittez le traitement en cours.
+* Si le token est précisément égal a `>`, `>>`, `<`, `<<` ou `<>` (une exception bien bizzare, elle n'est pas demandé d'être gérée donc vous pouvez l'ignorer), vous retirez le token courant de la liste, et regardez le token suivant. En fonction de sa valeur, vous allez rendre un int de sauvegarde égal a `SINGLE_OUTPUT`, `DOUBLE_OUTPUT`, `SINGLE_INPUT`, ou `DOUBLE_INPUT`.
+* S'il n'y pas de token suivant, ou que ce dernier est précisément égal a `>`, `>>`, `<`, `<<` ou `<>`, renvoyez une erreur, et quittez le traitement en cours.
 * Sinon, il s'agit d'une redirection valable.
   * Si votre int de sauvegarde est `SINGLE_OUTPUT` ou `DOUBLE_OUTPUT`, vous ajouterez dans la liste chainée output de votre cmd.
   * Sinon, vous l'ajouterez dans la liste chainée input.
@@ -291,7 +291,7 @@ Comment les remplirs ? Nous allons parcourir notre belle liste chainée.
 * Comme pour les listes chainées précedentes, passez au chainon suivant et recommencez.
 
 > [!CAUTION]
-> Attention ! '>' et \\> (entre autres) ne sont PAS des redirections !
+> Attention ! `'>'` et `\\>` (entre autres) ne sont PAS des redirections !
 
 Supprimer un chainon peut etre assez complexe, alors voici le pseudocode :
 ```C
@@ -318,7 +318,6 @@ Vous avez donc transformé la commande suivante
 `echo bonjour les "amis" > file.txt | ls -la | cat`
 
 en (pas de joli schéma cette fois)
-
 ```
 cmd1 :
   tokens : echo->bonjour->les->"amis"
