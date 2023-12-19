@@ -500,23 +500,23 @@ Nous y voila - l'ultime étape de votre tokenizer. Créez une fonction get_varia
 
 En voici le déroulement : 
 * Parcourez votre chaine, chainon par chainon.
-* Si le token a ' pour quote, passez au suivant; $ n'a pas a être interprété dedans.
+* Si le token a `'` pour quote, passez au suivant; `$` n'a pas a être interprété dedans.
 * Sinon, parcourez la chaine de votre token.
 * La variable que vous utilisez pour parcourir sera `i`, du moins pour le tutoriel.
-* Si vous trouvez un $ :
-  * Assurez vous qu'il ne soit pas précédé d'un \\. Si c'est le cas, ignorez le.
+* Si vous trouvez un `$` :
+  * Assurez vous qu'il ne soit pas précédé d'un `\`. Si c'est le cas, ignorez le.
   * Assurez vous qu'il ne soit pas suivi d'un whitespace. Si c'est le cas, ignorez le.
-  * S'il est suivi d'un ? ... Ignorez ce cas pour l'instant, collez un bon gros `//TODO :` après le if, on y reviendra bien plus tard.
-  * S'il est suivi d'un $ ... Ce n'est pas un cas a traiter. Mais vous pouvez le faire si vous le souhaitez ! $$ est remplacé par le PID du shell.
+  * S'il est suivi d'un `?` ... Ignorez ce cas pour l'instant, collez un bon gros `//TODO :` après le if, on y reviendra bien plus tard.
+  * S'il est suivi d'un `$` ... Ce n'est pas un cas a traiter. Mais vous pouvez le faire si vous le souhaitez ! `$$` est remplacé par le PID du shell.
   * Sinon, considérez ceci :
 
 ![image](https://github.com/Nolan-du76/minishell/assets/8365167/66d0a226-3735-48f1-bf89-0c7d89dc6217)
 
-  * Initialisez un int a 0. Ce dernier nous servira a déterminer combien de caractères compose le nom de la variable.
+  * Initialisez un int a `0`. Ce dernier nous servira a déterminer combien de caractères compose le nom de la variable.
   * Continuez de parcourir le token, en utilisant le nouvel int, que l'on va nommer `j`. Ne modifiez pas `i`, on en aura besoin ! Si vous rencontrez un whitespace, la fin de chaine, ou certains caractères (Je vous laissez les chercher, mais sachez que ces cas fourbes ne seront pas testés pendant la correction ...), il s'agit de la fin de notre variable.
   * Extrayez la sous-chaine et sauvegardez la : on en aura besoin pour récupérér la valeur de la variable.
-  * Utilisez get_env, envoyez lui votre sauvegarde : vous avez maintenant récupéré la valeur de la variable.
-  * ça va piquer : Vous allez devoir maintenant insérer la valeur dans votre chaine, en remplaçant le nom ET le $.
+  * Utilisez `get_env`, envoyez lui votre sauvegarde : vous avez maintenant récupéré la valeur de la variable.
+  * ça va piquer : Vous allez devoir maintenant insérer la valeur dans votre chaine, en remplaçant le nom ET le `$`.
     * Calculez la taille de la nouvelle chaine, a savoir : `la taille de l'ancienne chaine + la taille de la valeur - (la longeur du nom de la variable + 1 (pour le $))`
     * Parcourez la chaine jusqu'a `i - 1`. Jusque la, recopiez bétement votre chaine dans la nouvelle.
     * Vous avez atteint `i - 1`, c'est a dire là ou se trouvait le `$` : Commencez a recopier la valeur dans votre nouvelle chaine.
@@ -535,18 +535,18 @@ Vous avez maintenant une belle liste paree a faire feu : il ne manque plus que l
 
 * echo
   * Affiche simplement un message.
-  * Le flag -n doit etre gere, mais uniquement s'il vient apres le "echo". Ce dernier supprime le retour a la ligne a la fin du message (Donc le prompt sera sur la meme ligne que le message).
+  * Le flag `-n` doit etre gere, mais uniquement s'il vient apres le `echo`. Ce dernier supprime le retour a la ligne a la fin du message (Donc le prompt sera sur la meme ligne que le message).
 * pwd
   * Affiche le repertoire courant.
-  * Dans les variables d'environnement, vous aurez certainement apercus un PWD ...
+  * Dans les variables d'environnement, vous aurez certainement apercus un `PWD` ...
 * cd
   * Deplace le repertoire courant.
-  * Vous allez devoir jouer avec le PWD des variables d'environnement.
+  * Vous allez devoir jouer avec le `PWD` des variables d'environnement.
   * Plusieurs situations a gerer :
-    * Aucun argument : remets PWD a "Home", qui est au choix, le home classique du shell, ou le dossier ou est appele minishell.
+    * Aucun argument : remets `PWD` a "Home", qui est au choix, le home classique du shell, ou le dossier ou est appele minishell.
     * Deux arguments ou plus : affiche un message d'erreur.
-    * .. : remonte l'arborescence d'un niveau (passe de /a/b/c/d a /a/b/c)
-    * . : ne fait rien 
+    * `..` : remonte l'arborescence d'un niveau (passe de `/a/b/c/d` a `/a/b/c`)
+    * `.` : ne fait rien 
 * export
   * Ajoute une nouvelle variable d'environnement. Si cette derniere existe deja, la mets a jour.
   * Il est possible d'exporter plusieurs variables d'environnement en une commande.
@@ -558,13 +558,13 @@ Vous avez maintenant une belle liste paree a faire feu : il ne manque plus que l
    * Retire une variables d'environnement.
    * Comme pour export, vous pouvez unset plusieurs variables a la fois.
    * Effectuez les memes verifications, et regardez ce qu'il se passe.
-   * unset les variables d'environnement vitales (PATH ou PWD par exemple) est possible. Vous devrez sans aucun doute prevoir quelque chose dans votre code pour ca ...
+   * unset les variables d'environnement vitales (`PATH` ou `PWD` par exemple) est possible. Vous devrez sans aucun doute prevoir quelque chose dans votre code pour ca ...
 * env
   * Affiche la liste des variables d'environnement, ni plus ni moins.
   * Le sujet ne vous demande pas de traiter les arguments. Mais que se passe t'il si vous envoyez `env a` ? Ou bien `env a=b` ? Reesayez env seul apres.
 * exit
   * Quite le minishell de maniere propre.
-  * Par defaut, quitte le minishell avec un code de retour egal a 0.
+  * Par defaut, quitte le minishell avec un code de retour egal a `0`.
   * Si vous mettez un argument apres le exit, le code de retour sera egal au dit argument. Utilisez atoi ...
   * Si vous en mettez plus, un message d'erreur sera affiche (et le minishell, pas quitte) 
 * Cas general
@@ -878,4 +878,19 @@ Quelques petites astuces !
 * Si vous n'avez pas fait Minitalk, jetez-y un oeil - il vous explique comment gerer les signaux.
 * Le manuel de `readline` a tout ce qu'il faut pour gerer l'historique et le CTRL+C.
 * Ajoutez des couleurs ! Non seulement c'est joli, mais en plus ca vous aidera a vous reperez dans votre minishell.
-* \ est l'ennemi, ne l'oubliez JAMAIS
+* `\` est l'ennemi, ne l'oubliez JAMAIS
+* Si jamais vos fonctions ne modifient pas vos listes chainees, et que vous etes certains que le probleme ne vienne pas d'autre part
+  * Modifiez les fonctions de modification de chaine : au lieu de prendre le pointeur d'une liste, elle prendront le pointeur du pointeur.
+  * `void list_func(t_liste *li);` devient `void list_func(t_liste **li);`
+  * Dans le corps de la fonction, n'oubliez pas de les dereferencer !
+  * `l->next` devient alors `(*l)->next`
+  * Et quand vous appelez ces fonctions, envoyez leur le pointeur de la liste !
+  * `modify_list(liste)` devient alors `modify_list(&liste)`
+* Si vous modifiez vos fonctions ainsi, vous allez rencontrer un autre soucis. Apres les fonctions de modification ou de parcours de la liste, la liste restera a sa derniere position, ce qui est en general la fin de la liste.
+  * Vous allez devoir "rembobiner" cette liste. C'est a dire, revenir au premier element.
+  * Deux moyens de faire ainsi : le premier est de stocker quelque part le pointeur du premier element, par exemple dans la structure `main`.
+  * La deuxieme facon est d'utiliser les pointeurs `previous`. Tant que ce pointeur n'est pas nul, vous deplacez l'element a son precedent.
+* Telle une cascade, vous allez rencontrer un 3em soucis.
+  * Si vous vous deplacez sur un `NULL` (fin de chaine), et que vous tentez de rembobiner apres, vous allez planter.
+  * Apres tout, `NULL` n'as pas de precedent.
+  * Il faudra ajouter une condition dans votre boucle de parcours : si l'element n'as pas de suivant, alors on quitte la boucle.  
