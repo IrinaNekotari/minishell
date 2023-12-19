@@ -664,11 +664,11 @@ void	execution(t_cmd *cmd)
 Votre `execute_others` etant une simple liste de conditions qui teste les builtins. Il va falloir changer ca. Mais avant, quelques definitions :
 > La fonction fork fait partie des appels système standard d'UNIX (norme POSIX1). Cette fonction permet à un processus (un programme en cours d'exécution) de donner naissance à un nouveau processus qui est sa copie conforme, par exemple en vue de réaliser un second traitement parallèlement au premier. Un bon moyen de visualiser l'effet d'un fork sur un processus est d'imaginer une division cellulaire. 
 
-(Wikipedia)[https://fr.wikipedia.org/wiki/Fork_(programmation)]
+[Wikipedia](https://fr.wikipedia.org/wiki/Fork_(programmation))
 
 >  En génie logiciel, un tube ou une pipeline est un mécanisme de communication inter-processus sous la forme d'une série de données, octets ou bits, accessibles en FIFO. Le patron de conception qui correspond à ce mécanisme s'appelle le filtre. Les tubes des shell, inventés pour UNIX, permettent de lier la sortie d'un programme à l'entrée du suivant dans les shell et permet, tel quel, de créer des filtres.
 
-(Wikipedia)[https://fr.wikipedia.org/wiki/Tube_(informatique)]
+[Wikipedia](https://fr.wikipedia.org/wiki/Tube_(informatique))
 
 Pour que votre programme communique un resultat a la commande suivante, vous allez devoir utiliser les tubes (pipe) en anglais. Vous pouvez vous representer un pipe comme un tube (d'ou le nom) avec une entree et une sortie. Ce que vous ecrirez dans l'entree sera lue dans la sortie; et, en ecrivant dans l'entree d'un pipe ce qu'il y a dans la sortie d'un autre, vous creerais une pipeline. C'est exactement ce qu'on a besoin pour notre minishell : imaginons la commande suivante :
 
