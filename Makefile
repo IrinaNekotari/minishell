@@ -55,7 +55,7 @@ SRC	=	src/main.c \
 		src/parse_utils.c \
 		src/countersplit_utils.c
 
-OBJ  = $(SRC:.c=.o)
+OBJ  = $(SRC:c=o)
 
 #Flags pour les nettoyages
 CLEANCMD = rm -rf src/*.o src/execute/*.o src/utils/*.o
@@ -64,18 +64,17 @@ FCLEANCMD = rm -f *.a minishell
 #Cree la lib, et garde les fichiers .o generes
 all:$(NAME)
 
-$(NAME): lib $(OBJ)
+$(NAME): $(OBJ)
+	@echo "\n\e[35mCompilation de libft ...\e[97m\e[4m"
+	@make -C libft
+	@echo "\e[0m\033[1;32mLibft compilee.\n"
 	@echo "\e[34mCompilation de minishell ...\e[97m\e[4m"
 	@cc $(FLAG) -o $(NAME) $(OBJ) -Iinclude -Llibft -lft -lreadline -g
 	@echo "\e[0m\033[1;32mMinishell compilee.\n"
 
-lib:
-	@echo "\e[35mCompilation de libft ...\e[97m\e[4m"
-	$(MAKE) -C libft
-	@echo "\e[0m\033[1;32mLibft compilee.\n"
-
 #compile un unique fichier .c en .o
 %.o: %.c
+	@printf "\033[0;33mCompilation de %-33.33s\r" $@
 	@cc $(FLAG) -c $< -o $@ -Iinclude
 
 clean:
