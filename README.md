@@ -530,5 +530,353 @@ En voici le déroulement :
 
 C'était intense, c'était compliqué, je vous épargne le pseudocode, cette monstrueuse liste devrait suffire (je l'espère pour vous). Mais, regardez ce que vous avez accompli ! Le plus dur est derrière vous !
 ## Execution
+Vous avez maintenant une belle liste paree a faire feu : il ne manque plus que l'execution. Si vous regardez ce que vous devez faire ici, vous pourriez etre tente de les separes en deux categories : les builtins, et le cas general. C'est faux : vous allez devoir les separer en trois categories. Mais, avant de les departager, regardons ce qu'on a faire :
+> [!TIP]
+> Avant de coder, ou meme de regarder ma jolie liste, faites les commandes vous meme dans un shell. Regardez ce qu'elles font, experimentez avec.
 
+* echo
+  * Affiche simplement un message.
+  * Le flag -n doit etre gere, mais uniquement s'il vient apres le "echo". Ce dernier supprime le retour a la ligne a la fin du message (Donc le prompt sera sur la meme ligne que le message).
+* pwd
+  * Affiche le repertoire courant.
+  * Dans les variables d'environnement, vous aurez certainement apercus un PWD ...
+* cd
+  * Deplace le repertoire courant.
+  * Vous allez devoir jouer avec le PWD des variables d'environnement.
+  * Plusieurs situations a gerer :
+    * Aucun argument : remets PWD a "Home", qui est au choix, le home classique du shell, ou le dossier ou est appele minishell.
+    * Deux arguments ou plus : affiche un message d'erreur.
+    * .. : remonte l'arborescence d'un niveau (passe de /a/b/c/d a /a/b/c)
+    * . : ne fait rien 
+* export
+  * Ajoute une nouvelle variable d'environnement. Si cette derniere existe deja, la mets a jour.
+  * Il est possible d'exporter plusieurs variables d'environnement en une commande.
+  * Verifiez ce qui renvoie des erreurs : par exemple, `export 0j=Test` ...
+  * Verifiez ce qui ne renvoie PAS d'erreur, mais ne fait rien pour autant : par exemple, `export test` ...
+  * Melangez. Que ce passe t'il quand on mets plusieurs variables, mais qu'une doit renvoyer une erreur ?
+  * Le sujet ne demande pas de traiter ce cas, mais que se passe t'il si vous envoyez juste `export` ?
+* unset
+   * Retire une variables d'environnement.
+   * Comme pour export, vous pouvez unset plusieurs variables a la fois.
+   * Effectuez les memes verifications, et regardez ce qu'il se passe.
+   * unset les variables d'environnement vitales (PATH ou PWD par exemple) est possible. Vous devrez sans aucun doute prevoir quelque chose dans votre code pour ca ...
+* env
+  * Affiche la liste des variables d'environnement, ni plus ni moins.
+  * Le sujet ne vous demande pas de traiter les arguments. Mais que se passe t'il si vous envoyez `env a` ? Ou bien `env a=b` ? Reesayez env seul apres.
+* exit
+  * Quite le minishell de maniere propre.
+  * Par defaut, quitte le minishell avec un code de retour egal a 0.
+  * Si vous mettez un argument apres le exit, le code de retour sera egal au dit argument. Utilisez atoi ...
+  * Si vous en mettez plus, un message d'erreur sera affiche (et le minishell, pas quitte) 
+* Cas general
+  * Sinon, vous envoyez la commande au systeme, et vous le laissez se depatouiller avec. Simple, non ?
+
+Vous pouvez voir que trois categories se demarquent : Les commandes qui affichent quelque chose, les commandes qui modifient l'environnement (exit est inclus dedans), et le reste. Maintenant, voyons une petite particularite des commandes qui modifient l'env (que nous allons appeller commande systeme).
+* Testez `export A=B; env; unset A; env`. Regardez ce que ca affiche.
+  * L'environnement est affiche deux fois. La premiere fois, A est bien ajoute, et la deuxieme fois, il est bien supprime.
+* Testez `export A=B | env`.
+  * A n'est pas ajoute.
+* Testez `env`, juste histoire d'etre sur.
+* Testez `echo test | cd ..`. Vous vous deplacez bien dans l'arborescence.
+* Testez `exit | echo nope`.
+* Testez `ls -la | cd .. | cat`.
+  * Non seulement `cd ..` ne fait rien, mais `cat` n'arrive pas a recuperer ce que `ls -la` affiche.
+
+Ces commandes systemes ont donc deux particularites : Non seulement elle ne font quelque chose QUE quand elles sont les dernieres commandes effectuees, elle "bloquent" les pipes si utilises en pleine commande !
+
+Votre execution va d'abord devoir faire deux branches : si la commande est un systeme, ou non. N'oublions pas : la commande est le premier token.
+```C
+if (premier token est un systeme)
+	execute_system(...);
+else
+	execute_others(...);
+```
+`exit`, `unset` et `export` sont triviaux a faire : vous avez deja fait 95% du boulot avec `del_from_env` et `add_to_env`. Vous n'avez plus qu'a ajouter les verifications. Quant a exit, n'oubliez pas de faire les free ... 
+
+`cd` peut s'averer un petit peu plus complique. Vous pouvez etre tente d'utiliser `chdir` ... Mais ce dernire a un probleme. `chdir` va bien modifier le repertoire courant ... Du shell, pas du minishell ! Vous pouvez tenter de le recoder, et bonne chance dans ce cas, ou sinon, vous pouvez l'utiliser de maniere detournee :
+* Apres avoir fait vos verifications, envoyez l'argument a `chdir`.
+* `chdir` va renvoyer un int. Si ce dernier vaut -1, `chdir` n'as pas reussi a changer de dossier, pour une raison quelconque.
+  * Affichez une erreur !
+* Sinon, `chdir` modifie le dossier courant du shell, mais pas du minishell. Mince alors !
+* Pas de panique ! Vous avez le droit d'utiliser `getcwd`, qui renvoie le dossier courant ... Du shell, pas du minishell.
+* Vous voyez ou je veux en venir : recuperez le dossier courant du shell, puis utilisez le pour mettre a jour l'env du minishell via `add_to_env`.
+* Une petite subtilite : Remettez le dossier courant du shell (pas du minishell !) a sa valeur initiale, a savoir dans le dossier ou vous avez appelle minishell. Ne vous inquietez pas, on y reviendra plus tard ...
+* Il vous reste le cas de `cd` a traiter. Ce cas necessite une sauvegarde du `PWD` initial - c'est aussi ce que vous aurez besoin au dessus. Nous y reviendrons plus tard.
+
+Les cas systemes sont codes. Jettons un oeil aux fonctions d'affichage ...
+> [!TIP]
+> Si vous avez decide d'implementer `export` sans arguments, ce dernier compte aussi comme un affichage !
+
+`echo`, `pwd` et `env` sont relativement triviaux. Sachez cependant que pour la suite, ces deux fonctions ne doivent afficher qu'un seul et unique `char *`, et non pas une boucle de print !   
+
+Leur vraie difficulte viendra des redirections ...
+### Gerer les redirections
+Gerer les redirection se fera en deux temps : d'abord les redirections de type `<` et `<<`, AVANT la commande, et les redirections de type `>` et `>>` apres la commande.
+* Testez ce que fait `<`.
+  * Le shell n'effectue la commande que si la redirection existe. Si elle n'existe pas, elle affichera une erreur.
+  * Testez une commande avec plusieurs `<`. La commande ne sera executee que si TOUTES les redirections existe.
+  * Qu'en est-il s'il y a une pipe dans la commande ?
+* Testez ce que fait `<<`.
+  * (Absolument infect)
+  * `<<` renvoie un prompt, qui tourne en boucle jusqu'a ce qu'il soit interrompu (CTRL+C), qu'il lise un EOF (CTRL+D), ou que le buffer soit precisment egal a la redirection.
+  * Donc, `echo test << a` tournera en boucle jusqu'a ce vous entriez `a`.
+  * Testez avec plusieurs `<<`. Ca tourne au ridicule.
+  * Cette situations renverra un prompt, jusqu'a ce que vous entriez toutes les redirections dans un ordre precis :
+    * La derniere, l'avant derniere ... La seconde, la premiere, la seconde ... L'avant derniere, la derniere.
+  * Ou ont-ils ete cherche ca, serieux ?
+* Testez ce que fait `>`.
+  * Au lieu d'afficher quelque chose, la commande va imprimer dans un fichier.
+  * Si le fichier n'existait pas, il le cree avant d'imprimer.
+  * Sinon, il vide ce qu'il avait dedans avant d'imprimer.
+  * Testez plusieurs `>`.
+  * Testez une pipe apres, par exemple `echo test > a | cat`. 
+* Testez ce que fait `>>`.
+  * Au lieu d'afficher quelque chose, la commande va imprimer dans un fichier.
+  * Si le fichier n'existait pas, il le cree avant d'imprimer.
+  * Sinon, elle imprimera apres ce qui existait deja.
+  * Testez plusieurs `>>`.
+* Melangez les toutes, amusez vous.
+
+Le deroulement de l'execution devra se derouler ainsi :
+* Testez les redirections `<` et `<<`. Si elles ne sont pas valides, quittez la commande.
+* Effectuez la commande.
+* Si elle n'as pas de redirections `>` ou `>>`, affichez le resultat.
+* Si elle a des redirections `>` ou `>>`, imprimez dans les fichier.
+* Si elle a des redirections `>` ou `>>` ET une pipe, imprimez ET affichez.
+* Passez a la pipe suivante si elle existe.
+* Recommencez.
+
+Vous pouvez d'ores et deja tester votre code, et il marche ! Mais vous allez vite remarquez que ca coince a un stade. Regardez pour `echo a | echo b`, et comparez le a celui du shell ... 
+### L'etrange cas des forks et des pipes
+On rentre enfin dans le vif du sujet, le coeur meme de minishell, la raison pour laquelle on fait tout ca : les forks, et les pipes. 
+
+Votre code d'execution ressemble a quelque chose comme ca pour l'instant : 
+```C
+void	execution(t_cmd *cmd)
+{
+	if (premier token est un systeme)
+		execute_system(...);
+	else
+		execute_others(...);
+	if (cmd->pipe)
+		execute(cmd->pipe);
+}
+```
+Votre `execute_others` etant une simple liste de conditions qui teste les builtins. Il va falloir changer ca. Mais avant, quelques definitions :
+> La fonction fork fait partie des appels système standard d'UNIX (norme POSIX1). Cette fonction permet à un processus (un programme en cours d'exécution) de donner naissance à un nouveau processus qui est sa copie conforme, par exemple en vue de réaliser un second traitement parallèlement au premier. Un bon moyen de visualiser l'effet d'un fork sur un processus est d'imaginer une division cellulaire. 
+
+(Wikipedia)[https://fr.wikipedia.org/wiki/Fork_(programmation)]
+
+>  En génie logiciel, un tube ou une pipeline est un mécanisme de communication inter-processus sous la forme d'une série de données, octets ou bits, accessibles en FIFO. Le patron de conception qui correspond à ce mécanisme s'appelle le filtre. Les tubes des shell, inventés pour UNIX, permettent de lier la sortie d'un programme à l'entrée du suivant dans les shell et permet, tel quel, de créer des filtres.
+
+(Wikipedia)[https://fr.wikipedia.org/wiki/Tube_(informatique)]
+
+Pour que votre programme communique un resultat a la commande suivante, vous allez devoir utiliser les tubes (pipe) en anglais. Vous pouvez vous representer un pipe comme un tube (d'ou le nom) avec une entree et une sortie. Ce que vous ecrirez dans l'entree sera lue dans la sortie; et, en ecrivant dans l'entree d'un pipe ce qu'il y a dans la sortie d'un autre, vous creerais une pipeline. C'est exactement ce qu'on a besoin pour notre minishell : imaginons la commande suivante :
+
+`ls -la | grep dr | cat`
+
+Si vous utilisez juste `ls -la`, vous verrez quelque chose de ce genre :
+```
+total 4
+drwxr-xr-x  5 nmascrie 2023_le-havre   49 Dec 19 07:55 .
+drwx------ 22 nmascrie 2023_le-havre 4096 Dec 19 09:55 ..
+drwxr-xr-x  6 nmascrie 2023_le-havre  160 Dec 19 08:05 githubshell
+drwxr-xr-x  6 nmascrie 2023_le-havre  149 Dec 12 09:41 mini
+drwxr-xr-x  6 nmascrie 2023_le-havre  146 Dec 19 07:55 test
+```
+Ici, il n'y a pas de |, donc pas de pipe a ouvrir. `ls -la` va lire sur l'entree standard (`STDIN` ou `0`) - dans cette situation, ls ne lis rien car il n'a pas besoin de lire quoi que ce soit - et ecrire dans la sortie standard (`STDOUT` ou `1`)
+. 
+
+Prenons maintenant `cat`. Si vous lancez cat seul, il va boucler en attendant une entree : ce que vous ecrivez sera affiche immediatement a l'ecran, et `cat` attendra a nouveau une commande, jusqu'a ce que vous le quittiez via CTRL+C ou CTRL+D. Vous l'avez compris : `cat` lit sur l'entree standard, et affiche immediatement sur la sortie standard. Maintenant, que se passe t'il si on utilise `cat test.txt` ? Au lieu de lire sur l'entree standard, `cat` va ouvrir un flux vers `test.txt` (via un File Descriptor, fd), et afficher son contenu sur la sortie standard. Dans un sens, c'est plus ou moins un pipeline : mais au lieu d'ouvrir un pipe, on ouvre un fichier. 
+
+Passons a notre cas initial, a savoir `ls -la | grep dr | cat`.
+* `ls -la` va afficher ce qu'il doit afficher sur la sortie standard. Cependant, vu qu'il y a un | apres, il va ecrire dans l'entree de la pipe plutot que sur la sortie standard.
+* `grep dr` va lire sur l'entree standard. Mais, comme il y a un | avant, il va lire dans la sortie de la pipe. Et, comme il y a un autre | apres, il va ecrire a nouveau dans la pipe.
+* `cat` vous l'avez devine : plutot que de lire dans l'entree standard, il va lire la sortie de la pipe. Et, vu qu'il n'y a plus de |, il va afficher tout ca dans la sortie standard.
+
+Comment retranscrire tout ca en C ? commencons par le code suivant : 
+```C
+int	fd[2];
+int	i;
+
+i = pipe(fd);
+if (i == -1)
+	return ;
+```
+Ici, nous allons creer un pipe a l'aide de `fd`. Comme dit plus haut, `fd` a besoin de deux valeur : son entree et sa sortie. `pipe()` va parametrer ces deux valeurs : ainsi, `fd[0]` sera la sortie de notre pipe et `fd[1]` son entree (oui, c'est inverse par rapport au Standard). On recupere le code de sortie de `pipe` dans `i`; si ce dernier vaut `-1`, c'est qu'il y a eu un caffouillage au niveau du systeme (donc, pas de votre faute). Dans cette situations, affichez un joli message d'erreur, et quittez la commande. Sinon, on peut passer a la suite : le fork. Considerons le code suivant :
+```C
+int	fd[2];
+int	i;
+int	pid;
+int	retour;
+
+i = pipe(fd);
+if (i == -1)
+	return ;
+pid = fork();
+if (pid == -1)
+	return ;
+if (pid == 0)
+	do_stuff(...);
+waitpid(pid, &retour, 0);
+do_things(...);
+```
+Une fois notre pipe ouverte, on va forker. Si la definition de Wikipedia n'etait pas claire, un fork est une copie du programme, avec exactement les memes valeurs, et qui commence au moment de l'appel du fork. La seule difference ? Le PID du fork est 0. Donc, nous avons :
+* La creation du fork, et le stockage de son PID dans `pid`.
+* Si `pid` vaut -1, le systeme a plante quelque part, donc, vous devez quitter. N'oubliez pas un delicieux message d'erreur.
+* Si `pid` vaut 0, vous etes dans le fork, communement appele fils. Donc, vous faites ce que le fork a a faire.
+* `waitpid(pid, &retour, 0)` va attendre la fin de l'execution du fork, et stocker son code de retour dans `retour`. Ici, 0 definit les options du `waitpid`. On en a pas besoin, mais si vous etes curieux, n'hesitez pas a aller regarder quelles sont ces options dans le man. Le programme non-fork (appele pere) va donc attendre la fin du fils avant de continuer.
+* Une fois le fils termine, on effectue la fonction `do_things()`.
+
+C'est ici que ca se complique. Considerons que votre fonction `do_stuff()` est la suivante :
+```C
+void	do_stuff(t_cmd *cmd, int *fd)
+{
+	if (cmd->tokens->str est un builtin)
+		do_builtin(...);
+	else
+		do_general(...);
+	exit (0);
+}
+```
+Notez bien qu'on `exit` le fork ici.
+
+Si vous executez, vous verez que le probleme est toujours le meme : `echo a | echo b` affiche toujours `a \n b`. En effet : le pipe est ouvert, mais vous n'ecrivez pas dedans. Il va falloir dupliquer : c'est a dire, remplacer la sortie standard par celle de notre pipe.
+```C
+dup2(fd[1], 1);
+```
+Ici, on va dupliquer l'entree de notre pipe dans la sortie standard. Ne testez pas encore (ou allez-y, je ne suis pas votre pere), il reste des choses a faire.
+* Si la commande n'a pas de pipe, on a pas besoin de dupliquer, vu qu'on utilise la sortie standard.
+* Il faut fermer les flux apres les avoir utilise.
+* La fermeture et la duplication peut echouer ! Il faut s'en premunir.
+
+Ce qui nous donne une bonne grosse condition :
+```C
+else if (cmd->pipe && (dup2(fd[1], 1) == -1
+			|| close(fd[1]) == -1
+			|| close(fd[0]) == -1))
+	exit (1) ;
+```
+Ici tout est fait dans une seule condition, mais libre a vous de la separer. Mais, ce n'est pas encore suffisant ! Vous avez duplique l'entree de votre pipe ... Mais pas sa sortie ! Allons donc dans la fonction `do_things()`.
+```C
+void	do_things(t_cmd *cmd, int *fd)
+{
+	???;
+}
+```
+On va dupliquer ici aussi :
+```C
+void	do_things(t_cmd *cmd, int *fd)
+{
+	else if (cmd->pipe && (dup2(fd[0], 0) == -1
+			|| close(fd[1]) == -1
+			|| close(fd[0]) == -1))
+	exit (1) ;
+}
+```
+Vous remarquez ici qu'on duplique la sortie de notre pipe `fd[0]` dans l'entree standard `0`. C'est un debut : il va maintenant falloir faire en sorte que le fork s'effectue sur toutes les commandes de notre liste chainee ... Et, au passage, s'assurer de bien executer les systemes au besoin. 
+* Si la commande actuelle est un systeme ET n'as pas de pipe, excutez le systeme.
+* Sinon, ouvrez le pipe et lancez le fork.
+  *  Dans le fork, dupliquez l'entree de la pipe dans la sortie standard.
+  *  Si la commande est un systeme ET qu'il y a une pipe, la commande va "bloquer" le pipe, le vider (souvent dit "flush"). Dans ce cas, rien de plus complique : Vous n'avez qu'a print une chaine vide `printf("");`.
+  *  Sinon, si la commande est un builtin, executez la.
+  *  Sinon, executez le cas general.
+  *  Quittez le fork avec un `exit`.
+    * Vous aurez besoin de recuperer le code de sortie a un moment ou un autre. Donc, vous pourrez par exemple faire en sorte que vos builtins renvoient un 1 s'ils echouent pour une quelconque raison ...
+  * Si la commande possede une pipe, recommencez de maniere recursive.
+ 
+> [!CAUTION]
+> Vos commandes systemes doivent elle aussi renvoyer un code d'erreur !
+
+Il s'agit du deroulement general de l'execution. Vous aurez certains cas supplementaires a gerer : par exemple, si vous avez des redirections, vous duplications seront sans doutes legerement differentes ... Mais si vous avez survecu et compris jusqu'ici, vous devriez sans doute pouvoir le faire seuls ! Et sinon, c'est dans `src/execute/bin_forks.c` !
+
+Il nous reste un dernier morceau a degrossir : le cas general. Et pour cette situation, on a notre seigneur et sauveur `execve`. Regardez un oeil dans le man avant de continuer.
+* `execve` prends trois arguments : un executable, ses arguments (les arguments DOIVENT contenir l'executable en lui meme !) et l'environnement.
+* l'executable est un chemin vers un fichier qui peut etre execute : par exemple, quand vous lancez `ls` dans le shell, vous utilisez l'executable `/usr/bin/ls`
+* Les arguments sont un tableau de char *. Dans le cas de `ls -l -a`, le tableau sera compose de `ls`, `-l` et `-a`
+* L'environnement est un tableau de char *. Vous vous souvenez, celui dans le main ?
+
+La premiere etape va etre de creer nos deux tableaux. A ce stade, vous n'avez certainement pas besoin d'indication pour ca, non ? Si oui ... Etudiez le pseudocode suivant :
+```C
+char **list_to_array(liste *l)
+{
+	int taille;
+	char **ret ;
+	int	i;
+
+	taille = 0;
+	while (l)
+	{
+		ajouter a taille la taille du char * de l'element courant;
+		pensez a ajouter 1 a la taille pour le = dans le cas de t_env;
+		Passez au chainon suivant;
+	}
+	Rembobinez votre chaine au debut;
+	ajouter a taille assez de place pour un NULL;
+	i = 0;
+        while (l)
+	{
+		creez une chaine issue de la concatenation entre l->name, "=" et l->value pour t_env;
+		Dupliquez cette chaine dans ret[i]. Dans le cas de t_word, vous pouvez directement dupliquer sa chaine.
+		i++;
+		passez a l'element suivant; 
+	}
+	ret doit etre termine par un NULL;
+	return (ret);
+}
+```
+Adaptez ce code pour vos deux listes chainees. Passons au cas de l'executable. Vous avez sans doute remarque dans mon exemple que le chemin `/usr/bin/` apparait dans `PATH` de votre environement. En effet, `PATH` contient tous les chemins vers les dossiers des executables. Donc, pour chaque commande, vous allez devoir tester si votre executable est inclus dans les `PATH`;
+* Vous pouvez voir que les `PATH` sont separes par des `:`. Vous pouvez donc utiliser un split dessus sans danger.
+* Pour chaque `PATH` :
+  * Creez une chaine issue de la concatenation du `PATH` et de votre commande.
+  * Envoyez cette chaine a `execve`, avec les deux tableaux crees au dessus, et enregistrez le retour de `execve` dans un int.
+  * Liberez la memoire de la chaine, et passez au `PATH` suivant.
+* Pour finir, tentez d'executer `execve` en local, c'est a dire sans ajouter de `PATH`, par exemple pour lancer minishell dans votre minishell.
+* Liberez la memoire ...
+* Retournez l'int.
+
+> [!CAUTION]
+> On va vous demander d'evaluer les `PATH` de droite a gauche plutot que de gauche a droite ! Cela signifie que le dernier `PATH` doit etre essaye en premier !
+
+Vous allez me faire remarquer quelque chose ... Si le premier `execve` marche, pourquoi continuer la boucle ? Pourquoi essayer les autres `PATH` ! Et bien, figurez vous que tout est calcule ! `execve` est une fonction magique qui QUITTE le programme s'il est reussi ! C'est pourquoi on a besoin de le faire dans un fork : sinon, il quitterait notre minishell ... En plus, il s'occupe meme des fuites memoires.     
+
+Vous pouvez lancer votre minishell - il est presque fini ! Tout marche et ... Oh. Faire une commande avec un | ferme le minishell. `$?` et `cd` ne sont toujours pas gere. 
+
+Pour y remedier, on va avoir besoin de ...
+
+Vous l'avez devine ... 
+
+Une ...
+
+### STRUCTURE !
+
+Et oui, pas de liste chainee cette fois.
+## La structure main, fourre-tout universel
+Pour resoudre ces trois soucis, on va creer une structure nomme main, qui fera office de fourre-tout (vous en aurez besoin pour free). Cette structure contiendra entre autre un pointeur vers votre environnement, une copie du `PWD` au lancement du minishell, un int qui stockera les codes de retour, et un fd de secours.
+```C
+typedef struct s_main
+{
+	int	code;
+	int	backup[2]
+	char	*init_pwd;
+	t_env	*env;
+}	t_main;
+```
+* Au lancement de votre minishell, utilisez `getcwd` pour creer `init_pwd`.
+* Au meme moment, initialisez `env` avec la fonction que vous avec cree plus tot.
+* Encore au meme moment, vous allez dupliquer l'entree et la sortie standard dans vos backup. utilisez `backup[0] = dup(0);` et `backup[1] = dup(1);`
+* Dans votre execution, apres le `waitpid`, rendez egal votre `code` au `retour`.
+
+Cette structure permets maintenant de regler tous les soucis :
+* Dans votre boucle principale, avant d'appeler `readline`, retablissez les entrees et sorties standards a l'aide de vos backups et `dup2`.
+* Dans votre `get_variable`, vous pouvez maintenant gerer le cas du `$?`. Vous n'avez plus qu'a utiliser `ft_itoa` sur `code`, et l'inserer dans votre token.
+* Vous pouvez maintenant terminer `cd` avec `initpwd` : utilisez le pour retablir `chdir`, et pour le cas du `cd` seul.
+
+Votre minishell est terminee ! Vous n'avez plus qu'a chasser les fuites memoires (Bonne chance) et norminer tout ca (Bonne chance<sup>2</sup>).
 ## Details
+Quelques petites astuces !
+* Utilisez `ft_calloc` plutot que `malloc`.
+* Si vous n'avez pas fait Minitalk, jetez-y un oeil - il vous explique comment gerer les signaux.
+* Le manuel de `readline` a tout ce qu'il faut pour gerer l'historique et le CTRL+C.
+* Ajoutez des couleurs ! Non seulement c'est joli, mais en plus ca vous aidera a vous reperez dans votre minishell.
+* \ est l'ennemi, ne l'oubliez JAMAIS
