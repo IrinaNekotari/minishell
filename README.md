@@ -406,7 +406,7 @@ typedef struct s_env
 ```
 Pas de surprises ici, il s'agit d'une chaine extrémement basique. Pour la créer, rien de plus simple :
 * Vous découpez env[i] en deux morceaux : Tout ce qu'il y avant le =, tout ce qu'il y a après.
-  * Attention ! Ne soyez pas tentez par le split (c'est le mal) ! `export A=B=C` est valide (bien que bizarre, on va pas se mentir), et la valeur de `A` ici vaut `B=C` !
+  * Attention ! Ne soyez pas tente par le split (c'est le mal) ! `export A=B=C` est valide (bien que bizarre, on va pas se mentir), et la valeur de `A` ici vaut `B=C` !
 * Ajoutez le nom (avant le =) et la valeur (après le =) a la liste.
 * Passez au chainon suivant, incrémentez i, et recommencez jusqu'a atteindre la fin de env.
 
