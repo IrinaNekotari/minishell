@@ -35,10 +35,10 @@ Le principe n'est pas complexe : on defini un int comme booleene (variable n'aya
 * Lorsque vous rencontrez un charactere egal au caractere de sauvegarde, vous remettez la boolenne a 0.
 * Si, a la fin de la chaine, la boolenne vaut vrai, ca veut dire qu'un " ou un ' n'est pas ferme. Donc, renvoyez une erreur ...
 > [!CAUTION]
-> Un " ou un ' precede d'un \ ne compte pas !
+> Un `"` ou un `'` precede d'un `\` ne compte pas !
 
 > [!CAUTION]
-> Double attention ! \ "annule" \\, donc \\\\" compte !
+> Double attention ! `\` "annule" `\`, donc `\\"` compte !
 
 Pour le cas des pipes
 * Si vous rencontrez un |, regardez les deux caracteres d'apres, en vous assurant de ne pas depasser la taille du buffer !
