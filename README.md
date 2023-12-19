@@ -346,7 +346,7 @@ L'une des fonctions de votre minishell demandée est de traiter les variables d'
 ## Les variables d'environnement
 Si vous avez déjà lancé `env` dans votre shell (ce que vous avez évidemment fait - env fait partie des builtins a coder, après tout), vous avez déjà vu les variables d'environnement : une tripotée de lignes de type `A=B`. Ces variables sont utilisées lorsque vous appelez des programmes par le shell. Elles permettent au programme d'avoir accès a votre environnement de travail, a savoir, entre autres
 * `PWD=/home/user/folder/` : Le dossier courant du shell
-* `PATH=/usr/local/sbin:/usr/local/bin` : Les chemins où sont enregistrés la plupart des programmes. Les chemins sont séparés par des :.
+* `PATH=/usr/local/sbin:/usr/local/bin` : Les chemins où sont enregistrés la plupart des programmes. Les chemins sont séparés par des `:`.
 * `USER=c1r1p1` : L'utilisateur courant du shell.
 
 Il y a bien plus de variables que ça, qui dépendent du shell que vous utilisez (bash ou zsh par exemple. valgrind et gdb ont eux aussi leurs propres environnements), mais ces 3 là sont les plus importantes pour minishell : Vous avez besoin de `PWD` pour pwd et cd, et `PATH` pour le cas général. 
